@@ -27,6 +27,10 @@ All three use recoverable Standard Bolts. A successful hit places either an inta
 
 See `docs/TESTING.md` for installation and the debug test-kit workflow.
 
+## Package
+
+Run `tools/package.ps1` to validate the mod and create a versioned release ZIP plus a SHA-256 checksum in `dist`. The ZIP contains `workshop.txt`, `preview.png`, and `Contents` at its root, ready to extract into a Project Zomboid Workshop folder.
+
 ## Verification status
 
 The package has been loaded by the installed Project Zomboid 42.20.2 dedicated server. The server reached `SERVER STARTED` with no Auxilia's Crossbow registry, script, model, or Lua errors, and all five crafting recipes appeared in the game's generated recipe index. Follow-up interactive playtesting confirmed all three crossbows in game and verified bolt generation. See `docs/SMOKE-TEST.md`.

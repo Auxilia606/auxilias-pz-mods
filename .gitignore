@@ -5,10 +5,10 @@
 # Local test/deployment artifacts
 work/
 logs/
+dist/
 
 # OS/editor files
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
-
