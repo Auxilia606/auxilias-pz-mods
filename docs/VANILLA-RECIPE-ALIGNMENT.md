@@ -28,9 +28,9 @@ XP usually follows the primary skill gate in roughly ten-point steps. Small seco
 
 | Auxilia recipe | Previous | Adjusted 42.20.2 value | Basis |
 |---|---|---|---|
-| Improvised Crossbow | time 420; W18/C18/M6 XP | **time 600; W20/C20/M10 XP** | Complex two-handed weapon time; level-scaled XP |
-| Reinforced Crossbow | time 650; W32/C28/M14 XP | **time 600; W40/C40/M30 XP** | Vanilla complex weapon time and level-scaled XP |
-| Heavy Arbalest | time 900; W42/C32/M22/B38 XP | **time 900; W60/C50/M40/B45 XP** | Keeps top-tier duration; Blacksmith 4 mirrors forged spear-head XP |
+| Light Crossbow | old Improvised recipe: time 600; W20/C20/M10 XP | **time 600; W20/C20/M10 XP** | Complex two-handed weapon time; compact one-Plank construction |
+| Crossbow | old Reinforced recipe: time 600; W40/C40/M30 XP | **time 600; W40/C30/M30 XP** | Upgrades the Light Crossbow with a metal prod and fittings |
+| Heavy Crossbow | old Heavy Arbalest recipe: time 900; W60/C50/M40/B45 XP | **time 900; M40/B45 XP** | Forged compact upgrade; Blacksmith 4 mirrors forged spear-head XP |
 | Carve Bolt Shaft | time 45; Carving 4 XP | **time 100; Carving 10 XP** | Small Handle carving baseline |
 | Shape Metal Bolt Head from Nail | time 35; Maintenance 3 XP | **time 100; Maintenance 5 XP** | Small hand-work operation, below full weapon assembly XP |
 | Knapp Stone Bolt Heads | time 120; Knapping 20 XP | **time 230; Knapping 20 XP** | Exact vanilla knapping duration; small two-piece output |
@@ -44,9 +44,9 @@ XP usually follows the primary skill gate in roughly ten-point steps. Small seco
 
 ## Material and workstation corrections
 
-- Reinforced Crossbow now requires a Screwdriver for its Screws and Pliers for its Wire. Vanilla fastener-heavy weapon recipes require the corresponding hand tools.
-- Heavy Arbalest now requires an **Advanced Forge**, four Charcoal, a Ball-peen Hammer, Tongs, and one Steel Bar Half. This replaces two generic `MetalBar` items and surface crafting. The new stock is the same steel family used by vanilla advanced-forge weapon heads and tools.
-- The Heavy Arbalest retains its file/whetstone, saw, metal drill, wrench, screwdriver, rope, leather, nuts/bolts, and screws because it combines forging the steel prod with fitting it to the existing Reinforced Crossbow.
+- Light Crossbow uses one Plank, two Twine, and four Nails. This is below the material mass of large improvised two-handed weapons while retaining the same `time = 600` precision-build duration.
+- Crossbow consumes the Light Crossbow and adds one Metal Bar, two Wire, one Rope, and four Screws. Its Screwdriver, Pliers, metal drill, and file/whetstone match the added fastener and metal-fitting operations.
+- Heavy Crossbow consumes the standard Crossbow at an **Advanced Forge** with four Charcoal and one Steel Bar Half. A Ball-peen Hammer and Tongs handle forging; the metal drill, file, wrench, and screwdriver handle final fitting. Two Nuts/Bolts and four Screws replace the rope, leather, oversized mechanisms, and decorative hardware used by the previous design.
 - Both completed Bolt recipes continue to consume one vanilla-tagged Feather and one Twine. Build 42 supplies Chicken and Turkey Feathers through animal butchering.
 - Stone and Metal Bolt Heads keep their existing raw-material yields: one Chipped Stone or one Iron/Steel Piece produces two heads. That matches the batch scale of vanilla small forged parts while completed ammunition remains one-at-a-time.
 
@@ -54,4 +54,4 @@ XP usually follows the primary skill gate in roughly ten-point steps. Small seco
 
 Some advanced vanilla recipes require research or auto-learning thresholds. Auxilia recipes intentionally remain available through skill gates alone, as established by the mod's design. No magazine or schematic requirement was added during this balance pass.
 
-The complete crossbows also require multiple skills rather than vanilla's usual single primary skill. Their XP is distributed across the listed skills because each recipe combines stock shaping, joinery, mechanical fitting, and—at the Heavy tier—forging. Material cost and the Heavy tier's Reinforced Crossbow input limit their usefulness as repeatable XP farming recipes.
+The Light and standard Crossbows use multiple skills because their recipes combine stock shaping, joinery, and mechanical fitting. The Heavy Crossbow upgrade requires only Maintenance and Blacksmith because it reuses a completed Crossbow and replaces its primary structure with forged iron. Linear upgrade inputs and material cost limit the recipes' usefulness for repeatable XP farming.

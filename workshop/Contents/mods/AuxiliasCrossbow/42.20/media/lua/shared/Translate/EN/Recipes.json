@@ -1,7 +1,7 @@
 {
-    "MakeImprovisedCrossbow": "Make Improvised Crossbow",
-    "MakeReinforcedCrossbow": "Make Reinforced Crossbow",
-    "MakeHeavyArbalest": "Make Heavy Arbalest",
+    "MakeLightCrossbow": "Make Light Crossbow",
+    "MakeCrossbow": "Make Crossbow",
+    "MakeHeavyCrossbow": "Make Heavy Crossbow",
     "CarveBoltShaft": "Carve Crossbow Bolt Shaft",
     "ShapeBoltHead": "Shape Crossbow Bolt Head from Nail",
     "KnappBoltHeads": "Knapp Stone Crossbow Bolt Heads",

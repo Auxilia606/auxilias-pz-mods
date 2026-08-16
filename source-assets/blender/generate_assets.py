@@ -4,8 +4,8 @@ Run with Blender, not the system Python:
     blender --background --python generate_assets.py
 
 Project Zomboid firearm meshes use X for width, Y for muzzle direction, and Z for
-height. Their action/trigger sits close to the origin (vanilla long guns extend
-roughly from Y=-0.18 to Y=0.50). All geometry in this file follows that frame.
+height. Their action/trigger sits close to the origin. The three crossbow tiers
+share the compact vanilla sawn-off double-barrel shotgun hand envelope.
 """
 
 import bpy
@@ -142,6 +142,39 @@ def profile_prism(coll, name, yz_profile, width, mat, edge=0.006):
     return obj
 
 
+def tapered_tiller(coll, name, sections, mat, edge=0.004):
+    """Build a continuous rectangular-section tiller that narrows over the support hand."""
+    vertices = []
+    for y, width, bottom, top in sections:
+        half = width * 0.5
+        vertices.extend((
+            (-half, y, bottom),
+            (half, y, bottom),
+            (half, y, top),
+            (-half, y, top),
+        ))
+    faces = [(0, 3, 2, 1)]
+    for index in range(len(sections) - 1):
+        a = index * 4
+        b = (index + 1) * 4
+        faces.extend((
+            (a, b, b + 3, a + 3),
+            (a + 1, a + 2, b + 2, b + 1),
+            (a + 3, b + 3, b + 2, a + 2),
+            (a, a + 1, b + 1, b),
+        ))
+    end = (len(sections) - 1) * 4
+    faces.append((end, end + 1, end + 2, end + 3))
+    mesh = bpy.data.meshes.new(f"{name}Mesh")
+    mesh.from_pydata(vertices, [], faces)
+    mesh.update()
+    obj = bpy.data.objects.new(name, mesh)
+    coll.objects.link(obj)
+    obj.data.materials.append(mat)
+    bevel(obj, edge, 2)
+    return obj
+
+
 def curved_limb(coll, name, points, chord_widths, thicknesses, mat, edge=0.004):
     """Build one continuous, tapered crossbow limb from center to tip."""
     if not (len(points) == len(chord_widths) == len(thicknesses)):
@@ -213,74 +246,80 @@ def add_wrapping(coll, prefix, center_y, z, width, radius, mat, turns=4):
         move_to_collection(obj, coll)
 
 
-def add_stirrup(coll, name, y, z, width, height, mat):
-    left = (-width * 0.5, y, z)
-    right = (width * 0.5, y, z)
-    lower_left = (-width * 0.5, y + 0.015, z - height)
-    lower_right = (width * 0.5, y + 0.015, z - height)
-    beam_between(coll, f"{name}_Left", left, lower_left, 0.014, 0.014, mat, edge=0.002)
-    beam_between(coll, f"{name}_Right", right, lower_right, 0.014, 0.014, mat, edge=0.002)
-    beam_between(coll, f"{name}_Foot", lower_left, lower_right, 0.014, 0.014, mat, edge=0.002)
-
-
 def build_crossbow(name, tier, spec, mats):
     coll = new_collection(name)
-    wood, dark_wood, metal, cord, leather = mats
+    wood, dark_wood, metal, cord, _leather = mats
     rear = spec["rear"]
     nose = spec["nose"]
     bow_y = spec["bow_y"]
     half_width = spec["width"] * 0.5
 
-    stock_profile = ((-rear, -0.035), (-rear, 0.040), (-rear * 0.62, 0.058), (-0.035, 0.050), (0.080, 0.043), (nose, 0.028), (nose, -0.030), (0.075, -0.038), (-rear * 0.55, -0.052))
-    profile_prism(coll, f"{name}_Stock", stock_profile, spec["stock_width"], wood, edge=0.007)
+    # A low, continuous tiller avoids the large pistol grip/action mass that
+    # visually merged with the character torso in the rifle aiming animation.
+    stock_mat = metal if tier == 3 else wood
+    trim_mat = dark_wood if tier == 1 else metal
+    # Vanilla JS_2000_Sawn support-hand geometry is only about 0.016 m wide
+    # and occupies Z 0.001..0.034. Keep the shoulder/action end full, then
+    # lift and narrow the continuous tiller before it reaches the support hand.
+    tiller_sections = (
+        (-rear, spec["stock_width"], -0.030, 0.020),
+        (-0.018, spec["stock_width"], -0.027, 0.027),
+        (0.045, spec["stock_width"] - 0.002, -0.017, 0.029),
+        (0.072, spec["body_width"], 0.002, 0.030),
+        (0.150, spec["body_width"], 0.004, 0.028),
+        (nose, spec["body_width"], 0.006, 0.021),
+    )
+    tapered_tiller(coll, f"{name}_Tiller", tiller_sections, stock_mat, edge=0.003)
+    cube_part(coll, f"{name}_ButtCap", (0, -rear + 0.006, -0.003), (spec["stock_width"] + 0.004, 0.012, 0.046), dark_wood, edge=0.0025)
 
-    cube_part(coll, f"{name}_ButtPlate", (0, -rear - 0.004, 0.004), (spec["stock_width"] + 0.018, 0.018, 0.092), dark_wood, edge=0.004)
-    rail_start = -0.015
-    rail_end = nose + 0.018
-    cube_part(coll, f"{name}_Rail", (0, (rail_start + rail_end) * 0.5, 0.067), (0.035, rail_end - rail_start, 0.024), metal, edge=0.003)
-    beam_between(coll, f"{name}_Grip", (0, 0.005, -0.015), (0, -0.055, -0.125), 0.065, 0.070, dark_wood, edge=0.008)
-    cube_part(coll, f"{name}_Action", (0, 0.018, 0.028), (0.080, 0.100, 0.080), dark_wood, edge=0.008)
-    cube_part(coll, f"{name}_Trigger", (0, 0.005, -0.045), (0.014, 0.045, 0.060), metal, rotation=(math.radians(-18), 0, 0), edge=0.002)
-    cube_part(coll, f"{name}_ProdSocket", (0, bow_y, 0.050), (0.095, 0.090, 0.085), metal if tier > 1 else dark_wood, edge=0.007)
+    rail_start = 0.020
+    rail_end = nose + 0.006
+    cube_part(coll, f"{name}_BoltRail", (0, (rail_start + rail_end) * 0.5, 0.035), (spec["rail_width"], rail_end - rail_start, 0.010), trim_mat, edge=0.0015)
+    cube_part(coll, f"{name}_Lock", (0, 0.010, 0.029), (spec["lock_width"], 0.046, 0.014), trim_mat, edge=0.002)
+    cube_part(coll, f"{name}_Trigger", (0, 0.006, -0.030), (0.006, 0.014, 0.014), metal, rotation=(math.radians(-12), 0, 0), edge=0.001)
+    # Keep the prod collar subordinate to the limbs. The previous deep block
+    # interrupted the bow silhouette and made the center resemble a clamp.
+    cube_part(coll, f"{name}_ProdSocket", (0, bow_y + 0.002, 0.029), (spec["stock_width"] + 0.018, 0.038, 0.034), trim_mat, edge=0.003)
 
     limb_mat = wood if tier == 1 else metal
     curve = spec["curve"]
-    positive = ((0.0, bow_y, 0.057), (half_width * 0.24, bow_y + curve * 0.20, 0.057), (half_width * 0.52, bow_y + curve * 0.08, 0.057), (half_width * 0.78, bow_y - curve * 0.42, 0.057), (half_width, bow_y - curve * 0.18, 0.057))
+    # A single monotonic sweep reads as a traditional crossbow prod from the
+    # isometric game camera. Avoid a reversed final segment: at game scale it
+    # looked like a hook or an open pair of pincers.
+    positive = tuple(
+        (half_width * fraction, bow_y + curve * sweep, 0.034)
+        for fraction, sweep in (
+            (0.00, 0.10),
+            (0.18, 0.07),
+            (0.38, 0.00),
+            (0.58, -0.10),
+            (0.77, -0.22),
+            (0.91, -0.34),
+            (1.00, -0.42),
+        )
+    )
     negative = tuple((-x, y, z) for x, y, z in positive)
     chord = spec["limb_chord"]
     height = spec["limb_height"]
-    chord_widths = (chord, chord * 0.92, chord * 0.78, chord * 0.62, chord * 0.46)
-    thicknesses = (height, height * 0.95, height * 0.84, height * 0.72, height * 0.58)
+    # `limb_chord` controls only the prod's front-to-back width in top view.
+    # Keep span, sweep, and vertical thickness independent so the prod reads
+    # as a narrow curved band without shrinking the complete weapon.
+    chord_widths = tuple(chord * factor for factor in (1.00, 0.96, 0.88, 0.76, 0.63, 0.52, 0.40))
+    thicknesses = tuple(height * factor for factor in (1.00, 0.98, 0.93, 0.84, 0.73, 0.62, 0.50))
     curved_limb(coll, f"{name}_Limb_R", positive, chord_widths, thicknesses, limb_mat)
     curved_limb(coll, f"{name}_Limb_L", negative, chord_widths, thicknesses, limb_mat)
 
     right_tip = positive[-1]
     left_tip = negative[-1]
-    latch = (0.0, 0.035, 0.080)
+    latch = (0.0, 0.035, 0.042)
     string_part(coll, f"{name}_String", (left_tip, latch, right_tip), cord, spec["string_thickness"])
 
     if tier == 1:
-        add_wrapping(coll, name, bow_y, 0.050, 0.060, 0.053, cord, turns=5)
-        beam_between(coll, f"{name}_SplintL", (-0.036, 0.075, 0.015), (-0.052, bow_y - 0.040, 0.025), 0.024, 0.025, dark_wood)
-        beam_between(coll, f"{name}_SplintR", (0.036, 0.075, 0.015), (0.052, bow_y - 0.040, 0.025), 0.024, 0.025, dark_wood)
-    else:
-        beam_between(coll, f"{name}_BraceL", (-0.040, 0.090, 0.008), (-0.075, bow_y - 0.025, 0.030), 0.020, 0.022, metal)
-        beam_between(coll, f"{name}_BraceR", (0.040, 0.090, 0.008), (0.075, bow_y - 0.025, 0.030), 0.020, 0.022, metal)
-        add_stirrup(coll, f"{name}_Stirrup", nose + 0.010, -0.015, 0.150 if tier == 2 else 0.175, 0.085, metal)
-        cube_part(coll, f"{name}_Foregrip", (0, 0.145, -0.055), (0.080, 0.105, 0.065), dark_wood, edge=0.009)
-
-    if tier == 2:
-        cube_part(coll, f"{name}_CheekPad", (0, -rear * 0.60, 0.052), (spec["stock_width"] + 0.012, 0.115, 0.025), leather, edge=0.006)
-        for index in range(3):
-            y = bow_y - 0.058 + index * 0.024
-            cube_part(coll, f"{name}_Band_{index}", (0, y, 0.050), (0.102, 0.012, 0.092), metal, edge=0.002)
-
-    if tier == 3:
-        cube_part(coll, f"{name}_SpanningPlate", (0, 0.010, 0.085), (0.115, 0.145, 0.024), metal, edge=0.004)
-        cylinder_part(coll, f"{name}_Windlass", (0, -0.020, 0.105), 0.038, 0.170, metal, rotation=(0, math.pi / 2, 0), vertices=16)
-        cylinder_part(coll, f"{name}_Crank", (-0.125, -0.020, 0.105), 0.009, 0.100, metal, rotation=(0, math.pi / 2, 0), vertices=10)
-        beam_between(coll, f"{name}_CrankHandle", (-0.176, -0.020, 0.105), (-0.176, -0.070, 0.145), 0.014, 0.014, dark_wood, edge=0.003)
-        cube_part(coll, f"{name}_ShoulderPad", (0, -rear * 0.72, 0.052), (spec["stock_width"] + 0.018, 0.110, 0.028), leather, edge=0.007)
+        cube_part(coll, f"{name}_ProdBinding", (0, bow_y - 0.004, 0.029), (spec["stock_width"] + 0.022, 0.010, 0.038), cord, edge=0.002)
+    elif tier == 2:
+        cube_part(coll, f"{name}_ProdBand", (0, bow_y - 0.004, 0.029), (spec["stock_width"] + 0.022, 0.010, 0.038), metal, edge=0.002)
+    # The top tier is intentionally mechanism-free. Its heavier silhouette
+    # comes from the iron tiller and thicker steel prod alone.
 
     return coll
 
@@ -402,6 +441,17 @@ def object_bounds(obj):
     return minimum, maximum
 
 
+def apply_gameplay_fit(obj, scale, offset):
+    """Fit equipped models to the vanilla sawn-off shotgun hand envelope."""
+    scale = Vector(scale)
+    offset = Vector(offset)
+    for vertex in obj.data.vertices:
+        vertex.co.x = vertex.co.x * scale.x + offset.x
+        vertex.co.y = vertex.co.y * scale.y + offset.y
+        vertex.co.z = vertex.co.z * scale.z + offset.z
+    obj.data.update()
+
+
 def export_object(obj, filename):
     # Blender's FBX metadata restores the authored +Y-forward/Z-up direction
     # when imported back into Blender, but Project Zomboid consumes both axes
@@ -428,7 +478,9 @@ def export_object(obj, filename):
 
 def make_palette_texture(filename):
     width = height = 128
-    colors = {"Aged Oak": (0.30, 0.13, 0.045), "Dark Stock": (0.105, 0.040, 0.015), "Forged Iron": (0.12, 0.14, 0.15), "Hemp Cord": (0.34, 0.26, 0.12), "Leather": (0.32, 0.105, 0.035)}
+    # Vanilla wood-stock firearms cluster around sRGB 121/58/7, with dark
+    # walnut shadows around 80/35/10 and neutral gunmetal around 60/62/64.
+    colors = {"Aged Oak": (0.475, 0.225, 0.028), "Dark Stock": (0.31, 0.14, 0.040), "Forged Iron": (0.22, 0.24, 0.25), "Hemp Cord": (0.28, 0.20, 0.08), "Leather": (0.32, 0.105, 0.035)}
     pixels = []
     for y in range(height):
         v = y / (height - 1)
@@ -542,7 +594,12 @@ def render_validation(coll, asset_collections, filename, camera):
     scene.world.color = (0.012, 0.016, 0.014)
     scene.render.resolution_x = 640
     scene.render.resolution_y = 480
-    views = {"iso": ((0.82, -0.84, 0.68), (0, 0.10, 0.015), 0.92), "top": ((0.0, 0.10, 1.35), (0, 0.10, 0.0), 0.80), "side": ((1.30, 0.10, 0.06), (0, 0.10, 0.0), 0.74)}
+    scales = {
+        "AuxiliaImprovisedCrossbow": (0.50, 0.42, 0.42),
+        "AuxiliaReinforcedCrossbow": (0.52, 0.44, 0.42),
+        "AuxiliaHeavyArbalest": (0.56, 0.48, 0.44),
+    }[filename]
+    views = {"iso": ((0.82, -0.84, 0.68), (0, 0.10, 0.015), scales[0]), "top": ((0.0, 0.10, 1.35), (0, 0.10, 0.0), scales[1]), "side": ((1.30, 0.10, 0.06), (0, 0.10, 0.0), scales[2])}
     for view_name, (location, target, scale) in views.items():
         camera.location = location
         camera.data.ortho_scale = scale
@@ -559,7 +616,7 @@ def render_promo(heavy, asset_collections, camera):
     scene.world.color = (0.012, 0.016, 0.014)
     scene.render.resolution_x = 512
     scene.render.resolution_y = 512
-    camera.data.ortho_scale = 0.86
+    camera.data.ortho_scale = 0.56
     camera.location = (0.82, -0.88, 0.72)
     look_at(camera, (0, 0.10, 0.015))
     poster = os.path.join(MOD_ROOT, "poster.png")
@@ -581,9 +638,9 @@ def import_fbx(filepath):
 def validate_exports(asset_objects, icon_names):
     report = {"coordinate_system": "X width, Y forward, Z up; action at origin", "assets": {}, "icons": {}}
     expected_ranges = {
-        "AuxiliaImprovisedCrossbow": ((0.40, 0.50), (0.50, 0.62), (0.17, 0.28)),
-        "AuxiliaReinforcedCrossbow": ((0.50, 0.60), (0.54, 0.66), (0.17, 0.28)),
-        "AuxiliaHeavyArbalest": ((0.59, 0.68), (0.60, 0.72), (0.19, 0.30)),
+        "AuxiliaImprovisedCrossbow": ((0.24, 0.27), (0.35, 0.38), (0.07, 0.10)),
+        "AuxiliaReinforcedCrossbow": ((0.27, 0.30), (0.35, 0.38), (0.07, 0.10)),
+        "AuxiliaHeavyArbalest": ((0.30, 0.34), (0.35, 0.38), (0.08, 0.11)),
     }
     for filename, original in asset_objects.items():
         source_min, source_max = object_bounds(original)
@@ -591,6 +648,8 @@ def validate_exports(asset_objects, icon_names):
         imported = import_fbx(os.path.join(MODEL_DIR, f"{filename}.fbx"))
         if len(imported) != 1:
             raise RuntimeError(f"{filename}: expected one imported mesh, got {len(imported)}")
+        if len(original.data.materials) != 1 or len(imported[0].data.materials) != 1:
+            raise RuntimeError(f"{filename}: Project Zomboid exports must contain exactly one material")
         if len(imported[0].data.uv_layers) != 1:
             raise RuntimeError(f"{filename}: FBX must contain exactly one UV layer")
         if not imported[0].data.materials:
@@ -655,17 +714,17 @@ def validate_exports(asset_objects, icon_names):
 
 
 reset_scene()
-WOOD = material("Aged Oak", (0.30, 0.13, 0.045), roughness=0.82)
-DARK_WOOD = material("Dark Stock", (0.105, 0.040, 0.015), roughness=0.78)
-METAL = material("Forged Iron", (0.12, 0.14, 0.15), metallic=0.72, roughness=0.46)
-CORD = material("Hemp Cord", (0.34, 0.26, 0.12), roughness=0.95)
+WOOD = material("Aged Oak", (0.475, 0.225, 0.028), roughness=0.84)
+DARK_WOOD = material("Dark Stock", (0.31, 0.14, 0.040), roughness=0.82)
+METAL = material("Forged Iron", (0.22, 0.24, 0.25), metallic=0.35, roughness=0.64)
+CORD = material("Hemp Cord", (0.28, 0.20, 0.08), roughness=0.95)
 LEATHER = material("Leather", (0.32, 0.105, 0.035), roughness=0.88)
 MATERIALS = (WOOD, DARK_WOOD, METAL, CORD, LEATHER)
 
 SPECS = {
-    "AuxiliaImprovisedCrossbow": {"rear": 0.170, "nose": 0.340, "bow_y": 0.270, "width": 0.440, "curve": 0.055, "stock_width": 0.070, "limb_chord": 0.048, "limb_height": 0.035, "string_thickness": 0.0032},
-    "AuxiliaReinforcedCrossbow": {"rear": 0.190, "nose": 0.370, "bow_y": 0.292, "width": 0.540, "curve": 0.064, "stock_width": 0.075, "limb_chord": 0.052, "limb_height": 0.032, "string_thickness": 0.0035},
-    "AuxiliaHeavyArbalest": {"rear": 0.210, "nose": 0.405, "bow_y": 0.315, "width": 0.630, "curve": 0.072, "stock_width": 0.084, "limb_chord": 0.062, "limb_height": 0.042, "string_thickness": 0.0042},
+    "AuxiliaImprovisedCrossbow": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.250, "curve": 0.034, "stock_width": 0.024, "body_width": 0.016, "lock_width": 0.020, "rail_width": 0.014, "limb_chord": 0.009, "limb_height": 0.014, "string_thickness": 0.0024},
+    "AuxiliaReinforcedCrossbow": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.280, "curve": 0.038, "stock_width": 0.026, "body_width": 0.018, "lock_width": 0.022, "rail_width": 0.016, "limb_chord": 0.010, "limb_height": 0.017, "string_thickness": 0.0027},
+    "AuxiliaHeavyArbalest": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.315, "curve": 0.042, "stock_width": 0.028, "body_width": 0.020, "lock_width": 0.024, "rail_width": 0.018, "limb_chord": 0.012, "limb_height": 0.022, "string_thickness": 0.0032},
 }
 
 improvised = build_crossbow("AuxiliaImprovisedCrossbow", 1, SPECS["AuxiliaImprovisedCrossbow"], MATERIALS)
@@ -689,9 +748,9 @@ for filename, obj in asset_objects.items():
 apply_palette_to_preview_materials(bpy.data.images["AuxiliaImprovisedCrossbow"])
 
 camera = setup_render()
-render_icon(improvised, icon_assets, "AuxiliaImprovisedCrossbow", camera, 0.82)
-render_icon(reinforced, icon_assets, "AuxiliaReinforcedCrossbow", camera, 0.88)
-render_icon(heavy, icon_assets, "AuxiliaHeavyArbalest", camera, 0.96)
+render_icon(improvised, icon_assets, "AuxiliaImprovisedCrossbow", camera, 0.48)
+render_icon(reinforced, icon_assets, "AuxiliaReinforcedCrossbow", camera, 0.51)
+render_icon(heavy, icon_assets, "AuxiliaHeavyArbalest", camera, 0.55)
 render_icon(bolt, icon_assets, "AuxiliaCrossbowBolt", camera, 0.42, (0, 0.02, 0))
 render_icon(broken_bolt, icon_assets, "AuxiliaBrokenBolt", camera, 0.30, (0, 0.00, 0))
 render_icon(bolt_shaft_icon, icon_assets, "AuxiliaBoltShaft", camera, 0.38, (0, 0.00, 0))
@@ -700,6 +759,10 @@ for collection in (improvised, reinforced, heavy):
     render_validation(collection, icon_assets, collection.name, camera)
 render_promo(heavy, icon_assets, camera)
 
+# Headless Windows runs do not need an Explorer/File Browser thumbnail for the
+# generated source file. Blender 5.2's automatic preview cache can misdecode
+# the project path and create mojibake-named .thumbnails trees beside the repo.
+bpy.context.preferences.filepaths.file_preview_type = "NONE"
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(SCRIPT_DIR, "AuxiliasCrossbowAssets.blend"))
 report_path = validate_exports(asset_objects, [collection.name for collection in icon_assets])
 print(f"Auxilia's Crossbow assets generated under: {VERSION_ROOT}")

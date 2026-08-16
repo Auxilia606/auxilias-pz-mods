@@ -6,9 +6,9 @@ An original crossbow mod for Project Zomboid 42.20.
 
 The first playable test build adds three non-modern, craftable crossbows:
 
-- Improvised Crossbow — short-ranged, light, and comparatively fragile.
-- Reinforced Crossbow — a better wooden hunting weapon.
-- Heavy Arbalest — a slow, heavy, historically inspired steel-prod crossbow.
+- Light Crossbow — short-ranged, light, and comparatively fragile.
+- Crossbow — a sturdier wood-and-iron hunting weapon.
+- Heavy Crossbow — a slow, powerful compact crossbow built primarily from forged iron.
 
 All three use recoverable Metal or Stone Bolts. An unloaded crossbow can switch ammunition material from its inventory context menu, after which the normal reload and unload controls use that material. Metal Bolts have a 70% intact recovery chance; easier-to-source Stone Bolts have a 45% intact recovery chance. Both require vanilla Chicken or Turkey Feathers for fletching.
 

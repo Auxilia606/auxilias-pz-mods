@@ -82,7 +82,7 @@ module AuxiliasCrossbow
     {
         DisplayCategory = Weapon,
         ItemType = base:weapon,
-        Weight = 3.0,
+        Weight = 2.4,
         Icon = AuxiliaImprovisedCrossbow,
         AimingPerkCritModifier = 4,
         AimingPerkHitChanceModifier = 3,
@@ -151,7 +151,7 @@ module AuxiliasCrossbow
     {
         DisplayCategory = Weapon,
         ItemType = base:weapon,
-        Weight = 3.8,
+        Weight = 3.2,
         Icon = AuxiliaReinforcedCrossbow,
         AimingPerkCritModifier = 5,
         AimingPerkHitChanceModifier = 4,
@@ -220,7 +220,7 @@ module AuxiliasCrossbow
     {
         DisplayCategory = Weapon,
         ItemType = base:weapon,
-        Weight = 5.5,
+        Weight = 4.4,
         Icon = AuxiliaHeavyArbalest,
         AimingPerkCritModifier = 6,
         AimingPerkHitChanceModifier = 4,

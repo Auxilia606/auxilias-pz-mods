@@ -6,7 +6,7 @@
     "AuxiliasCrossbow.StoneBoltHead": "Stone Crossbow Bolt Head",
     "AuxiliasCrossbow.BrokenBolt": "Broken Metal Crossbow Bolt",
     "AuxiliasCrossbow.BrokenStoneBolt": "Broken Stone Crossbow Bolt",
-    "AuxiliasCrossbow.ImprovisedCrossbow": "Improvised Crossbow",
-    "AuxiliasCrossbow.ReinforcedCrossbow": "Reinforced Crossbow",
-    "AuxiliasCrossbow.HeavyArbalest": "Heavy Arbalest"
+    "AuxiliasCrossbow.ImprovisedCrossbow": "Light Crossbow",
+    "AuxiliasCrossbow.ReinforcedCrossbow": "Crossbow",
+    "AuxiliasCrossbow.HeavyArbalest": "Heavy Crossbow"
 }

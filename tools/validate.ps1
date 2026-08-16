@@ -77,13 +77,16 @@ if ($modelOpenBraces -ne $modelCloseBraces) {
 
 $generatorPath = Join-Path $repoRoot 'source-assets\blender\generate_assets.py'
 $generatorText = Get-Content -LiteralPath $generatorPath -Raw
-foreach ($pipelineCheck in @('finalize_collection', 'assign_palette_uv', 'validate_exports', 'render_validation')) {
+foreach ($pipelineCheck in @('finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'validate_exports', 'render_validation')) {
     if ($generatorText -notmatch [regex]::Escape($pipelineCheck)) {
         throw "Blender model pipeline check is missing: $pipelineCheck"
     }
 }
 if ($generatorText -notmatch 'axis_forward\s*=\s*"-Y"' -or $generatorText -notmatch 'axis_up\s*=\s*"Z"') {
     throw 'Blender FBX export axes must remain -Y forward and Z up for Project Zomboid.'
+}
+if ($generatorText -notmatch 'game_obj\.rotation_euler\.x\s*\+=\s*math\.pi') {
+    throw 'Project Zomboid FBX exports must retain the tested 180-degree X-axis correction.'
 }
 
 $itemsText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\scripts\auxilia_items.txt') -Raw
@@ -151,16 +154,16 @@ function Get-CraftRecipeBlock {
     throw "Recipe closing brace not found: $Name"
 }
 
-foreach ($recipeName in @('MakeImprovisedCrossbow', 'MakeReinforcedCrossbow', 'MakeHeavyArbalest', 'CarveBoltShaft', 'ShapeBoltHead', 'KnappBoltHeads', 'ForgeBoltHeads', 'MakeStandardBolts', 'MakeStoneBolt', 'SalvageBrokenBolts', 'SalvageBrokenStoneBolt')) {
+foreach ($recipeName in @('MakeLightCrossbow', 'MakeCrossbow', 'MakeHeavyCrossbow', 'CarveBoltShaft', 'ShapeBoltHead', 'KnappBoltHeads', 'ForgeBoltHeads', 'MakeStandardBolts', 'MakeStoneBolt', 'SalvageBrokenBolts', 'SalvageBrokenStoneBolt')) {
     if ($recipesText -notmatch [regex]::Escape("craftRecipe $recipeName")) {
         throw "Recipe definition not found: $recipeName"
     }
 }
 
 $vanillaAlignedRecipeChecks = @(
-    @{ Recipe = 'MakeImprovisedCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:20;Carving:20;Maintenance:10') },
-    @{ Recipe = 'MakeReinforcedCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:40;Carving:40;Maintenance:30', 'tags\[base:screwdriver\]', 'tags\[base:pliers\]') },
-    @{ Recipe = 'MakeHeavyArbalest'; Patterns = @('time\s*=\s*900', 'Tags\s*=\s*AdvancedForge', 'timedAction\s*=\s*HammerMetalStanding', 'xpAward\s*=\s*Woodwork:60;Carving:50;Maintenance:40;Blacksmith:45', 'item\s+4\s+tags\[base:charcoal\]', 'item\s+1\s+\[Base\.SteelBarHalf\]', 'tags\[base:ballpeenhammer\]', 'tags\[base:tongs\]') },
+    @{ Recipe = 'MakeLightCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:20;Carving:20;Maintenance:10', 'item\s+1\s+\[Base\.Plank\]') },
+    @{ Recipe = 'MakeCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:40;Carving:30;Maintenance:30', 'item\s+1\s+\[AuxiliasCrossbow\.ImprovisedCrossbow\]', 'item\s+1\s+\[Base\.MetalBar\]', 'tags\[base:screwdriver\]', 'tags\[base:pliers\]') },
+    @{ Recipe = 'MakeHeavyCrossbow'; Patterns = @('time\s*=\s*900', 'Tags\s*=\s*AdvancedForge', 'timedAction\s*=\s*HammerMetalStanding', 'xpAward\s*=\s*Maintenance:40;Blacksmith:45', 'item\s+4\s+tags\[base:charcoal\]', 'item\s+1\s+\[AuxiliasCrossbow\.ReinforcedCrossbow\]', 'item\s+1\s+\[Base\.SteelBarHalf\]', 'tags\[base:ballpeenhammer\]', 'tags\[base:tongs\]') },
     @{ Recipe = 'CarveBoltShaft'; Patterns = @('time\s*=\s*100', 'xpAward\s*=\s*Carving:10') },
     @{ Recipe = 'ShapeBoltHead'; Patterns = @('time\s*=\s*100', 'xpAward\s*=\s*Maintenance:5') },
     @{ Recipe = 'KnappBoltHeads'; Patterns = @('time\s*=\s*230', 'xpAward\s*=\s*FlintKnapping:20') },

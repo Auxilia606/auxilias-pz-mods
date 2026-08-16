@@ -101,3 +101,21 @@ Verified:
 - Static validation confirmed the documented time units, materials, tools, skill gates, and XP awards for all eleven recipes.
 
 Real elapsed duration varies with the game's timed-action and character modifiers. Player-observed duration, consumed quantities, and granted XP remain covered by the interactive checks in `docs/TESTING.md`.
+
+## Development smoke test — compact three-tier redesign
+
+The Light Crossbow, Crossbow, and Heavy Crossbow redesign was copied over the existing isolated 42.20.2 client session without deleting its save. Blender regenerated and round-tripped all FBX assets as one mesh, one material, and one UV layer. The three equipped models measure 0.363 units long, matching the approximate 0.357-unit vanilla sawn-off double-barrel shotgun reference.
+
+Verified:
+
+- The crafting index contains `MakeLightCrossbow`, `MakeCrossbow`, and `MakeHeavyCrossbow` exactly once.
+- No client error or warning references the new Auxilia model, recipe, item, translation, or texture data.
+- Game-native and direct-window aim captures show all three prods facing forward with the tillers below the character's forearms and no large grip or mechanism intersecting the torso.
+- Light Crossbow is predominantly wood, Crossbow combines a wooden tiller with iron fittings and a steel prod, and Heavy Crossbow uses an iron tiller with the thickest steel prod.
+- The existing internal item IDs remain unchanged for save compatibility while English and Korean display names use the new three-tier terminology.
+
+A follow-up visual pass compared six vanilla firearm meshes around their hand/action area and sampled four vanilla wood-stock textures. The exact sawn double-barrel support-hand body is approximately 0.016 units wide and sits above Z 0.001. The revised crossbows use a 0.024–0.028 rear tiller, a 0.020–0.024 lock, and a continuous 0.016–0.020 support-hand body lifted above Z 0. The primary oak atlas swatch remains near the vanilla target of sRGB 121/58/7. Close left- and right-facing aim captures confirm that the supporting palm now wraps below the tiller instead of emerging through a deep body block.
+
+The prod follow-up removes the former zigzag and reversed tip segment. All three prods now sweep smoothly and continuously rearward, taper through seven sections, and meet a shallower central socket. Updated left- and right-facing client captures show a readable conventional bow silhouette without hooked tips or a clamp-like center.
+
+Firing, projectile behavior, and practical balance remain reserved for the user's final interactive test.
