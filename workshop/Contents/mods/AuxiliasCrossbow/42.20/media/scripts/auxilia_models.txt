@@ -1,11 +1,13 @@
-module AuxiliasCrossbow
+module Base
 {
     model AuxiliaImprovisedCrossbow
     {
         mesh = weapons/2handed/AuxiliaImprovisedCrossbow,
+        texture = weapons/2handed/AuxiliaImprovisedCrossbow,
+        scale = 0.01,
         attachment muzzle
         {
-            offset = 0.0 0.48 0.02,
+            offset = 0.0 0.355 0.075,
             rotate = -90.0 0.0 180.0,
         }
         attachment world
@@ -18,9 +20,11 @@ module AuxiliasCrossbow
     model AuxiliaReinforcedCrossbow
     {
         mesh = weapons/2handed/AuxiliaReinforcedCrossbow,
+        texture = weapons/2handed/AuxiliaReinforcedCrossbow,
+        scale = 0.01,
         attachment muzzle
         {
-            offset = 0.0 0.50 0.02,
+            offset = 0.0 0.385 0.075,
             rotate = -90.0 0.0 180.0,
         }
         attachment world
@@ -33,9 +37,11 @@ module AuxiliasCrossbow
     model AuxiliaHeavyArbalest
     {
         mesh = weapons/2handed/AuxiliaHeavyArbalest,
+        texture = weapons/2handed/AuxiliaHeavyArbalest,
+        scale = 0.01,
         attachment muzzle
         {
-            offset = 0.0 0.52 0.025,
+            offset = 0.0 0.420 0.080,
             rotate = -90.0 0.0 180.0,
         }
         attachment world
@@ -48,11 +54,14 @@ module AuxiliasCrossbow
     model AuxiliaCrossbowBolt
     {
         mesh = weapons/2handed/AuxiliaCrossbowBolt,
+        texture = weapons/2handed/AuxiliaCrossbowBolt,
+        scale = 0.01,
     }
 
     model AuxiliaBrokenBolt
     {
         mesh = weapons/2handed/AuxiliaBrokenBolt,
+        texture = weapons/2handed/AuxiliaBrokenBolt,
+        scale = 0.01,
     }
 }
-

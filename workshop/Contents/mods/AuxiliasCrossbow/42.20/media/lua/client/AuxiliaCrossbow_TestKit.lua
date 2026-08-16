@@ -10,8 +10,9 @@ local function spawnTestKit(playerIndex)
     inventory:AddItem("AuxiliasCrossbow.ImprovisedCrossbow")
     inventory:AddItem("AuxiliasCrossbow.ReinforcedCrossbow")
     inventory:AddItem("AuxiliasCrossbow.HeavyArbalest")
-    for _ = 1, 60 do
+    for _ = 1, 30 do
         inventory:AddItem("Base.AuxiliasCrossbowBolt")
+        inventory:AddItem("Base.AuxiliasStoneCrossbowBolt")
     end
 end
 
@@ -23,4 +24,3 @@ local function addTestKitOption(playerIndex, context, items)
 end
 
 Events.OnFillInventoryObjectContextMenu.Add(addTestKitOption)
-

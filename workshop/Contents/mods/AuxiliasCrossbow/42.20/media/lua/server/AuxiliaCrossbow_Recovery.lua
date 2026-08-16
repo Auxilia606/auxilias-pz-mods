@@ -6,6 +6,8 @@ local crossbows = {
     ["AuxiliasCrossbow.HeavyArbalest"] = true,
 }
 
+local STONE_AMMO_TYPE = "auxiliascrossbow:stonebolt"
+
 local function getTargetInventory(target)
     if not target or not target.getInventory then
         return nil
@@ -37,12 +39,15 @@ local function onWeaponHit(owner, weapon, hitObject, damage, hitCount)
         return
     end
 
-    if ZombRand(100) < 70 then
-        inventory:AddItem("Base.AuxiliasCrossbowBolt")
+    local ammoType = weapon:getAmmoType()
+    local isStoneBolt = ammoType and ammoType:toString() == STONE_AMMO_TYPE
+    local intactChance = isStoneBolt and 45 or 70
+
+    if ZombRand(100) < intactChance then
+        inventory:AddItem(isStoneBolt and "Base.AuxiliasStoneCrossbowBolt" or "Base.AuxiliasCrossbowBolt")
     else
-        inventory:AddItem("AuxiliasCrossbow.BrokenBolt")
+        inventory:AddItem(isStoneBolt and "AuxiliasCrossbow.BrokenStoneBolt" or "AuxiliasCrossbow.BrokenBolt")
     end
 end
 
 Events.OnWeaponHitXp.Add(onWeaponHit)
-

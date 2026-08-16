@@ -1,4 +1,5 @@
 {
-    "ContextMenu_AuxiliaCrossbow_TestKit": "Auxilia's Crossbow: 테스트 장비 생성"
+    "ContextMenu_AuxiliaCrossbow_TestKit": "Auxilia's Crossbow: 테스트 장비 생성",
+    "ContextMenu_AuxiliaCrossbow_SelectMetalBolts": "금속제 석궁 볼트 사용",
+    "ContextMenu_AuxiliaCrossbow_SelectStoneBolts": "석제 석궁 볼트 사용"
 }
-

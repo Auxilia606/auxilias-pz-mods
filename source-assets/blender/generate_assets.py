@@ -1,4 +1,15 @@
+"""Generate, export, render, and validate Auxilia's Crossbow assets.
+
+Run with Blender, not the system Python:
+    blender --background --python generate_assets.py
+
+Project Zomboid firearm meshes use X for width, Y for muzzle direction, and Z for
+height. Their action/trigger sits close to the origin (vanilla long guns extend
+roughly from Y=-0.18 to Y=0.50). All geometry in this file follows that frame.
+"""
+
 import bpy
+import json
 import math
 import os
 import shutil
@@ -7,29 +18,33 @@ from mathutils import Vector
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
-MOD_ROOT = os.path.join(
-    REPO_ROOT,
-    "workshop",
-    "Contents",
-    "mods",
-    "AuxiliasCrossbow",
-)
+MOD_ROOT = os.path.join(REPO_ROOT, "workshop", "Contents", "mods", "AuxiliasCrossbow")
 VERSION_ROOT = os.path.join(MOD_ROOT, "42.20")
 MODEL_DIR = os.path.join(VERSION_ROOT, "media", "models_X", "weapons", "2handed")
 MODEL_TEXTURE_DIR = os.path.join(VERSION_ROOT, "media", "textures", "weapons", "2handed")
 ITEM_TEXTURE_DIR = os.path.join(VERSION_ROOT, "media", "textures")
+VALIDATION_DIR = os.path.join(REPO_ROOT, "work", "model-validation")
 
-for directory in (MODEL_DIR, MODEL_TEXTURE_DIR, ITEM_TEXTURE_DIR, SCRIPT_DIR):
+for directory in (MODEL_DIR, MODEL_TEXTURE_DIR, ITEM_TEXTURE_DIR, VALIDATION_DIR, SCRIPT_DIR):
     os.makedirs(directory, exist_ok=True)
+
+
+SWATCHES = {
+    "Aged Oak": (0.02, 0.52, 0.52, 0.98),
+    "Dark Stock": (0.52, 0.98, 0.52, 0.98),
+    "Forged Iron": (0.02, 0.32, 0.02, 0.48),
+    "Hemp Cord": (0.35, 0.64, 0.02, 0.48),
+    "Leather": (0.67, 0.98, 0.02, 0.48),
+}
 
 
 def reset_scene():
     bpy.ops.object.select_all(action="SELECT")
     bpy.ops.object.delete(use_global=False)
-    for block in bpy.data.collections:
+    for block in list(bpy.data.collections):
         if block.name != "Collection":
             bpy.data.collections.remove(block)
-    for block in bpy.data.materials:
+    for block in list(bpy.data.materials):
         bpy.data.materials.remove(block)
 
 
@@ -56,43 +71,122 @@ def move_to_collection(obj, coll):
     coll.objects.link(obj)
 
 
-def bevel(obj, width=0.012, segments=2):
-    modifier = obj.modifiers.new("Soft workshop edges", "BEVEL")
+def bevel(obj, width=0.006, segments=2):
+    modifier = obj.modifiers.new("Edge bevel", "BEVEL")
     modifier.width = width
     modifier.segments = segments
 
 
-def cube_part(coll, name, location, dimensions, mat, rotation=(0.0, 0.0, 0.0), edge=0.01):
+def cube_part(coll, name, location, dimensions, mat, rotation=(0.0, 0.0, 0.0), edge=0.006):
     bpy.ops.mesh.primitive_cube_add(location=location, rotation=rotation)
     obj = bpy.context.object
     obj.name = name
     obj.dimensions = dimensions
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
     obj.data.materials.append(mat)
-    bevel(obj, min(edge, min(dimensions) * 0.25))
+    bevel(obj, min(edge, min(dimensions) * 0.22))
     move_to_collection(obj, coll)
     return obj
 
 
 def cylinder_part(coll, name, location, radius, depth, mat, rotation=(math.pi / 2, 0.0, 0.0), vertices=12):
-    bpy.ops.mesh.primitive_cylinder_add(
-        vertices=vertices,
-        radius=radius,
-        depth=depth,
-        location=location,
-        rotation=rotation,
-    )
+    bpy.ops.mesh.primitive_cylinder_add(vertices=vertices, radius=radius, depth=depth, location=location, rotation=rotation)
     obj = bpy.context.object
     obj.name = name
     obj.data.materials.append(mat)
-    bevel(obj, radius * 0.18, 1)
+    bevel(obj, min(radius * 0.16, 0.004), 1)
     move_to_collection(obj, coll)
     return obj
 
 
-def string_part(coll, name, points, mat, thickness=0.006):
+def cone_part(coll, name, location, radius, depth, mat, rotation=(-math.pi / 2, 0.0, 0.0), vertices=4):
+    """Create a pointed low-poly cone, oriented along the weapon's Y axis by default."""
+    bpy.ops.mesh.primitive_cone_add(vertices=vertices, radius1=radius, radius2=0.0, depth=depth, location=location, rotation=rotation)
+    obj = bpy.context.object
+    obj.name = name
+    obj.data.materials.append(mat)
+    bevel(obj, min(radius * 0.10, 0.0025), 1)
+    move_to_collection(obj, coll)
+    return obj
+
+
+def beam_between(coll, name, start, end, width, height, mat, edge=0.004):
+    """Create a rectangular beam whose long local axis connects start to end."""
+    start = Vector(start)
+    end = Vector(end)
+    direction = end - start
+    obj = cube_part(coll, name, (start + end) * 0.5, (width, direction.length, height), mat, edge=edge)
+    obj.rotation_mode = "QUATERNION"
+    obj.rotation_quaternion = Vector((0.0, 1.0, 0.0)).rotation_difference(direction.normalized())
+    return obj
+
+
+def profile_prism(coll, name, yz_profile, width, mat, edge=0.006):
+    """Extrude a clockwise Y/Z silhouette along X."""
+    vertices = []
+    half = width * 0.5
+    for x in (-half, half):
+        vertices.extend((x, y, z) for y, z in yz_profile)
+    count = len(yz_profile)
+    faces = [tuple(range(count - 1, -1, -1)), tuple(range(count, count * 2))]
+    for index in range(count):
+        nxt = (index + 1) % count
+        faces.append((index, nxt, count + nxt, count + index))
+    mesh = bpy.data.meshes.new(f"{name}Mesh")
+    mesh.from_pydata(vertices, [], faces)
+    mesh.update()
+    obj = bpy.data.objects.new(name, mesh)
+    coll.objects.link(obj)
+    obj.data.materials.append(mat)
+    bevel(obj, edge, 2)
+    return obj
+
+
+def curved_limb(coll, name, points, chord_widths, thicknesses, mat, edge=0.004):
+    """Build one continuous, tapered crossbow limb from center to tip."""
+    if not (len(points) == len(chord_widths) == len(thicknesses)):
+        raise ValueError("Limb points, widths, and thicknesses must have equal length")
+    vertices = []
+    for index, point in enumerate(points):
+        point = Vector(point)
+        if index == 0:
+            tangent = Vector(points[1]) - point
+        elif index == len(points) - 1:
+            tangent = point - Vector(points[index - 1])
+        else:
+            tangent = Vector(points[index + 1]) - Vector(points[index - 1])
+        tangent.z = 0.0
+        tangent.normalize()
+        normal = Vector((-tangent.y, tangent.x, 0.0))
+        half_chord = chord_widths[index] * 0.5
+        half_height = thicknesses[index] * 0.5
+        vertices.extend((
+            point + normal * half_chord + Vector((0, 0, half_height)),
+            point - normal * half_chord + Vector((0, 0, half_height)),
+            point - normal * half_chord - Vector((0, 0, half_height)),
+            point + normal * half_chord - Vector((0, 0, half_height)),
+        ))
+    faces = [(0, 3, 2, 1)]
+    for index in range(len(points) - 1):
+        a = index * 4
+        b = (index + 1) * 4
+        faces.extend(((a, a + 1, b + 1, b), (a + 1, a + 2, b + 2, b + 1), (a + 2, a + 3, b + 3, b + 2), (a + 3, a, b, b + 3)))
+    end = (len(points) - 1) * 4
+    faces.append((end, end + 1, end + 2, end + 3))
+    mesh = bpy.data.meshes.new(f"{name}Mesh")
+    mesh.from_pydata(vertices, [], faces)
+    mesh.update()
+    obj = bpy.data.objects.new(name, mesh)
+    coll.objects.link(obj)
+    obj.data.materials.append(mat)
+    bevel(obj, edge, 2)
+    return obj
+
+
+def string_part(coll, name, points, mat, thickness=0.0035):
     curve = bpy.data.curves.new(name, "CURVE")
     curve.dimensions = "3D"
+    curve.resolution_u = 1
     curve.bevel_depth = thickness
     curve.bevel_resolution = 1
     spline = curve.splines.new("POLY")
@@ -109,69 +203,115 @@ def string_part(coll, name, points, mat, thickness=0.006):
     return bpy.context.object
 
 
-def build_crossbow(name, tier, width, length, wood, dark_wood, metal, cord):
+def add_wrapping(coll, prefix, center_y, z, width, radius, mat, turns=4):
+    for index in range(turns):
+        x = (index - (turns - 1) * 0.5) * width / max(turns - 1, 1)
+        bpy.ops.mesh.primitive_torus_add(major_radius=radius, minor_radius=0.003, major_segments=10, minor_segments=4, location=(x, center_y, z), rotation=(0.0, math.pi / 2, 0.0))
+        obj = bpy.context.object
+        obj.name = f"{prefix}_Lashing_{index}"
+        obj.data.materials.append(mat)
+        move_to_collection(obj, coll)
+
+
+def add_stirrup(coll, name, y, z, width, height, mat):
+    left = (-width * 0.5, y, z)
+    right = (width * 0.5, y, z)
+    lower_left = (-width * 0.5, y + 0.015, z - height)
+    lower_right = (width * 0.5, y + 0.015, z - height)
+    beam_between(coll, f"{name}_Left", left, lower_left, 0.014, 0.014, mat, edge=0.002)
+    beam_between(coll, f"{name}_Right", right, lower_right, 0.014, 0.014, mat, edge=0.002)
+    beam_between(coll, f"{name}_Foot", lower_left, lower_right, 0.014, 0.014, mat, edge=0.002)
+
+
+def build_crossbow(name, tier, spec, mats):
     coll = new_collection(name)
-    bow_y = length * 0.33
-    stock_z = 0.0
+    wood, dark_wood, metal, cord, leather = mats
+    rear = spec["rear"]
+    nose = spec["nose"]
+    bow_y = spec["bow_y"]
+    half_width = spec["width"] * 0.5
 
-    # Stock, shoulder pad, grip, rail and trigger housing.
-    cube_part(coll, f"{name}_Stock", (0, -0.05, stock_z), (0.105, length, 0.105), wood, edge=0.014)
-    cube_part(coll, f"{name}_Shoulder", (0, -length * 0.48, -0.015), (0.18, 0.13, 0.15), dark_wood, rotation=(math.radians(-8), 0, 0), edge=0.018)
-    cube_part(coll, f"{name}_Rail", (0, 0.12, 0.065), (0.055, length * 0.62, 0.035), metal, edge=0.006)
-    cube_part(coll, f"{name}_Grip", (0, -length * 0.18, -0.105), (0.085, 0.15, 0.20), dark_wood, rotation=(math.radians(-18), 0, 0), edge=0.012)
-    cube_part(coll, f"{name}_Trigger", (0, -length * 0.08, -0.06), (0.025, 0.07, 0.10), metal, rotation=(math.radians(-12), 0, 0), edge=0.004)
+    stock_profile = ((-rear, -0.035), (-rear, 0.040), (-rear * 0.62, 0.058), (-0.035, 0.050), (0.080, 0.043), (nose, 0.028), (nose, -0.030), (0.075, -0.038), (-rear * 0.55, -0.052))
+    profile_prism(coll, f"{name}_Stock", stock_profile, spec["stock_width"], wood, edge=0.007)
 
-    # Three low-poly segments per limb suggest a historical recurved prod.
+    cube_part(coll, f"{name}_ButtPlate", (0, -rear - 0.004, 0.004), (spec["stock_width"] + 0.018, 0.018, 0.092), dark_wood, edge=0.004)
+    rail_start = -0.015
+    rail_end = nose + 0.018
+    cube_part(coll, f"{name}_Rail", (0, (rail_start + rail_end) * 0.5, 0.067), (0.035, rail_end - rail_start, 0.024), metal, edge=0.003)
+    beam_between(coll, f"{name}_Grip", (0, 0.005, -0.015), (0, -0.055, -0.125), 0.065, 0.070, dark_wood, edge=0.008)
+    cube_part(coll, f"{name}_Action", (0, 0.018, 0.028), (0.080, 0.100, 0.080), dark_wood, edge=0.008)
+    cube_part(coll, f"{name}_Trigger", (0, 0.005, -0.045), (0.014, 0.045, 0.060), metal, rotation=(math.radians(-18), 0, 0), edge=0.002)
+    cube_part(coll, f"{name}_ProdSocket", (0, bow_y, 0.050), (0.095, 0.090, 0.085), metal if tier > 1 else dark_wood, edge=0.007)
+
     limb_mat = wood if tier == 1 else metal
-    segment = width / 6.1
-    for side in (-1, 1):
+    curve = spec["curve"]
+    positive = ((0.0, bow_y, 0.057), (half_width * 0.24, bow_y + curve * 0.20, 0.057), (half_width * 0.52, bow_y + curve * 0.08, 0.057), (half_width * 0.78, bow_y - curve * 0.42, 0.057), (half_width, bow_y - curve * 0.18, 0.057))
+    negative = tuple((-x, y, z) for x, y, z in positive)
+    chord = spec["limb_chord"]
+    height = spec["limb_height"]
+    chord_widths = (chord, chord * 0.92, chord * 0.78, chord * 0.62, chord * 0.46)
+    thicknesses = (height, height * 0.95, height * 0.84, height * 0.72, height * 0.58)
+    curved_limb(coll, f"{name}_Limb_R", positive, chord_widths, thicknesses, limb_mat)
+    curved_limb(coll, f"{name}_Limb_L", negative, chord_widths, thicknesses, limb_mat)
+
+    right_tip = positive[-1]
+    left_tip = negative[-1]
+    latch = (0.0, 0.035, 0.080)
+    string_part(coll, f"{name}_String", (left_tip, latch, right_tip), cord, spec["string_thickness"])
+
+    if tier == 1:
+        add_wrapping(coll, name, bow_y, 0.050, 0.060, 0.053, cord, turns=5)
+        beam_between(coll, f"{name}_SplintL", (-0.036, 0.075, 0.015), (-0.052, bow_y - 0.040, 0.025), 0.024, 0.025, dark_wood)
+        beam_between(coll, f"{name}_SplintR", (0.036, 0.075, 0.015), (0.052, bow_y - 0.040, 0.025), 0.024, 0.025, dark_wood)
+    else:
+        beam_between(coll, f"{name}_BraceL", (-0.040, 0.090, 0.008), (-0.075, bow_y - 0.025, 0.030), 0.020, 0.022, metal)
+        beam_between(coll, f"{name}_BraceR", (0.040, 0.090, 0.008), (0.075, bow_y - 0.025, 0.030), 0.020, 0.022, metal)
+        add_stirrup(coll, f"{name}_Stirrup", nose + 0.010, -0.015, 0.150 if tier == 2 else 0.175, 0.085, metal)
+        cube_part(coll, f"{name}_Foregrip", (0, 0.145, -0.055), (0.080, 0.105, 0.065), dark_wood, edge=0.009)
+
+    if tier == 2:
+        cube_part(coll, f"{name}_CheekPad", (0, -rear * 0.60, 0.052), (spec["stock_width"] + 0.012, 0.115, 0.025), leather, edge=0.006)
         for index in range(3):
-            x = side * segment * (index + 0.55)
-            y = bow_y + (0.015 * index)
-            angle = math.radians(side * (-7 - index * 7))
-            thickness = 0.055 if tier < 3 else 0.07
-            cube_part(
-                coll,
-                f"{name}_Limb_{side}_{index}",
-                (x, y, 0.035 + index * 0.003),
-                (segment * 1.16, thickness, 0.055 if tier < 3 else 0.065),
-                limb_mat,
-                rotation=(0, 0, angle),
-                edge=0.009,
-            )
-
-    string_y = bow_y - 0.05
-    string_part(
-        coll,
-        f"{name}_String",
-        [(-width / 2, bow_y + 0.035, 0.038), (0, string_y, 0.07), (width / 2, bow_y + 0.035, 0.038)],
-        cord,
-        0.005 if tier < 3 else 0.007,
-    )
-
-    if tier >= 2:
-        cube_part(coll, f"{name}_Stirrup", (0, length * 0.49, -0.035), (0.22, 0.045, 0.05), metal, edge=0.008)
-        cube_part(coll, f"{name}_SideBraceL", (-0.075, bow_y - 0.08, 0), (0.035, 0.24, 0.055), metal, edge=0.006)
-        cube_part(coll, f"{name}_SideBraceR", (0.075, bow_y - 0.08, 0), (0.035, 0.24, 0.055), metal, edge=0.006)
+            y = bow_y - 0.058 + index * 0.024
+            cube_part(coll, f"{name}_Band_{index}", (0, y, 0.050), (0.102, 0.012, 0.092), metal, edge=0.002)
 
     if tier == 3:
-        cylinder_part(coll, f"{name}_Windlass", (0, -0.12, 0.095), 0.045, 0.30, metal, rotation=(0, math.pi / 2, 0), vertices=16)
-        cylinder_part(coll, f"{name}_CrankL", (-0.18, -0.12, 0.095), 0.012, 0.18, metal, rotation=(0, math.pi / 2, 0), vertices=10)
+        cube_part(coll, f"{name}_SpanningPlate", (0, 0.010, 0.085), (0.115, 0.145, 0.024), metal, edge=0.004)
+        cylinder_part(coll, f"{name}_Windlass", (0, -0.020, 0.105), 0.038, 0.170, metal, rotation=(0, math.pi / 2, 0), vertices=16)
+        cylinder_part(coll, f"{name}_Crank", (-0.125, -0.020, 0.105), 0.009, 0.100, metal, rotation=(0, math.pi / 2, 0), vertices=10)
+        beam_between(coll, f"{name}_CrankHandle", (-0.176, -0.020, 0.105), (-0.176, -0.070, 0.145), 0.014, 0.014, dark_wood, edge=0.003)
+        cube_part(coll, f"{name}_ShoulderPad", (0, -rear * 0.72, 0.052), (spec["stock_width"] + 0.018, 0.110, 0.028), leather, edge=0.007)
 
     return coll
 
 
-def build_bolt(name, broken, wood, metal, feather):
+def build_bolt(name, broken, mats):
+    wood, _dark_wood, metal, _cord, leather = mats
     coll = new_collection(name)
-    length = 0.34 if not broken else 0.19
-    cylinder_part(coll, f"{name}_Shaft", (0, 0, 0), 0.012, length, wood, vertices=10)
+    length = 0.32 if not broken else 0.18
+    cylinder_part(coll, f"{name}_Shaft", (0, 0, 0), 0.008, length, wood, vertices=10)
     if not broken:
-        cylinder_part(coll, f"{name}_Head", (0, length * 0.52, 0), 0.022, 0.065, metal, vertices=4)
-        cube_part(coll, f"{name}_FletchingL", (-0.02, -length * 0.40, 0), (0.04, 0.08, 0.008), feather, edge=0.002)
-        cube_part(coll, f"{name}_FletchingR", (0.02, -length * 0.40, 0), (0.04, 0.08, 0.008), feather, edge=0.002)
+        cylinder_part(coll, f"{name}_Head", (0, length * 0.55, 0), 0.016, 0.050, metal, vertices=4)
+        cube_part(coll, f"{name}_FletchingL", (-0.012, -length * 0.39, 0), (0.025, 0.065, 0.006), leather, edge=0.001)
+        cube_part(coll, f"{name}_FletchingR", (0.012, -length * 0.39, 0), (0.025, 0.065, 0.006), leather, edge=0.001)
     else:
-        cube_part(coll, f"{name}_Splinter", (0.018, -0.055, 0), (0.018, 0.12, 0.015), wood, rotation=(0, 0, math.radians(18)), edge=0.002)
+        beam_between(coll, f"{name}_Splinter", (0.010, -0.035, 0), (0.035, -0.095, 0.005), 0.009, 0.009, wood, edge=0.001)
     return coll
+
+
+def build_bolt_component_icons(mats):
+    """Build icon-only geometry for the two crafting components."""
+    wood, dark_wood, metal, cord, _leather = mats
+
+    shaft = new_collection("AuxiliaBoltShaft")
+    cylinder_part(shaft, "AuxiliaBoltShaft_Shaft", (0, 0, 0), 0.009, 0.30, wood, vertices=10)
+    cylinder_part(shaft, "AuxiliaBoltShaft_Nock", (0, -0.142, 0), 0.0115, 0.020, dark_wood, vertices=10)
+    cylinder_part(shaft, "AuxiliaBoltShaft_Wrap", (0, 0.105, 0), 0.011, 0.018, cord, vertices=10)
+
+    head = new_collection("AuxiliaBoltHead")
+    cone_part(head, "AuxiliaBoltHead_Point", (0, 0.025, 0), 0.042, 0.105, metal, vertices=4)
+    cylinder_part(head, "AuxiliaBoltHead_Tang", (0, -0.050, 0), 0.009, 0.070, metal, vertices=8)
+    return shaft, head
 
 
 def collection_objects(coll):
@@ -181,23 +321,149 @@ def collection_objects(coll):
     return result
 
 
-def export_collection(coll, filename):
+def apply_modifiers_and_transforms(obj):
+    bpy.context.view_layer.objects.active = obj
+    obj.select_set(True)
+    if obj.type != "MESH":
+        bpy.ops.object.convert(target="MESH")
+    for modifier in list(obj.modifiers):
+        bpy.ops.object.modifier_apply(modifier=modifier.name)
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    obj.select_set(False)
+
+
+def assign_palette_uv(obj):
+    uv_layer = obj.data.uv_layers.get("UVMap") or obj.data.uv_layers.new(name="UVMap")
+    coords = [vertex.co for vertex in obj.data.vertices]
+    min_x = min(co.x for co in coords)
+    max_x = max(co.x for co in coords)
+    min_y = min(co.y for co in coords)
+    max_y = max(co.y for co in coords)
+    size_x = max(max_x - min_x, 1e-6)
+    size_y = max(max_y - min_y, 1e-6)
+    for polygon in obj.data.polygons:
+        mat = obj.data.materials[polygon.material_index]
+        u0, u1, v0, v1 = SWATCHES[mat.name]
+        margin = 0.035
+        for loop_index in polygon.loop_indices:
+            co = obj.data.vertices[obj.data.loops[loop_index].vertex_index].co
+            u = u0 + margin + ((co.x - min_x) / size_x) * (u1 - u0 - margin * 2)
+            v = v0 + margin + ((co.y - min_y) / size_y) * (v1 - v0 - margin * 2)
+            uv_layer.data[loop_index].uv = (u, v)
+
+
+def collapse_game_materials(obj):
+    """Keep one FBX material while preserving per-face colors in the UV atlas.
+
+    Project Zomboid's static weapon path expects the same single-material layout
+    used by the vanilla firearm meshes.  Multiple FBX material slots can make
+    every face outside slot zero disappear in game even though Blender renders
+    the export correctly.  UVs have already encoded each face's palette swatch,
+    so all polygons can safely share one material here.
+    """
+    if not obj.data.materials:
+        raise RuntimeError(f"{obj.name}: expected at least one material")
+    game_material = obj.data.materials[0]
+    for polygon in obj.data.polygons:
+        polygon.material_index = 0
+    obj.data.materials.clear()
+    obj.data.materials.append(game_material)
+
+
+def finalize_collection(coll):
+    objects = [obj for obj in collection_objects(coll) if obj.type in {"MESH", "CURVE"}]
+    if not objects:
+        raise RuntimeError(f"No geometry in {coll.name}")
     bpy.ops.object.select_all(action="DESELECT")
-    for obj in collection_objects(coll):
-        if obj.type == "MESH":
-            obj.select_set(True)
-    bpy.context.view_layer.objects.active = next(obj for obj in collection_objects(coll) if obj.type == "MESH")
-    bpy.ops.export_scene.fbx(
-        filepath=os.path.join(MODEL_DIR, f"{filename}.fbx"),
-        use_selection=True,
-        object_types={"MESH"},
-        apply_scale_options="FBX_SCALE_ALL",
-        axis_forward="-Z",
-        axis_up="Y",
-        add_leaf_bones=False,
-        bake_anim=False,
-        path_mode="AUTO",
-    )
+    for obj in objects:
+        apply_modifiers_and_transforms(obj)
+    bpy.ops.object.select_all(action="DESELECT")
+    for obj in objects:
+        obj.select_set(True)
+    bpy.context.view_layer.objects.active = objects[0]
+    bpy.ops.object.join()
+    joined = bpy.context.object
+    joined.name = coll.name
+    joined.data.name = f"{coll.name}Mesh"
+    assign_palette_uv(joined)
+    collapse_game_materials(joined)
+    triangulate = joined.modifiers.new("Game triangulation", "TRIANGULATE")
+    bpy.ops.object.modifier_apply(modifier=triangulate.name)
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    joined.data.validate(verbose=True)
+    joined.data.update()
+    return joined
+
+
+def object_bounds(obj):
+    corners = [obj.matrix_world @ Vector(corner) for corner in obj.bound_box]
+    minimum = Vector((min(v.x for v in corners), min(v.y for v in corners), min(v.z for v in corners)))
+    maximum = Vector((max(v.x for v in corners), max(v.y for v in corners), max(v.z for v in corners)))
+    return minimum, maximum
+
+
+def export_object(obj, filename):
+    # Blender's FBX metadata restores the authored +Y-forward/Z-up direction
+    # when imported back into Blender, but Project Zomboid consumes both axes
+    # reversed.  Bake a half turn around X into the game copy so the prod/muzzle
+    # points away from the character while the grip remains below the rail.
+    # Work on a copy to keep icons and source previews in authored orientation.
+    game_obj = obj.copy()
+    game_obj.data = obj.data.copy()
+    bpy.context.scene.collection.objects.link(game_obj)
+    game_obj.name = f"{obj.name}_GameExport"
+    game_obj.rotation_euler.x += math.pi
+    bpy.ops.object.select_all(action="DESELECT")
+    game_obj.select_set(True)
+    bpy.context.view_layer.objects.active = game_obj
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+    # PZ consumes the FBX vertex axes directly for static weapon meshes. Keep
+    # Blender's native -Y-forward/Z-up basis so X=width, Y=weapon length and
+    # Z=height remain unchanged in game.
+    bpy.ops.export_scene.fbx(filepath=os.path.join(MODEL_DIR, f"{filename}.fbx"), use_selection=True, object_types={"MESH"}, global_scale=1.0, apply_unit_scale=True, apply_scale_options="FBX_SCALE_NONE", use_space_transform=True, bake_space_transform=False, axis_forward="-Y", axis_up="Z", add_leaf_bones=False, bake_anim=False, path_mode="STRIP")
+    game_mesh = game_obj.data
+    bpy.data.objects.remove(game_obj, do_unlink=True)
+    bpy.data.meshes.remove(game_mesh)
+
+
+def make_palette_texture(filename):
+    width = height = 128
+    colors = {"Aged Oak": (0.30, 0.13, 0.045), "Dark Stock": (0.105, 0.040, 0.015), "Forged Iron": (0.12, 0.14, 0.15), "Hemp Cord": (0.34, 0.26, 0.12), "Leather": (0.32, 0.105, 0.035)}
+    pixels = []
+    for y in range(height):
+        v = y / (height - 1)
+        for x in range(width):
+            u = x / (width - 1)
+            swatch_name = "Dark Stock"
+            for name, (u0, u1, v0, v1) in SWATCHES.items():
+                if u0 <= u <= u1 and v0 <= v <= v1:
+                    swatch_name = name
+                    break
+            base = colors[swatch_name]
+            grain = (((x * 17 + y * 11) % 19) - 9) / 420.0
+            if swatch_name in {"Aged Oak", "Dark Stock", "Leather"}:
+                grain += math.sin(y * 0.42 + x * 0.06) * 0.018
+            if swatch_name == "Forged Iron":
+                grain += (((x * 5 + y * 3) % 7) - 3) / 600.0
+            pixels.extend((max(0, min(1, base[0] + grain)), max(0, min(1, base[1] + grain)), max(0, min(1, base[2] + grain)), 1.0))
+    image = bpy.data.images.new(filename, width=width, height=height, alpha=True)
+    image.pixels = pixels
+    image.filepath_raw = os.path.join(MODEL_TEXTURE_DIR, f"{filename}.png")
+    image.file_format = "PNG"
+    image.save()
+
+
+def apply_palette_to_preview_materials(image):
+    """Render with the same atlas/UV path the game uses, not diffuse colors alone."""
+    for mat in (WOOD, DARK_WOOD, METAL, CORD, LEATHER):
+        nodes = mat.node_tree.nodes
+        links = mat.node_tree.links
+        principled = nodes.get("Principled BSDF")
+        texture = nodes.get("Game palette") or nodes.new("ShaderNodeTexImage")
+        texture.name = "Game palette"
+        texture.label = "Project Zomboid texture atlas"
+        texture.image = image
+        links.new(texture.outputs["Color"], principled.inputs["Base Color"])
 
 
 def look_at(obj, point=(0, 0, 0)):
@@ -207,33 +473,45 @@ def look_at(obj, point=(0, 0, 0)):
 
 def setup_render():
     scene = bpy.context.scene
-    scene.render.engine = "BLENDER_EEVEE"
+    for engine in ("BLENDER_EEVEE_NEXT", "BLENDER_EEVEE"):
+        try:
+            scene.render.engine = engine
+            break
+        except TypeError:
+            continue
     scene.render.image_settings.file_format = "PNG"
     scene.render.image_settings.color_mode = "RGBA"
     scene.render.film_transparent = True
     scene.render.resolution_percentage = 100
+    scene.render.resolution_x = 512
+    scene.render.resolution_y = 512
+    scene.render.image_settings.color_depth = "8"
     scene.view_settings.look = "AgX - Medium High Contrast"
-
-    bpy.ops.object.camera_add(location=(1.1, -1.35, 1.5))
+    bpy.ops.object.camera_add(location=(0.85, -0.90, 0.72))
     camera = bpy.context.object
     camera.name = "AssetCamera"
     camera.data.type = "ORTHO"
-    camera.data.ortho_scale = 1.35
-    look_at(camera, (0, 0, 0))
+    camera.data.ortho_scale = 0.92
+    look_at(camera, (0, 0.10, 0.015))
     scene.camera = camera
-
-    bpy.ops.object.light_add(type="AREA", location=(1.2, -0.8, 2.2))
+    bpy.ops.object.light_add(type="AREA", location=(0.65, -0.55, 1.20))
     key = bpy.context.object
-    key.data.energy = 900
+    key.name = "AssetKey"
+    key.data.energy = 560
     key.data.shape = "DISK"
-    key.data.size = 2.2
-    look_at(key)
-
-    bpy.ops.object.light_add(type="AREA", location=(-1.6, 0.8, 1.1))
+    key.data.size = 1.6
+    look_at(key, (0, 0.10, 0))
+    bpy.ops.object.light_add(type="AREA", location=(-0.90, 0.45, 0.65))
     fill = bpy.context.object
-    fill.data.energy = 550
-    fill.data.size = 2.0
-    look_at(fill)
+    fill.name = "AssetFill"
+    fill.data.energy = 220
+    fill.data.size = 1.5
+    look_at(fill, (0, 0.10, 0))
+    scene.render.use_freestyle = False
+    freestyle = scene.view_layers[0].freestyle_settings.linesets[0].linestyle
+    freestyle.color = (0.028, 0.018, 0.012)
+    freestyle.alpha = 0.90
+    freestyle.thickness = 1.05
     return camera
 
 
@@ -242,40 +520,48 @@ def set_visible(target, asset_collections):
         coll.hide_render = coll is not target
 
 
-def render_icon(coll, asset_collections, filename, scale):
+def render_icon(coll, asset_collections, filename, camera, scale, target=(0, 0.10, 0.015)):
     scene = bpy.context.scene
     set_visible(coll, asset_collections)
     scene.render.film_transparent = True
+    scene.render.use_freestyle = True
     scene.render.resolution_x = 128
     scene.render.resolution_y = 128
-    scene.camera.data.ortho_scale = scale
+    camera.data.ortho_scale = scale
+    camera.location = (0.75, -0.82, 0.68)
+    look_at(camera, target)
     scene.render.filepath = os.path.join(ITEM_TEXTURE_DIR, f"Item_{filename}.png")
     bpy.ops.render.render(write_still=True)
 
 
-def make_flat_texture(filename, color):
-    image = bpy.data.images.new(filename, width=32, height=32, alpha=True)
-    pixels = []
-    for y in range(32):
-        for x in range(32):
-            noise = (((x * 13 + y * 7) % 11) - 5) / 255.0
-            pixels.extend((max(0, min(1, color[0] + noise)), max(0, min(1, color[1] + noise)), max(0, min(1, color[2] + noise)), 1.0))
-    image.pixels = pixels
-    image.filepath_raw = os.path.join(MODEL_TEXTURE_DIR, f"{filename}.png")
-    image.file_format = "PNG"
-    image.save()
+def render_validation(coll, asset_collections, filename, camera):
+    scene = bpy.context.scene
+    set_visible(coll, asset_collections)
+    scene.render.film_transparent = False
+    scene.render.use_freestyle = False
+    scene.world.color = (0.012, 0.016, 0.014)
+    scene.render.resolution_x = 640
+    scene.render.resolution_y = 480
+    views = {"iso": ((0.82, -0.84, 0.68), (0, 0.10, 0.015), 0.92), "top": ((0.0, 0.10, 1.35), (0, 0.10, 0.0), 0.80), "side": ((1.30, 0.10, 0.06), (0, 0.10, 0.0), 0.74)}
+    for view_name, (location, target, scale) in views.items():
+        camera.location = location
+        camera.data.ortho_scale = scale
+        look_at(camera, target)
+        scene.render.filepath = os.path.join(VALIDATION_DIR, f"{filename}_{view_name}.png")
+        bpy.ops.render.render(write_still=True)
 
 
 def render_promo(heavy, asset_collections, camera):
     scene = bpy.context.scene
     set_visible(heavy, asset_collections)
     scene.render.film_transparent = False
-    scene.world.color = (0.018, 0.024, 0.02)
+    scene.render.use_freestyle = False
+    scene.world.color = (0.012, 0.016, 0.014)
     scene.render.resolution_x = 512
     scene.render.resolution_y = 512
-    camera.data.ortho_scale = 1.55
-    camera.location = (1.1, -1.35, 1.5)
-    look_at(camera, (0, 0.02, 0))
+    camera.data.ortho_scale = 0.86
+    camera.location = (0.82, -0.88, 0.72)
+    look_at(camera, (0, 0.10, 0.015))
     poster = os.path.join(MOD_ROOT, "poster.png")
     scene.render.filepath = poster
     bpy.ops.render.render(write_still=True)
@@ -283,43 +569,138 @@ def render_promo(heavy, asset_collections, camera):
     shutil.copy2(poster, os.path.join(REPO_ROOT, "workshop", "preview.png"))
 
 
+def import_fbx(filepath):
+    before = set(bpy.context.scene.objects)
+    try:
+        bpy.ops.wm.fbx_import(filepath=filepath)
+    except (AttributeError, RuntimeError):
+        bpy.ops.import_scene.fbx(filepath=filepath)
+    return [obj for obj in bpy.context.scene.objects if obj not in before and obj.type == "MESH"]
+
+
+def validate_exports(asset_objects, icon_names):
+    report = {"coordinate_system": "X width, Y forward, Z up; action at origin", "assets": {}, "icons": {}}
+    expected_ranges = {
+        "AuxiliaImprovisedCrossbow": ((0.40, 0.50), (0.50, 0.62), (0.17, 0.28)),
+        "AuxiliaReinforcedCrossbow": ((0.50, 0.60), (0.54, 0.66), (0.17, 0.28)),
+        "AuxiliaHeavyArbalest": ((0.59, 0.68), (0.60, 0.72), (0.19, 0.30)),
+    }
+    for filename, original in asset_objects.items():
+        source_min, source_max = object_bounds(original)
+        source_dimensions = source_max - source_min
+        imported = import_fbx(os.path.join(MODEL_DIR, f"{filename}.fbx"))
+        if len(imported) != 1:
+            raise RuntimeError(f"{filename}: expected one imported mesh, got {len(imported)}")
+        if len(imported[0].data.uv_layers) != 1:
+            raise RuntimeError(f"{filename}: FBX must contain exactly one UV layer")
+        if not imported[0].data.materials:
+            raise RuntimeError(f"{filename}: FBX lost all material slots")
+        imported_min, imported_max = object_bounds(imported[0])
+        imported_dimensions = imported_max - imported_min
+        delta = imported_dimensions - source_dimensions
+        if max(abs(delta.x), abs(delta.y), abs(delta.z)) > 0.002:
+            raise RuntimeError(f"{filename}: FBX round-trip changed dimensions by {tuple(delta)}")
+        if filename in expected_ranges:
+            for axis, value, limits in zip("XYZ", source_dimensions, expected_ranges[filename]):
+                if not limits[0] <= value <= limits[1]:
+                    raise RuntimeError(f"{filename}: {axis} dimension {value:.4f} outside {limits}")
+        report["assets"][filename] = {
+            "single_mesh": True,
+            "vertices": len(original.data.vertices),
+            "triangles": len(original.data.polygons),
+            "materials": [mat.name for mat in original.data.materials],
+            "uv_layers": len(original.data.uv_layers),
+            "bounds_min": [round(value, 5) for value in source_min],
+            "bounds_max": [round(value, 5) for value in source_max],
+            "dimensions": [round(value, 5) for value in source_dimensions],
+            "fbx_round_trip_dimensions": [round(value, 5) for value in imported_dimensions],
+            "fbx_uv_layers": len(imported[0].data.uv_layers),
+            "fbx_materials": [mat.name for mat in imported[0].data.materials],
+        }
+        for obj in imported:
+            bpy.data.objects.remove(obj, do_unlink=True)
+    for icon_name in icon_names:
+        icon_path = os.path.join(ITEM_TEXTURE_DIR, f"Item_{icon_name}.png")
+        icon = bpy.data.images.load(icon_path, check_existing=False)
+        width, height = icon.size
+        if (width, height) != (128, 128):
+            raise RuntimeError(f"{icon_name}: icon must be 128x128, got {width}x{height}")
+        pixels = icon.pixels[:]
+        visible = []
+        for index in range(width * height):
+            if pixels[index * 4 + 3] >= 0.05:
+                visible.append((index % width, index // width))
+        if not visible:
+            raise RuntimeError(f"{icon_name}: icon is fully transparent")
+        xs = [point[0] for point in visible]
+        ys = [point[1] for point in visible]
+        bounds = (min(xs), min(ys), max(xs), max(ys))
+        edge_margin = min(bounds[0], bounds[1], width - 1 - bounds[2], height - 1 - bounds[3])
+        coverage = len(visible) / (width * height)
+        if edge_margin < 3:
+            raise RuntimeError(f"{icon_name}: icon touches the canvas edge (margin {edge_margin}px)")
+        if not 0.015 <= coverage <= 0.55:
+            raise RuntimeError(f"{icon_name}: visible coverage {coverage:.3f} is outside the expected range")
+        report["icons"][icon_name] = {
+            "size": [width, height],
+            "visible_bounds": list(bounds),
+            "edge_margin": edge_margin,
+            "visible_coverage": round(coverage, 4),
+        }
+        bpy.data.images.remove(icon)
+    report_path = os.path.join(VALIDATION_DIR, "report.json")
+    with open(report_path, "w", encoding="utf-8") as handle:
+        json.dump(report, handle, ensure_ascii=False, indent=2)
+    return report_path
+
+
 reset_scene()
+WOOD = material("Aged Oak", (0.30, 0.13, 0.045), roughness=0.82)
+DARK_WOOD = material("Dark Stock", (0.105, 0.040, 0.015), roughness=0.78)
+METAL = material("Forged Iron", (0.12, 0.14, 0.15), metallic=0.72, roughness=0.46)
+CORD = material("Hemp Cord", (0.34, 0.26, 0.12), roughness=0.95)
+LEATHER = material("Leather", (0.32, 0.105, 0.035), roughness=0.88)
+MATERIALS = (WOOD, DARK_WOOD, METAL, CORD, LEATHER)
 
-WOOD = material("Aged Oak", (0.27, 0.12, 0.045), roughness=0.82)
-DARK_WOOD = material("Dark Stock", (0.11, 0.045, 0.018), roughness=0.78)
-METAL = material("Forged Iron", (0.11, 0.13, 0.14), metallic=0.72, roughness=0.48)
-CORD = material("Hemp Cord", (0.35, 0.28, 0.15), roughness=0.95)
-FEATHER = material("Fletching", (0.55, 0.48, 0.30), roughness=0.90)
+SPECS = {
+    "AuxiliaImprovisedCrossbow": {"rear": 0.170, "nose": 0.340, "bow_y": 0.270, "width": 0.440, "curve": 0.055, "stock_width": 0.070, "limb_chord": 0.048, "limb_height": 0.035, "string_thickness": 0.0032},
+    "AuxiliaReinforcedCrossbow": {"rear": 0.190, "nose": 0.370, "bow_y": 0.292, "width": 0.540, "curve": 0.064, "stock_width": 0.075, "limb_chord": 0.052, "limb_height": 0.032, "string_thickness": 0.0035},
+    "AuxiliaHeavyArbalest": {"rear": 0.210, "nose": 0.405, "bow_y": 0.315, "width": 0.630, "curve": 0.072, "stock_width": 0.084, "limb_chord": 0.062, "limb_height": 0.042, "string_thickness": 0.0042},
+}
 
-improvised = build_crossbow("AuxiliaImprovisedCrossbow", 1, 0.62, 0.78, WOOD, DARK_WOOD, METAL, CORD)
-reinforced = build_crossbow("AuxiliaReinforcedCrossbow", 2, 0.72, 0.84, WOOD, DARK_WOOD, METAL, CORD)
-heavy = build_crossbow("AuxiliaHeavyArbalest", 3, 0.82, 0.91, WOOD, DARK_WOOD, METAL, CORD)
-bolt = build_bolt("AuxiliaCrossbowBolt", False, WOOD, METAL, FEATHER)
-broken_bolt = build_bolt("AuxiliaBrokenBolt", True, WOOD, METAL, FEATHER)
+improvised = build_crossbow("AuxiliaImprovisedCrossbow", 1, SPECS["AuxiliaImprovisedCrossbow"], MATERIALS)
+reinforced = build_crossbow("AuxiliaReinforcedCrossbow", 2, SPECS["AuxiliaReinforcedCrossbow"], MATERIALS)
+heavy = build_crossbow("AuxiliaHeavyArbalest", 3, SPECS["AuxiliaHeavyArbalest"], MATERIALS)
+bolt = build_bolt("AuxiliaCrossbowBolt", False, MATERIALS)
+broken_bolt = build_bolt("AuxiliaBrokenBolt", True, MATERIALS)
+bolt_shaft_icon, bolt_head_icon = build_bolt_component_icons(MATERIALS)
 assets = [improvised, reinforced, heavy, bolt, broken_bolt]
+icon_assets = assets + [bolt_shaft_icon, bolt_head_icon]
 
-for collection, filename in (
-    (improvised, "AuxiliaImprovisedCrossbow"),
-    (reinforced, "AuxiliaReinforcedCrossbow"),
-    (heavy, "AuxiliaHeavyArbalest"),
-    (bolt, "AuxiliaCrossbowBolt"),
-    (broken_bolt, "AuxiliaBrokenBolt"),
-):
-    export_collection(collection, filename)
+asset_objects = {}
+for collection in assets:
+    asset_objects[collection.name] = finalize_collection(collection)
+for collection in (bolt_shaft_icon, bolt_head_icon):
+    finalize_collection(collection)
+for filename, obj in asset_objects.items():
+    export_object(obj, filename)
+    make_palette_texture(filename)
 
-make_flat_texture("AuxiliaImprovisedCrossbow", (0.28, 0.13, 0.05))
-make_flat_texture("AuxiliaReinforcedCrossbow", (0.22, 0.12, 0.06))
-make_flat_texture("AuxiliaHeavyArbalest", (0.16, 0.15, 0.12))
-make_flat_texture("AuxiliaCrossbowBolt", (0.27, 0.15, 0.07))
-make_flat_texture("AuxiliaBrokenBolt", (0.22, 0.11, 0.05))
+apply_palette_to_preview_materials(bpy.data.images["AuxiliaImprovisedCrossbow"])
 
 camera = setup_render()
-render_icon(improvised, assets, "AuxiliaImprovisedCrossbow", 1.28)
-render_icon(reinforced, assets, "AuxiliaReinforcedCrossbow", 1.35)
-render_icon(heavy, assets, "AuxiliaHeavyArbalest", 1.48)
-render_icon(bolt, assets, "AuxiliaCrossbowBolt", 0.58)
-render_icon(broken_bolt, assets, "AuxiliaBrokenBolt", 0.42)
-render_promo(heavy, assets, camera)
+render_icon(improvised, icon_assets, "AuxiliaImprovisedCrossbow", camera, 0.82)
+render_icon(reinforced, icon_assets, "AuxiliaReinforcedCrossbow", camera, 0.88)
+render_icon(heavy, icon_assets, "AuxiliaHeavyArbalest", camera, 0.96)
+render_icon(bolt, icon_assets, "AuxiliaCrossbowBolt", camera, 0.42, (0, 0.02, 0))
+render_icon(broken_bolt, icon_assets, "AuxiliaBrokenBolt", camera, 0.30, (0, 0.00, 0))
+render_icon(bolt_shaft_icon, icon_assets, "AuxiliaBoltShaft", camera, 0.38, (0, 0.00, 0))
+render_icon(bolt_head_icon, icon_assets, "AuxiliaBoltHead", camera, 0.21, (0, 0.00, 0))
+for collection in (improvised, reinforced, heavy):
+    render_validation(collection, icon_assets, collection.name, camera)
+render_promo(heavy, icon_assets, camera)
 
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(SCRIPT_DIR, "AuxiliasCrossbowAssets.blend"))
+report_path = validate_exports(asset_objects, [collection.name for collection in icon_assets])
 print(f"Auxilia's Crossbow assets generated under: {VERSION_ROOT}")
+print(f"Model validation report: {report_path}")

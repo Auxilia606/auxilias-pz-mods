@@ -1,8 +1,12 @@
 {
-    "Base.AuxiliasCrossbowBolt": "표준 석궁 볼트",
-    "AuxiliasCrossbow.BrokenBolt": "부서진 석궁 볼트",
+    "Base.AuxiliasCrossbowBolt": "금속제 석궁 볼트",
+    "Base.AuxiliasStoneCrossbowBolt": "석제 석궁 볼트",
+    "AuxiliasCrossbow.BoltShaft": "석궁 볼트 몸체",
+    "AuxiliasCrossbow.BoltHead": "금속제 석궁 볼트촉",
+    "AuxiliasCrossbow.StoneBoltHead": "석제 석궁 볼트촉",
+    "AuxiliasCrossbow.BrokenBolt": "부서진 금속제 석궁 볼트",
+    "AuxiliasCrossbow.BrokenStoneBolt": "부서진 석제 석궁 볼트",
     "AuxiliasCrossbow.ImprovisedCrossbow": "급조 석궁",
     "AuxiliasCrossbow.ReinforcedCrossbow": "보강 석궁",
     "AuxiliasCrossbow.HeavyArbalest": "중형 아르발레스트"
 }
-

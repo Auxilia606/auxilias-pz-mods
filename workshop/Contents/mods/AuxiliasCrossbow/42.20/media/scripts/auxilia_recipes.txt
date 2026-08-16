@@ -7,12 +7,12 @@ module AuxiliasCrossbow
 
     craftRecipe MakeImprovisedCrossbow
     {
-        time = 420,
+        time = 600,
         Tags = AnySurfaceCraft,
         category = Weaponry,
         SkillRequired = Woodwork:2;Carving:2;Maintenance:1,
         timedAction = CraftWeapon2H,
-        xpAward = Woodwork:18;Carving:18;Maintenance:6,
+        xpAward = Woodwork:20;Carving:20;Maintenance:10,
         inputs
         {
             item 1 tags[base:saw;base:smallsaw;base:crudesaw] mode:keep flags[MayDegradeLight],
@@ -30,18 +30,20 @@ module AuxiliasCrossbow
 
     craftRecipe MakeReinforcedCrossbow
     {
-        time = 650,
+        time = 600,
         Tags = AnySurfaceCraft,
         category = Weaponry,
         SkillRequired = Woodwork:4;Carving:4;Maintenance:3,
         timedAction = CraftWeapon2H,
-        xpAward = Woodwork:32;Carving:28;Maintenance:14,
+        xpAward = Woodwork:40;Carving:40;Maintenance:30,
         inputs
         {
             item 1 tags[base:saw;base:smallsaw] mode:keep flags[MayDegradeLight],
             item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
             item 1 tags[base:hammer] mode:keep flags[MayDegradeLight],
             item 1 tags[base:drillwood] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:screwdriver] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:pliers] mode:keep flags[MayDegradeLight],
             item 2 [Base.Plank],
             item 3 [Base.Wire],
             item 1 [Base.Rope],
@@ -57,19 +59,23 @@ module AuxiliasCrossbow
     craftRecipe MakeHeavyArbalest
     {
         time = 900,
-        Tags = AnySurfaceCraft,
+        Tags = AdvancedForge,
         category = Weaponry,
         SkillRequired = Woodwork:6;Carving:5;Maintenance:4;Blacksmith:4,
-        timedAction = CraftWeapon2H,
-        xpAward = Woodwork:42;Carving:32;Maintenance:22;Blacksmith:38,
+        timedAction = HammerMetalStanding,
+        xpAward = Woodwork:60;Carving:50;Maintenance:40;Blacksmith:45,
         inputs
         {
-            item 1 tags[base:hammer;base:clubhammer] mode:keep flags[MayDegradeLight],
+            item 4 tags[base:charcoal],
+            item 1 tags[base:ballpeenhammer] mode:keep flags[Prop1;MayDegradeLight],
+            item 1 tags[base:tongs] mode:keep flags[Prop2;MayDegradeLight],
             item 1 tags[base:file;base:whetstone] mode:keep flags[MayDegradeLight],
             item 1 tags[base:saw;base:smallsaw] mode:keep flags[MayDegradeLight],
             item 1 tags[base:drillmetal] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:wrench] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:screwdriver] mode:keep flags[MayDegradeLight],
             item 1 [AuxiliasCrossbow.ReinforcedCrossbow],
-            item 2 [Base.MetalBar],
+            item 1 [Base.SteelBarHalf],
             item 1 [Base.Rope],
             item 3 [Base.LeatherStrips] mode:destroy,
             item 2 [Base.NutsBolts],
@@ -81,40 +87,99 @@ module AuxiliasCrossbow
         }
     }
 
-    craftRecipe MakeStandardBolts
+    craftRecipe CarveBoltShaft
     {
-        time = 240,
+        time = 100,
         Tags = AnySurfaceCraft,
         category = Weaponry,
-        SkillRequired = Carving:2;Maintenance:1,
-        timedAction = Making,
-        xpAward = Carving:12;Maintenance:4,
+        SkillRequired = Carving:2,
+        timedAction = SharpenStakeWood,
+        xpAward = Carving:10,
         inputs
         {
             item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
-            item 1 tags[base:saw;base:smallsaw;base:crudesaw] mode:keep flags[MayDegradeLight],
-            item 1 [Base.LargeBranch],
-            item 5 [Base.Nails],
-            item 1 [Base.Twine],
+            item 1 [Base.SmallHandle],
         }
         outputs
         {
-            item 5 Base.AuxiliasCrossbowBolt,
+            item 1 AuxiliasCrossbow.BoltShaft,
         }
     }
 
-    craftRecipe SalvageBrokenBolts
+    craftRecipe ShapeBoltHead
     {
-        time = 160,
+        time = 100,
         Tags = AnySurfaceCraft,
         category = Weaponry,
-        SkillRequired = Carving:2;Maintenance:2,
+        SkillRequired = Maintenance:1,
         timedAction = Making,
-        xpAward = Carving:6;Maintenance:8,
+        xpAward = Maintenance:5,
+        inputs
+        {
+            item 1 tags[base:hammer] mode:keep flags[MayDegradeVeryLight],
+            item 1 tags[base:file;base:whetstone] mode:keep flags[MayDegradeLight],
+            item 1 [Base.Nails],
+        }
+        outputs
+        {
+            item 1 AuxiliasCrossbow.BoltHead,
+        }
+    }
+
+    craftRecipe KnappBoltHeads
+    {
+        time = 230,
+        Tags = AnySurfaceCraft,
+        category = Knapping,
+        SkillRequired = FlintKnapping:2,
+        timedAction = HammerStoneStanding,
+        xpAward = FlintKnapping:20,
+        inputs
+        {
+            item 1 [Base.SharpedStone] flags[Prop2],
+            item 1 tags[base:hammerstone;base:mallet;base:knappingtool] mode:keep flags[Prop1;MayDegradeLight],
+        }
+        outputs
+        {
+            item 2 AuxiliasCrossbow.StoneBoltHead,
+        }
+    }
+
+    craftRecipe ForgeBoltHeads
+    {
+        time = 200,
+        Tags = PrimitiveForge,
+        category = Blacksmithing,
+        SkillRequired = Blacksmith:2,
+        timedAction = HammerMetalStanding,
+        xpAward = Blacksmith:20,
+        inputs
+        {
+            item 1 tags[base:charcoal],
+            item 1 [Base.IronPiece;Base.SteelPiece],
+            item 1 tags[base:smithinghammer] mode:keep flags[Prop1;MayDegradeLight],
+            item 1 tags[base:metalworkingpliers;base:tongs] mode:keep flags[Prop2;MayDegradeLight],
+        }
+        outputs
+        {
+            item 2 AuxiliasCrossbow.BoltHead,
+        }
+    }
+
+    craftRecipe MakeStandardBolts
+    {
+        time = 100,
+        Tags = InHandCraft;Survivalist,
+        category = Weaponry,
+        SkillRequired = Maintenance:1,
+        timedAction = CraftKnifeSpear,
+        xpAward = Maintenance:5,
         inputs
         {
             item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
-            item 2 [AuxiliasCrossbow.BrokenBolt],
+            item 1 [AuxiliasCrossbow.BoltShaft],
+            item 1 [AuxiliasCrossbow.BoltHead],
+            item 1 tags[base:feather],
             item 1 [Base.Twine],
         }
         outputs
@@ -122,5 +187,60 @@ module AuxiliasCrossbow
             item 1 Base.AuxiliasCrossbowBolt,
         }
     }
-}
 
+    craftRecipe MakeStoneBolt
+    {
+        time = 100,
+        Tags = InHandCraft;Survivalist,
+        category = Weaponry,
+        SkillRequired = Maintenance:1,
+        timedAction = CraftKnifeSpear,
+        xpAward = Maintenance:5,
+        inputs
+        {
+            item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
+            item 1 [AuxiliasCrossbow.BoltShaft],
+            item 1 [AuxiliasCrossbow.StoneBoltHead],
+            item 1 tags[base:feather],
+            item 1 [Base.Twine],
+        }
+        outputs
+        {
+            item 1 Base.AuxiliasStoneCrossbowBolt,
+        }
+    }
+
+    craftRecipe SalvageBrokenBolts
+    {
+        time = 60,
+        Tags = InHandCraft;Survivalist,
+        category = Assembly,
+        timedAction = CraftKnifeSpear,
+        inputs
+        {
+            item 1 tags[base:pliers] mode:keep flags[MayDegradeVeryLight],
+            item 1 [AuxiliasCrossbow.BrokenBolt],
+        }
+        outputs
+        {
+            item 1 AuxiliasCrossbow.BoltHead,
+        }
+    }
+
+    craftRecipe SalvageBrokenStoneBolt
+    {
+        time = 60,
+        Tags = InHandCraft;Survivalist,
+        category = Assembly,
+        timedAction = CraftKnifeSpear,
+        inputs
+        {
+            item 1 tags[base:hammerstone;base:mallet;base:knappingtool] mode:keep flags[MayDegradeVeryLight],
+            item 1 [AuxiliasCrossbow.BrokenStoneBolt],
+        }
+        outputs
+        {
+            item 1 AuxiliasCrossbow.StoneBoltHead,
+        }
+    }
+}

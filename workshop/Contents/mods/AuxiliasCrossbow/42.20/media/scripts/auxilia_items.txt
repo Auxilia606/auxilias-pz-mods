@@ -7,7 +7,18 @@ module Base
         Weight = 0.10,
         Icon = AuxiliaCrossbowBolt,
         MetalValue = 1.0,
-        WorldStaticModel = AuxiliasCrossbow.AuxiliaCrossbowBolt,
+        WorldStaticModel = AuxiliaCrossbowBolt,
+        Tags = base:ammo;base:haswood;base:hasmetal,
+    }
+
+    item AuxiliasStoneCrossbowBolt
+    {
+        DisplayCategory = Ammo,
+        ItemType = base:normal,
+        Weight = 0.11,
+        Icon = AuxiliaCrossbowBolt,
+        WorldStaticModel = AuxiliaCrossbowBolt,
+        Tags = base:ammo;base:haswood,
     }
 }
 
@@ -18,6 +29,36 @@ module AuxiliasCrossbow
         Base,
     }
 
+    item BoltShaft
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.06,
+        Icon = AuxiliaBoltShaft,
+        WorldStaticModel = Base.SmallHandle,
+        Tags = base:haswood,
+    }
+
+    item BoltHead
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.03,
+        Icon = AuxiliaBoltHead,
+        MetalValue = 1.0,
+        WorldStaticModel = Base.Nails,
+        Tags = base:hasmetal,
+    }
+
+    item StoneBoltHead
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.04,
+        Icon = RockSharpened,
+        WorldStaticModel = ChippedStone,
+    }
+
     item BrokenBolt
     {
         DisplayCategory = Material,
@@ -25,7 +66,16 @@ module AuxiliasCrossbow
         Weight = 0.08,
         Icon = AuxiliaBrokenBolt,
         MetalValue = 0.5,
-        WorldStaticModel = AuxiliasCrossbow.AuxiliaBrokenBolt,
+        WorldStaticModel = Base.AuxiliaBrokenBolt,
+    }
+
+    item BrokenStoneBolt
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.09,
+        Icon = AuxiliaBrokenBolt,
+        WorldStaticModel = Base.AuxiliaBrokenBolt,
     }
 
     item ImprovisedCrossbow
@@ -40,6 +90,7 @@ module AuxiliasCrossbow
         AimingPerkRangeModifier = 0,
         Aimingtime = 72,
         AmmoType = auxiliascrossbow:bolt,
+        AttachmentType = Rifle,
         ConditionLowerChanceOneIn = 38,
         ConditionMax = 7,
         CritDmgMultiplier = 3.0,
@@ -52,6 +103,7 @@ module AuxiliasCrossbow
         IdleAnim = Idle_Weapon2,
         ImpactSound = null,
         IsAimedFirearm = true,
+        IsAimedHandWeapon = true,
         JamGunChance = 0,
         KnockBackOnNoDeath = true,
         KnockdownMod = 1.2,
@@ -91,7 +143,7 @@ module AuxiliasCrossbow
         TwoHandWeapon = true,
         UseEndurance = false,
         WeaponReloadType = boltactionnomag,
-        WeaponSprite = AuxiliasCrossbow.AuxiliaImprovisedCrossbow,
+        WeaponSprite = AuxiliaImprovisedCrossbow,
         Tags = base:haswood,
     }
 
@@ -107,6 +159,7 @@ module AuxiliasCrossbow
         AimingPerkRangeModifier = 0,
         Aimingtime = 62,
         AmmoType = auxiliascrossbow:bolt,
+        AttachmentType = Rifle,
         ConditionLowerChanceOneIn = 72,
         ConditionMax = 9,
         CritDmgMultiplier = 3.5,
@@ -119,6 +172,7 @@ module AuxiliasCrossbow
         IdleAnim = Idle_Weapon2,
         ImpactSound = null,
         IsAimedFirearm = true,
+        IsAimedHandWeapon = true,
         JamGunChance = 0,
         KnockBackOnNoDeath = true,
         KnockdownMod = 1.5,
@@ -158,7 +212,7 @@ module AuxiliasCrossbow
         TwoHandWeapon = true,
         UseEndurance = false,
         WeaponReloadType = boltactionnomag,
-        WeaponSprite = AuxiliasCrossbow.AuxiliaReinforcedCrossbow,
+        WeaponSprite = AuxiliaReinforcedCrossbow,
         Tags = base:haswood;base:hasmetal,
     }
 
@@ -174,6 +228,7 @@ module AuxiliasCrossbow
         AimingPerkRangeModifier = 0,
         Aimingtime = 78,
         AmmoType = auxiliascrossbow:bolt,
+        AttachmentType = Rifle,
         ConditionLowerChanceOneIn = 110,
         ConditionMax = 10,
         CritDmgMultiplier = 4.0,
@@ -186,6 +241,7 @@ module AuxiliasCrossbow
         IdleAnim = Idle_Weapon2,
         ImpactSound = null,
         IsAimedFirearm = true,
+        IsAimedHandWeapon = true,
         JamGunChance = 0,
         KnockBackOnNoDeath = true,
         KnockdownMod = 2.0,
@@ -225,7 +281,7 @@ module AuxiliasCrossbow
         TwoHandWeapon = true,
         UseEndurance = false,
         WeaponReloadType = boltactionnomag,
-        WeaponSprite = AuxiliasCrossbow.AuxiliaHeavyArbalest,
+        WeaponSprite = AuxiliaHeavyArbalest,
         Tags = base:haswood;base:hasmetal,
     }
 }

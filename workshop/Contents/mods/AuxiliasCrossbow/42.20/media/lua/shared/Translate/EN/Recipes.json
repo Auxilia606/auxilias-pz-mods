@@ -2,7 +2,12 @@
     "MakeImprovisedCrossbow": "Make Improvised Crossbow",
     "MakeReinforcedCrossbow": "Make Reinforced Crossbow",
     "MakeHeavyArbalest": "Make Heavy Arbalest",
-    "MakeStandardBolts": "Make Standard Crossbow Bolts",
-    "SalvageBrokenBolts": "Salvage Broken Crossbow Bolts"
+    "CarveBoltShaft": "Carve Crossbow Bolt Shaft",
+    "ShapeBoltHead": "Shape Crossbow Bolt Head from Nail",
+    "KnappBoltHeads": "Knapp Stone Crossbow Bolt Heads",
+    "ForgeBoltHeads": "Forge Metal Crossbow Bolt Heads",
+    "MakeStandardBolts": "Assemble Metal Crossbow Bolt",
+    "MakeStoneBolt": "Assemble Stone Crossbow Bolt",
+    "SalvageBrokenBolts": "Recover Metal Head from Broken Crossbow Bolt",
+    "SalvageBrokenStoneBolt": "Recover Stone Head from Broken Crossbow Bolt"
 }
-

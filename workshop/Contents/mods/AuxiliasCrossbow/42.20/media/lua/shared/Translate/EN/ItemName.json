@@ -1,8 +1,12 @@
 {
-    "Base.AuxiliasCrossbowBolt": "Standard Crossbow Bolt",
-    "AuxiliasCrossbow.BrokenBolt": "Broken Crossbow Bolt",
+    "Base.AuxiliasCrossbowBolt": "Metal Crossbow Bolt",
+    "Base.AuxiliasStoneCrossbowBolt": "Stone Crossbow Bolt",
+    "AuxiliasCrossbow.BoltShaft": "Crossbow Bolt Shaft",
+    "AuxiliasCrossbow.BoltHead": "Metal Crossbow Bolt Head",
+    "AuxiliasCrossbow.StoneBoltHead": "Stone Crossbow Bolt Head",
+    "AuxiliasCrossbow.BrokenBolt": "Broken Metal Crossbow Bolt",
+    "AuxiliasCrossbow.BrokenStoneBolt": "Broken Stone Crossbow Bolt",
     "AuxiliasCrossbow.ImprovisedCrossbow": "Improvised Crossbow",
     "AuxiliasCrossbow.ReinforcedCrossbow": "Reinforced Crossbow",
     "AuxiliasCrossbow.HeavyArbalest": "Heavy Arbalest"
 }
-
