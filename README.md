@@ -39,3 +39,11 @@ Run `tools/package.ps1` to validate the mod and create a versioned release ZIP p
 ## Verification status
 
 The package has been loaded by the installed Project Zomboid 42.20.2 dedicated server. The server reached `SERVER STARTED` with no Auxilia's Crossbow registry, script, model, or Lua errors, and all five crafting recipes appeared in the game's generated recipe index. Follow-up interactive playtesting confirmed all three crossbows in game and verified bolt generation. See `docs/SMOKE-TEST.md`.
+
+## License
+
+This repository is licensed under the [MIT License](LICENSE).
+
+Project Zomboid and related trademarks belong to The Indie Stone. Auxilia's
+Crossbow is an unofficial community mod and is not affiliated with or endorsed
+by The Indie Stone.
