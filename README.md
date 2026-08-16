@@ -25,6 +25,11 @@ All three use recoverable Standard Bolts. A successful hit places either an inta
 - Single-player first
 - English and Korean translations
 
+Multiplayer compatibility should be considered when designing new systems so that
+future support is not needlessly blocked. Dedicated multiplayer implementation,
+empirical testing, and an official multiplayer-support claim are the lowest
+development priority and are deferred until the single-player work is complete.
+
 See `docs/TESTING.md` for installation and the debug test-kit workflow.
 
 ## Package
