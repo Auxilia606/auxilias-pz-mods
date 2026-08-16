@@ -1,0 +1,14 @@
+# Blender backup files
+*.blend1
+*.blend2
+
+# Local test/deployment artifacts
+work/
+logs/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+

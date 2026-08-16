@@ -1,0 +1,126 @@
+module AuxiliasCrossbow
+{
+    imports
+    {
+        Base,
+    }
+
+    craftRecipe MakeImprovisedCrossbow
+    {
+        time = 420,
+        Tags = AnySurfaceCraft,
+        category = Weaponry,
+        SkillRequired = Woodwork:2;Carving:2;Maintenance:1,
+        timedAction = CraftWeapon2H,
+        xpAward = Woodwork:18;Carving:18;Maintenance:6,
+        inputs
+        {
+            item 1 tags[base:saw;base:smallsaw;base:crudesaw] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
+            item 1 tags[base:hammer] mode:keep flags[MayDegradeVeryLight],
+            item 2 [Base.Plank],
+            item 2 [Base.Twine],
+            item 4 [Base.Nails],
+        }
+        outputs
+        {
+            item 1 AuxiliasCrossbow.ImprovisedCrossbow,
+        }
+    }
+
+    craftRecipe MakeReinforcedCrossbow
+    {
+        time = 650,
+        Tags = AnySurfaceCraft,
+        category = Weaponry,
+        SkillRequired = Woodwork:4;Carving:4;Maintenance:3,
+        timedAction = CraftWeapon2H,
+        xpAward = Woodwork:32;Carving:28;Maintenance:14,
+        inputs
+        {
+            item 1 tags[base:saw;base:smallsaw] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
+            item 1 tags[base:hammer] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:drillwood] mode:keep flags[MayDegradeLight],
+            item 2 [Base.Plank],
+            item 3 [Base.Wire],
+            item 1 [Base.Rope],
+            item 6 [Base.Screws],
+            item 2 [Base.LeatherStrips] mode:destroy,
+        }
+        outputs
+        {
+            item 1 AuxiliasCrossbow.ReinforcedCrossbow,
+        }
+    }
+
+    craftRecipe MakeHeavyArbalest
+    {
+        time = 900,
+        Tags = AnySurfaceCraft,
+        category = Weaponry,
+        SkillRequired = Woodwork:6;Carving:5;Maintenance:4;Blacksmith:4,
+        timedAction = CraftWeapon2H,
+        xpAward = Woodwork:42;Carving:32;Maintenance:22;Blacksmith:38,
+        inputs
+        {
+            item 1 tags[base:hammer;base:clubhammer] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:file;base:whetstone] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:saw;base:smallsaw] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:drillmetal] mode:keep flags[MayDegradeLight],
+            item 1 [AuxiliasCrossbow.ReinforcedCrossbow],
+            item 2 [Base.MetalBar],
+            item 1 [Base.Rope],
+            item 3 [Base.LeatherStrips] mode:destroy,
+            item 2 [Base.NutsBolts],
+            item 8 [Base.Screws],
+        }
+        outputs
+        {
+            item 1 AuxiliasCrossbow.HeavyArbalest,
+        }
+    }
+
+    craftRecipe MakeStandardBolts
+    {
+        time = 240,
+        Tags = AnySurfaceCraft,
+        category = Weaponry,
+        SkillRequired = Carving:2;Maintenance:1,
+        timedAction = Making,
+        xpAward = Carving:12;Maintenance:4,
+        inputs
+        {
+            item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
+            item 1 tags[base:saw;base:smallsaw;base:crudesaw] mode:keep flags[MayDegradeLight],
+            item 1 [Base.LargeBranch],
+            item 5 [Base.Nails],
+            item 1 [Base.Twine],
+        }
+        outputs
+        {
+            item 5 Base.AuxiliasCrossbowBolt,
+        }
+    }
+
+    craftRecipe SalvageBrokenBolts
+    {
+        time = 160,
+        Tags = AnySurfaceCraft,
+        category = Weaponry,
+        SkillRequired = Carving:2;Maintenance:2,
+        timedAction = Making,
+        xpAward = Carving:6;Maintenance:8,
+        inputs
+        {
+            item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
+            item 2 [AuxiliasCrossbow.BrokenBolt],
+            item 1 [Base.Twine],
+        }
+        outputs
+        {
+            item 1 Base.AuxiliasCrossbowBolt,
+        }
+    }
+}
+

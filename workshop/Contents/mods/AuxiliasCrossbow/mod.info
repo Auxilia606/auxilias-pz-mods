@@ -1,0 +1,6 @@
+name=Auxilia's Crossbow
+id=AuxiliasCrossbow
+description=Version 0.1.0. Craftable historical crossbows with recoverable bolts and skill-based tiers. Target: Build 42.20.
+poster=poster.png
+icon=icon.png
+versionMin=42.20
