@@ -119,3 +119,19 @@ A follow-up visual pass compared six vanilla firearm meshes around their hand/ac
 The prod follow-up removes the former zigzag and reversed tip segment. All three prods now sweep smoothly and continuously rearward, taper through seven sections, and meet a shallower central socket. Updated left- and right-facing client captures show a readable conventional bow silhouette without hooked tips or a clamp-like center.
 
 Firing, projectile behavior, and practical balance remain reserved for the user's final interactive test.
+
+## Development smoke test — Metal Bolt icon and dropped model
+
+Date: 2026-08-17
+
+The rebuilt Metal Bolt was exported and re-imported through Blender, then loaded in an isolated Project Zomboid 42.20.2 debug client. Its world model measures approximately 0.032 × 0.277 × 0.032 units. Against the 0.363-unit crossbows, the bolt is 76.3% as long, reduced from the previous 89.7% proportion.
+
+The client dropped one Metal Bolt, one vanilla Twigs item, and one vanilla Sapling through the same normal inventory Drop path on the same square. The resulting world positions and Z rotations were:
+
+- Metal Bolt: offset 0.173, 0.631, 0.000; rotation 195°
+- Twigs: offset 0.446, 0.343, 0.000; rotation 233°
+- Sapling: offset 0.222, 0.856, 0.000; rotation 323°
+
+The Metal Bolt therefore follows the same engine-randomized square offset and world rotation behavior as the two vanilla references instead of appearing fixed at the tile center. This first comparison established position and Z-rotation behavior but did not clearly expose the model's vertical long-axis error at the nighttime test scale.
+
+A subsequent daylight screenshot of a player-dropped stack showed the weapon-axis FBX standing upright like a group of spikes. The world attachment was corrected with a 90° X-axis rotation and ground-contact pivot. A clean follow-up dropped twelve Metal Bolts on one square; all twelve received distinct offsets and rotations from 3° through 343° and visibly lay across the ground in different directions instead of standing vertically. No Auxilia-related model, texture, script, or Lua error occurred during the corrected run.

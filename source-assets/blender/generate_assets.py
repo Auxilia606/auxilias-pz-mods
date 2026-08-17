@@ -325,15 +325,41 @@ def build_crossbow(name, tier, spec, mats):
 
 
 def build_bolt(name, broken, mats):
-    wood, _dark_wood, metal, _cord, leather = mats
+    wood, dark_wood, metal, cord, leather = mats
     coll = new_collection(name)
-    length = 0.32 if not broken else 0.18
-    cylinder_part(coll, f"{name}_Shaft", (0, 0, 0), 0.008, length, wood, vertices=10)
     if not broken:
-        cylinder_part(coll, f"{name}_Head", (0, length * 0.55, 0), 0.016, 0.050, metal, vertices=4)
-        cube_part(coll, f"{name}_FletchingL", (-0.012, -length * 0.39, 0), (0.025, 0.065, 0.006), leather, edge=0.001)
-        cube_part(coll, f"{name}_FletchingR", (0.012, -length * 0.39, 0), (0.025, 0.065, 0.006), leather, edge=0.001)
+        # A short, heavy quarrel silhouette matches the compact crossbows and
+        # stays legible both as a 128 px icon and as a single placed world item.
+        # The old square-prism "head" read as a blunt cap, while its two broad
+        # overlapping fletchings merged into one rectangular block.
+        cylinder_part(coll, f"{name}_Shaft", (0, -0.010, 0), 0.006, 0.210, wood, vertices=10)
+
+        # Low-poly bodkin point with a separate socket/collar.  The point faces
+        # +Y, the same direction as the crossbows' rails and muzzles.
+        cylinder_part(coll, f"{name}_HeadSocket", (0, 0.088, 0), 0.009, 0.028, metal, vertices=8)
+        cone_part(coll, f"{name}_BodkinPoint", (0, 0.130, 0), 0.015, 0.070, metal, vertices=4)
+
+        # Three slim radial vanes form a recognisable feather silhouette without
+        # making the bolt wider than the crossbow rail.  One vane sits uppermost;
+        # the other two give the placed model stable, visible ground contact.
+        vane_profile = (
+            (-0.110, 0.005),
+            (-0.102, 0.018),
+            (-0.066, 0.014),
+            (-0.050, 0.005),
+        )
+        for index, angle in enumerate((0.0, 120.0, 240.0), start=1):
+            vane = profile_prism(coll, f"{name}_Fletching_{index}", vane_profile, 0.003, leather, edge=0.0007)
+            vane.rotation_euler.y = math.radians(angle)
+
+        # Dark rear nock and two cord whippings visually separate the tail from
+        # the shaft when the asset is reduced to inventory scale.
+        cylinder_part(coll, f"{name}_Nock", (0, -0.115, 0), 0.0075, 0.014, dark_wood, vertices=10)
+        cylinder_part(coll, f"{name}_FletchingWrapRear", (0, -0.104, 0), 0.0068, 0.007, cord, vertices=10)
+        cylinder_part(coll, f"{name}_FletchingWrapFront", (0, -0.048, 0), 0.0068, 0.008, cord, vertices=10)
     else:
+        length = 0.18
+        cylinder_part(coll, f"{name}_Shaft", (0, 0, 0), 0.008, length, wood, vertices=10)
         beam_between(coll, f"{name}_Splinter", (0.010, -0.035, 0), (0.035, -0.095, 0.005), 0.009, 0.009, wood, edge=0.001)
     return coll
 
@@ -608,6 +634,44 @@ def render_validation(coll, asset_collections, filename, camera):
         bpy.ops.render.render(write_still=True)
 
 
+def render_bolt_placement(coll, asset_collections, camera):
+    """Render the intact bolt resting on a ground plane like Place Item."""
+    scene = bpy.context.scene
+    set_visible(coll, asset_collections)
+    scene.render.film_transparent = False
+    scene.render.use_freestyle = False
+    scene.world.color = (0.012, 0.016, 0.014)
+    scene.render.resolution_x = 640
+    scene.render.resolution_y = 480
+
+    bolt_obj = next(obj for obj in coll.objects if obj.type == "MESH")
+    original_location = bolt_obj.location.copy()
+    original_rotation = bolt_obj.rotation_euler.copy()
+    bolt_obj.rotation_euler.z = math.radians(-28.0)
+    bolt_obj.rotation_euler.y = math.radians(7.0)
+    bpy.context.view_layer.update()
+    minimum, _maximum = object_bounds(bolt_obj)
+    bolt_obj.location.z += 0.004 - minimum.z
+
+    bpy.ops.mesh.primitive_plane_add(size=0.70, location=(0, 0, 0))
+    ground = bpy.context.object
+    ground.name = "BoltPlacementGround"
+    ground_mat = material("Bolt placement ground", (0.055, 0.065, 0.060), roughness=1.0)
+    ground.data.materials.append(ground_mat)
+
+    camera.location = (0.47, -0.54, 0.36)
+    camera.data.ortho_scale = 0.43
+    look_at(camera, (0, 0.005, 0.012))
+    scene.render.filepath = os.path.join(VALIDATION_DIR, "AuxiliaCrossbowBolt_placed.png")
+    bpy.ops.render.render(write_still=True)
+
+    bpy.data.objects.remove(ground, do_unlink=True)
+    bpy.data.materials.remove(ground_mat)
+    bolt_obj.location = original_location
+    bolt_obj.rotation_euler = original_rotation
+    bpy.context.view_layer.update()
+
+
 def render_promo(heavy, asset_collections, camera):
     scene = bpy.context.scene
     set_visible(heavy, asset_collections)
@@ -641,6 +705,7 @@ def validate_exports(asset_objects, icon_names):
         "AuxiliaImprovisedCrossbow": ((0.24, 0.27), (0.35, 0.38), (0.07, 0.10)),
         "AuxiliaReinforcedCrossbow": ((0.27, 0.30), (0.35, 0.38), (0.07, 0.10)),
         "AuxiliaHeavyArbalest": ((0.30, 0.34), (0.35, 0.38), (0.08, 0.11)),
+        "AuxiliaCrossbowBolt": ((0.02, 0.04), (0.27, 0.29), (0.025, 0.045)),
     }
     for filename, original in asset_objects.items():
         source_min, source_max = object_bounds(original)
@@ -751,12 +816,13 @@ camera = setup_render()
 render_icon(improvised, icon_assets, "AuxiliaImprovisedCrossbow", camera, 0.48)
 render_icon(reinforced, icon_assets, "AuxiliaReinforcedCrossbow", camera, 0.51)
 render_icon(heavy, icon_assets, "AuxiliaHeavyArbalest", camera, 0.55)
-render_icon(bolt, icon_assets, "AuxiliaCrossbowBolt", camera, 0.42, (0, 0.02, 0))
+render_icon(bolt, icon_assets, "AuxiliaCrossbowBolt", camera, 0.30, (0, 0.015, 0))
 render_icon(broken_bolt, icon_assets, "AuxiliaBrokenBolt", camera, 0.30, (0, 0.00, 0))
 render_icon(bolt_shaft_icon, icon_assets, "AuxiliaBoltShaft", camera, 0.38, (0, 0.00, 0))
 render_icon(bolt_head_icon, icon_assets, "AuxiliaBoltHead", camera, 0.21, (0, 0.00, 0))
 for collection in (improvised, reinforced, heavy):
     render_validation(collection, icon_assets, collection.name, camera)
+render_bolt_placement(bolt, icon_assets, camera)
 render_promo(heavy, icon_assets, camera)
 
 # Headless Windows runs do not need an Explorer/File Browser thumbnail for the

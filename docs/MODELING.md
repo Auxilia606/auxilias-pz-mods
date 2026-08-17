@@ -22,6 +22,7 @@ The game-export copy receives a baked 180-degree X-axis correction. Blender's ow
 | Light Crossbow | 0.254 | 0.363 | 0.086 |
 | Crossbow | 0.285 | 0.363 | 0.086 |
 | Heavy Crossbow | 0.320 | 0.363 | 0.084 |
+| Metal Bolt | 0.032 | 0.277 | 0.032 |
 
 All three equipped models use the vanilla sawn-off double-barrel shotgun hand envelope (approximately `0.357` long and `0.076` high) as their common size reference. Their limbs remain wider than a firearm by design, while length, rear overhang, and vertical bulk stay compact to reduce arm and torso clipping.
 
@@ -52,7 +53,9 @@ The renders use the same generated texture atlas and UV coordinates referenced b
 
 ## Item icons
 
-The same Blender source renders seven transparent 128×128 item icons: three crossbows, intact and broken bolts, Bolt Shaft, and Bolt Head. Icons use a consistent isometric camera, controlled canvas margins, stronger game-scale contrast, and a dark silhouette line. Generation rejects fully transparent icons, clipped artwork, unexpected dimensions, and unreasonable canvas coverage; results are recorded in `work/model-validation/report.json`.
+The same Blender source renders seven transparent 128×128 item icons: three crossbows, intact and broken bolts, Bolt Shaft, and Bolt Head. Icons use a consistent isometric camera, controlled canvas margins, stronger game-scale contrast, and a dark silhouette line. The intact bolt is a short medieval quarrel with a forged bodkin point, socket, three radial leather vanes, cord whippings, and a dark rear nock. Its tighter icon framing keeps the narrow shaft readable without clipping. Generation rejects fully transparent icons, clipped artwork, unexpected dimensions, and unreasonable canvas coverage; results are recorded in `work/model-validation/report.json`.
+
+The intact bolt also receives a dedicated `AuxiliaCrossbowBolt_placed.png` validation render. It rolls the authored model slightly onto its lower vanes and renders it against a ground plane, providing a repeatable proxy for the in-game Place Item view. Because the FBX uses the weapon coordinate frame, its model definition uses a `world` attachment with a 90° X-axis correction and a ground-contact pivot. This lays the bolt's long axis across the ground without suppressing Project Zomboid's randomized within-tile offsets or Z rotation. **Place Item** remains intentionally controlled by the player's cursor and rotation keys.
 
 ## Visual acceptance
 

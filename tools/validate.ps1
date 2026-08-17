@@ -77,7 +77,7 @@ if ($modelOpenBraces -ne $modelCloseBraces) {
 
 $generatorPath = Join-Path $repoRoot 'source-assets\blender\generate_assets.py'
 $generatorText = Get-Content -LiteralPath $generatorPath -Raw
-foreach ($pipelineCheck in @('finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'validate_exports', 'render_validation')) {
+foreach ($pipelineCheck in @('finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'validate_exports', 'render_validation', 'render_bolt_placement')) {
     if ($generatorText -notmatch [regex]::Escape($pipelineCheck)) {
         throw "Blender model pipeline check is missing: $pipelineCheck"
     }
@@ -87,6 +87,12 @@ if ($generatorText -notmatch 'axis_forward\s*=\s*"-Y"' -or $generatorText -notma
 }
 if ($generatorText -notmatch 'game_obj\.rotation_euler\.x\s*\+=\s*math\.pi') {
     throw 'Project Zomboid FBX exports must retain the tested 180-degree X-axis correction.'
+}
+
+$boltModelBlockPattern = '(?s)model\s+AuxiliaCrossbowBolt\s*\{.*?(?=\s*model\s+AuxiliaBrokenBolt\b)'
+$boltModelBlock = [regex]::Match($modelsText, $boltModelBlockPattern).Value
+if (-not $boltModelBlock -or $boltModelBlock -notmatch '(?s)attachment\s+world\s*\{.*?rotate\s*=\s*90\.0\s+0\.0\s+0\.0') {
+    throw 'The intact bolt must retain its 90-degree world attachment so its weapon-axis FBX rests flat.'
 }
 
 $itemsText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\scripts\auxilia_items.txt') -Raw

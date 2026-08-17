@@ -38,6 +38,7 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - No crossbow is sideways, mirrored, oversized, or centered through the character.
 - Limb halves, string ends, rail, lock, tiller, and prod socket remain visibly connected from every camera direction.
 - Dropped/world models rest near the ground and keep the same orientation family as vanilla long guns.
+- A normally dropped Metal Bolt rests with its long axis across the ground, receives a non-central square offset, and gets randomized world rotation comparable to vanilla Twigs and Sapling; Place Item remains manually positioned by the player.
 - Wood, metal, cord, and leather texture regions appear on the intended parts instead of an untextured white model.
 - Each crossbow loads exactly one bolt and fires once before another reload.
 - With an unloaded crossbow, the inventory context menu switches between Metal and Stone Bolts.

@@ -56,6 +56,11 @@ module Base
         mesh = weapons/2handed/AuxiliaCrossbowBolt,
         texture = weapons/2handed/AuxiliaCrossbowBolt,
         scale = 0.01,
+        attachment world
+        {
+            offset = 0.0 0.0165 -0.0136,
+            rotate = 90.0 0.0 0.0,
+        }
     }
 
     model AuxiliaBrokenBolt
@@ -63,5 +68,10 @@ module Base
         mesh = weapons/2handed/AuxiliaBrokenBolt,
         texture = weapons/2handed/AuxiliaBrokenBolt,
         scale = 0.01,
+        attachment world
+        {
+            offset = 0.0161 -0.0033 -0.0076,
+            rotate = 90.0 0.0 0.0,
+        }
     }
 }

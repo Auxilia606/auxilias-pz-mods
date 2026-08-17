@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Rebuilt the Metal Bolt as a compact medieval quarrel with a pointed bodkin head, socket, three separated leather vanes, cord whippings, and a rear nock.
+- Shortened the Metal Bolt from 32.5 cm to approximately 28 cm (about 77% of the crossbows' compact length) while preserving icon readability.
+- Corrected the Metal Bolt's dropped-world orientation with a 90° world-axis rotation and ground-contact pivot, retaining randomized Drop offsets and direction while making the weapon-axis FBX rest flat instead of standing upright.
 - Disabled Blender's unnecessary headless `.blend` preview cache to prevent malformed `.thumbnails` directories on Windows.
 - Narrowed only the prods' top-view front-to-back chord, preserving weapon span, curvature, and vertical strength so each reads as a slim curved band rather than a broad crescent.
 - Matched the wood atlas to installed vanilla wooden firearms, kept gunmetal in the vanilla neutral-gray range, and reduced preview-only metallic glare.
