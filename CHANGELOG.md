@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Replaced the placeholder Workshop preview, mod poster, and icon with dedicated three-tier crossbow key art.
 - Added GitHub Actions validation, audited package artifacts, and tag-driven releases.
 - Added structured bug and balance feedback forms for the 0.2.x stabilization cycle.
 - Documented the 0.2.1 release gates and the maintenance-focused 0.3.0 roadmap.
