@@ -135,3 +135,19 @@ The client dropped one Metal Bolt, one vanilla Twigs item, and one vanilla Sapli
 The Metal Bolt therefore follows the same engine-randomized square offset and world rotation behavior as the two vanilla references instead of appearing fixed at the tile center. This first comparison established position and Z-rotation behavior but did not clearly expose the model's vertical long-axis error at the nighttime test scale.
 
 A subsequent daylight screenshot of a player-dropped stack showed the weapon-axis FBX standing upright like a group of spikes. The world attachment was corrected with a 90° X-axis rotation and ground-contact pivot. A clean follow-up dropped twelve Metal Bolts on one square; all twelve received distinct offsets and rotations from 3° through 343° and visibly lay across the ground in different directions instead of standing vertically. No Auxilia-related model, texture, script, or Lua error occurred during the corrected run.
+
+## Final single-player integration acceptance
+
+Date: 2026-08-17
+
+The project owner completed the full interactive procedure in `docs/TESTING.md`. The accepted scope covers ammunition selection and reload/unload material preservation, one-shot firing, range/reload/noise progression, zombie and animal recovery, material-specific recovery rates, all crafting inputs and outputs, workstation and skill restrictions, XP/timing behavior, rare loot, icons, and English/Korean presentation.
+
+## 0.2.0 material-identification and release-pipeline check
+
+Date: 2026-08-17
+
+Blender 5.2 regenerated and round-tripped seven FBX assets, including dedicated Stone Bolt and Broken Stone Bolt models. Both complete bolts retain the compact 0.28-unit length and ground-placement orientation, while the Stone variants use broader pale chipped heads and lighter fletching. All nine generated 128×128 icons passed transparency, bounds, margin, and coverage checks.
+
+The release validator passed 38 required-file checks and all six English/Korean translation files with exact key parity. A clean-deployment test inserted an obsolete sentinel into an existing test install, redeployed through the staged tree swap, and confirmed that the stale file was removed while all 48 source and destination files matched. A package-audit ZIP then matched every current workshop file by path, length, and SHA-256 hash.
+
+The clean 0.2.0 candidate was then loaded by the installed 42.20.2 dedicated server in no-Steam mode. The server loaded `AuxiliasCrossbow`, accepted all eleven recipes, reached `*** SERVER STARTED ****`, and shut down cleanly. The final server log contains no Auxilia-related error or warning; unrelated vanilla Build 42 warnings remain unchanged from the earlier isolated runs.

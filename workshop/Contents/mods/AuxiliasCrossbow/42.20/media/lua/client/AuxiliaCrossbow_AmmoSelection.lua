@@ -41,6 +41,11 @@ local function addAmmoSelectionOption(playerIndex, context, items)
         if weapon and crossbows[weapon:getFullType()] and weapon:getCurrentAmmoCount() <= 0 then
             local currentAmmoType = weapon:getAmmoType()
             local currentName = currentAmmoType and currentAmmoType:toString() or METAL_AMMO_TYPE
+            local statusKey = currentName == STONE_AMMO_TYPE
+                and "ContextMenu_AuxiliaCrossbow_CurrentStoneBolts"
+                or "ContextMenu_AuxiliaCrossbow_CurrentMetalBolts"
+            local statusOption = context:addOption(getText(statusKey), nil, nil)
+            statusOption.notAvailable = true
 
             if currentName == STONE_AMMO_TYPE then
                 context:addOption(

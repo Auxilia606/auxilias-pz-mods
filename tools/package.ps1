@@ -66,7 +66,8 @@ Compress-Archive @compressParameters
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $archive = [System.IO.Compression.ZipFile]::OpenRead($archivePath)
 try {
-    $entryNames = @($archive.Entries | ForEach-Object { $_.FullName.Replace('\', '/') })
+    $fileEntries = @($archive.Entries | Where-Object { -not [string]::IsNullOrEmpty($_.Name) })
+    $entryNames = @($fileEntries | ForEach-Object { $_.FullName.Replace('\', '/') })
     $requiredEntries = @(
         'workshop.txt',
         'preview.png',
@@ -78,6 +79,47 @@ try {
         if ($requiredEntry -notin $entryNames) {
             throw "Required package entry is missing: $requiredEntry"
         }
+    }
+
+    $sourceFiles = @(Get-ChildItem -LiteralPath $workshopRoot -Recurse -File -Force)
+    if ($fileEntries.Count -ne $sourceFiles.Count) {
+        throw "Package file count differs from workshop source: archive=$($fileEntries.Count), source=$($sourceFiles.Count)"
+    }
+
+    $sourceByPath = @{}
+    foreach ($sourceFile in $sourceFiles) {
+        $relativePath = [System.IO.Path]::GetRelativePath($workshopRoot, $sourceFile.FullName).Replace('\', '/')
+        $sourceByPath[$relativePath] = $sourceFile
+    }
+
+    $sha256 = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        foreach ($entry in $fileEntries) {
+            $entryPath = $entry.FullName.Replace('\', '/')
+            if (-not $sourceByPath.ContainsKey($entryPath)) {
+                throw "Package contains a file absent from workshop source: $entryPath"
+            }
+
+            $sourceFile = $sourceByPath[$entryPath]
+            if ($entry.Length -ne $sourceFile.Length) {
+                throw "Package length mismatch for $entryPath`: archive=$($entry.Length), source=$($sourceFile.Length)"
+            }
+
+            $entryStream = $entry.Open()
+            try {
+                $entryHash = [Convert]::ToHexString($sha256.ComputeHash($entryStream))
+            }
+            finally {
+                $entryStream.Dispose()
+            }
+            $sourceHash = (Get-FileHash -LiteralPath $sourceFile.FullName -Algorithm SHA256).Hash
+            if ($entryHash -ne $sourceHash) {
+                throw "Package content hash mismatch: $entryPath"
+            }
+        }
+    }
+    finally {
+        $sha256.Dispose()
     }
 }
 finally {

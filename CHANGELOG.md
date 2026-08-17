@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.2.0 — 2026-08-17
+
+- Completed the final single-player integration procedure covering ammunition state, crafting, firing, recovery, balance, loot, and English/Korean presentation.
+- Added visually distinct Stone Bolt and Broken Stone Bolt icons, FBX world models, chipped-stone heads, and pale feather fletching while preserving the original item IDs.
+- Added a disabled inventory-context status row that explicitly shows the unloaded crossbow's currently selected Metal or Stone ammunition.
+- Replaced overlay deployment with a staged, clean, SHA-256-verified tree swap that removes stale files and restores the previous installation on failure.
+- Expanded static validation to cover every core Lua integration, material-specific item/model mapping, non-empty translations, and English/Korean key parity.
+- Made release packaging compare every archived file's length and SHA-256 hash with the current workshop source before producing its checksum.
 - Rebuilt the Metal Bolt as a compact medieval quarrel with a pointed bodkin head, socket, three separated leather vanes, cord whippings, and a rear nock.
 - Shortened the Metal Bolt from 32.5 cm to approximately 28 cm (about 77% of the crossbows' compact length) while preserving icon readability.
 - Corrected the Metal Bolt's dropped-world orientation with a 90° world-axis rotation and ground-contact pivot, retaining randomized Drop offsets and direction while making the weapon-axis FBX rest flat instead of standing upright.

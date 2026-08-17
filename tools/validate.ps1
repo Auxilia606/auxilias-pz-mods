@@ -12,12 +12,18 @@ $requiredFiles = @(
     (Join-Path $versionRoot 'media\scripts\auxilia_recipes.txt'),
     (Join-Path $versionRoot 'media\scripts\auxilia_models.txt'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_AmmoSelection.lua'),
+    (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_TestKit.lua'),
+    (Join-Path $versionRoot 'media\lua\server\AuxiliaCrossbow_Loot.lua'),
+    (Join-Path $versionRoot 'media\lua\server\AuxiliaCrossbow_Recovery.lua'),
+    (Join-Path $versionRoot 'media\lua\shared\AuxiliaCrossbow_Reload.lua'),
     (Join-Path $versionRoot 'media\models_X\weapons\2handed\AuxiliaImprovisedCrossbow.fbx'),
     (Join-Path $versionRoot 'media\models_X\weapons\2handed\AuxiliaReinforcedCrossbow.fbx'),
     (Join-Path $versionRoot 'media\models_X\weapons\2handed\AuxiliaHeavyArbalest.fbx'),
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaImprovisedCrossbow.png'),
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaCrossbowBolt.png'),
+    (Join-Path $versionRoot 'media\textures\Item_AuxiliaStoneCrossbowBolt.png'),
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaBrokenBolt.png'),
+    (Join-Path $versionRoot 'media\textures\Item_AuxiliaBrokenStoneBolt.png'),
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaReinforcedCrossbow.png'),
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaHeavyArbalest.png'),
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaBoltShaft.png'),
@@ -30,7 +36,9 @@ $modelNames = @(
     'AuxiliaReinforcedCrossbow',
     'AuxiliaHeavyArbalest',
     'AuxiliaCrossbowBolt',
-    'AuxiliaBrokenBolt'
+    'AuxiliaStoneCrossbowBolt',
+    'AuxiliaBrokenBolt',
+    'AuxiliaBrokenStoneBolt'
 )
 
 foreach ($modelName in $modelNames) {
@@ -43,9 +51,34 @@ if ($missing.Count -gt 0) {
     throw "Missing required mod files:`n$($missing -join "`n")"
 }
 
-$jsonFiles = Get-ChildItem -LiteralPath (Join-Path $versionRoot 'media\lua\shared\Translate') -Recurse -Filter '*.json'
+$translationRoot = Join-Path $versionRoot 'media\lua\shared\Translate'
+$translationFiles = @('ContextMenu.json', 'ItemName.json', 'Recipes.json')
+foreach ($language in @('EN', 'KO')) {
+    foreach ($translationFile in $translationFiles) {
+        $requiredTranslation = Join-Path $translationRoot "$language\$translationFile"
+        if (-not (Test-Path -LiteralPath $requiredTranslation -PathType Leaf)) {
+            throw "Required translation file is missing: $requiredTranslation"
+        }
+    }
+}
+
+$jsonFiles = Get-ChildItem -LiteralPath $translationRoot -Recurse -Filter '*.json'
 foreach ($jsonFile in $jsonFiles) {
-    Get-Content -LiteralPath $jsonFile.FullName -Raw | ConvertFrom-Json | Out-Null
+    $translation = Get-Content -LiteralPath $jsonFile.FullName -Raw | ConvertFrom-Json
+    foreach ($property in $translation.PSObject.Properties) {
+        if ($property.Value -isnot [string] -or [string]::IsNullOrWhiteSpace($property.Value)) {
+            throw "Translation value must be a non-empty string: $($jsonFile.FullName) -> $($property.Name)"
+        }
+    }
+}
+
+foreach ($translationFile in $translationFiles) {
+    $english = Get-Content -LiteralPath (Join-Path $translationRoot "EN\$translationFile") -Raw | ConvertFrom-Json
+    $korean = Get-Content -LiteralPath (Join-Path $translationRoot "KO\$translationFile") -Raw | ConvertFrom-Json
+    $keyDifference = @(Compare-Object $english.PSObject.Properties.Name $korean.PSObject.Properties.Name)
+    if ($keyDifference.Count -gt 0) {
+        throw "English/Korean translation keys differ in $translationFile`: $($keyDifference.InputObject -join ', ')"
+    }
 }
 
 $modelsText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\scripts\auxilia_models.txt') -Raw
@@ -77,7 +110,7 @@ if ($modelOpenBraces -ne $modelCloseBraces) {
 
 $generatorPath = Join-Path $repoRoot 'source-assets\blender\generate_assets.py'
 $generatorText = Get-Content -LiteralPath $generatorPath -Raw
-foreach ($pipelineCheck in @('finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'validate_exports', 'render_validation', 'render_bolt_placement')) {
+foreach ($pipelineCheck in @('finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
     if ($generatorText -notmatch [regex]::Escape($pipelineCheck)) {
         throw "Blender model pipeline check is missing: $pipelineCheck"
     }
@@ -89,10 +122,12 @@ if ($generatorText -notmatch 'game_obj\.rotation_euler\.x\s*\+=\s*math\.pi') {
     throw 'Project Zomboid FBX exports must retain the tested 180-degree X-axis correction.'
 }
 
-$boltModelBlockPattern = '(?s)model\s+AuxiliaCrossbowBolt\s*\{.*?(?=\s*model\s+AuxiliaBrokenBolt\b)'
-$boltModelBlock = [regex]::Match($modelsText, $boltModelBlockPattern).Value
-if (-not $boltModelBlock -or $boltModelBlock -notmatch '(?s)attachment\s+world\s*\{.*?rotate\s*=\s*90\.0\s+0\.0\s+0\.0') {
-    throw 'The intact bolt must retain its 90-degree world attachment so its weapon-axis FBX rests flat.'
+foreach ($boltModelName in @('AuxiliaCrossbowBolt', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenBolt', 'AuxiliaBrokenStoneBolt')) {
+    $boltModelBlockPattern = "(?s)model\s+$([regex]::Escape($boltModelName))\s*\{.*?(?=\s*model\s+\w+\s*\{|\s*\}\s*\z)"
+    $boltModelBlock = [regex]::Match($modelsText, $boltModelBlockPattern).Value
+    if (-not $boltModelBlock -or $boltModelBlock -notmatch '(?s)attachment\s+world\s*\{.*?rotate\s*=\s*90\.0\s+0\.0\s+0\.0') {
+        throw "$boltModelName must retain its 90-degree world attachment so its weapon-axis FBX rests flat."
+    }
 }
 
 $itemsText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\scripts\auxilia_items.txt') -Raw
@@ -118,11 +153,24 @@ if ($itemsText -match 'WeaponSprite\s*=\s*AuxiliasCrossbow\.') {
 }
 foreach ($iconCheck in @(
     @{ Item = 'BoltShaft'; Icon = 'AuxiliaBoltShaft' },
-    @{ Item = 'BoltHead'; Icon = 'AuxiliaBoltHead' }
+    @{ Item = 'BoltHead'; Icon = 'AuxiliaBoltHead' },
+    @{ Item = 'AuxiliasStoneCrossbowBolt'; Icon = 'AuxiliaStoneCrossbowBolt' },
+    @{ Item = 'BrokenStoneBolt'; Icon = 'AuxiliaBrokenStoneBolt' }
 )) {
     $iconPattern = "(?s)item\s+$($iconCheck.Item)\s*\{.*?Icon\s*=\s*$($iconCheck.Icon),"
     if ($itemsText -notmatch $iconPattern) {
         throw "Dedicated crafting-component icon is not assigned: $($iconCheck.Item)"
+    }
+}
+foreach ($worldModelCheck in @(
+    @{ Item = 'AuxiliasCrossbowBolt'; Model = 'AuxiliaCrossbowBolt' },
+    @{ Item = 'AuxiliasStoneCrossbowBolt'; Model = 'AuxiliaStoneCrossbowBolt' },
+    @{ Item = 'BrokenBolt'; Model = 'Base.AuxiliaBrokenBolt' },
+    @{ Item = 'BrokenStoneBolt'; Model = 'Base.AuxiliaBrokenStoneBolt' }
+)) {
+    $worldModelPattern = "(?s)item\s+$($worldModelCheck.Item)\s*\{.*?WorldStaticModel\s*=\s*$([regex]::Escape($worldModelCheck.Model)),"
+    if ($itemsText -notmatch $worldModelPattern) {
+        throw "Material-specific world model is not assigned: $($worldModelCheck.Item) -> $($worldModelCheck.Model)"
     }
 }
 
@@ -232,7 +280,7 @@ foreach ($ammoRegistry in @('auxiliascrossbow:bolt', 'auxiliascrossbow:stonebolt
 }
 
 $ammoSelectionText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_AmmoSelection.lua') -Raw
-foreach ($selectionCheck in @('setAmmoType', 'syncItemFields', 'ContextMenu_AuxiliaCrossbow_SelectMetalBolts', 'ContextMenu_AuxiliaCrossbow_SelectStoneBolts')) {
+foreach ($selectionCheck in @('setAmmoType', 'syncItemFields', 'ContextMenu_AuxiliaCrossbow_CurrentMetalBolts', 'ContextMenu_AuxiliaCrossbow_CurrentStoneBolts', 'ContextMenu_AuxiliaCrossbow_SelectMetalBolts', 'ContextMenu_AuxiliaCrossbow_SelectStoneBolts', 'statusOption.notAvailable')) {
     if ($ammoSelectionText -notmatch [regex]::Escape($selectionCheck)) {
         throw "Bolt ammo-selection integration is missing: $selectionCheck"
     }
@@ -242,6 +290,27 @@ $recoveryText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\serv
 foreach ($recoveryCheck in @('AuxiliasStoneCrossbowBolt', 'BrokenStoneBolt', 'intactChance = isStoneBolt and 45 or 70')) {
     if ($recoveryText -notmatch [regex]::Escape($recoveryCheck)) {
         throw "Material-specific bolt recovery is missing: $recoveryCheck"
+    }
+}
+
+$reloadText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\shared\AuxiliaCrossbow_Reload.lua') -Raw
+foreach ($reloadCheck in @('ISReloadWeaponAction.setReloadSpeed', 'AuxiliasCrossbow.ImprovisedCrossbow', 'AuxiliasCrossbow.ReinforcedCrossbow', 'AuxiliasCrossbow.HeavyArbalest')) {
+    if ($reloadText -notmatch [regex]::Escape($reloadCheck)) {
+        throw "Tier-specific reload integration is missing: $reloadCheck"
+    }
+}
+
+$lootText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\server\AuxiliaCrossbow_Loot.lua') -Raw
+foreach ($lootCheck in @('OnPreDistributionMerge', 'SafehouseArmor', 'BagsAndContainers.SurvivorItems', 'lootInjected')) {
+    if ($lootText -notmatch [regex]::Escape($lootCheck)) {
+        throw "Loot integration is missing: $lootCheck"
+    }
+}
+
+$testKitText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_TestKit.lua') -Raw
+foreach ($testKitCheck in @('isDebugEnabled', 'AuxiliasStoneCrossbowBolt', 'ContextMenu_AuxiliaCrossbow_TestKit')) {
+    if ($testKitText -notmatch [regex]::Escape($testKitCheck)) {
+        throw "Debug test-kit integration is missing: $testKitCheck"
     }
 }
 
@@ -255,6 +324,24 @@ foreach ($documentationCheck in @('Build 42.20.2 vanilla recipe alignment', 'Van
 $readmeText = Get-Content -LiteralPath (Join-Path $repoRoot 'README.md') -Raw
 if ($readmeText -notmatch [regex]::Escape('docs/VANILLA-RECIPE-ALIGNMENT.md')) {
     throw 'README must link to the vanilla recipe-alignment report.'
+}
+
+$version = (Get-Content -LiteralPath (Join-Path $repoRoot 'VERSION') -Raw).Trim()
+if ($version -notmatch '^\d+\.\d+\.\d+$') {
+    throw "VERSION must use semantic version format: $version"
+}
+if ($readmeText -notmatch [regex]::Escape("Current version: **$version**")) {
+    throw "README current version does not match VERSION $version."
+}
+foreach ($metadataPath in @(
+    (Join-Path $repoRoot 'workshop\workshop.txt'),
+    (Join-Path $repoRoot 'workshop\Contents\mods\AuxiliasCrossbow\mod.info'),
+    (Join-Path $versionRoot 'mod.info')
+)) {
+    $metadataText = Get-Content -LiteralPath $metadataPath -Raw
+    if ($metadataText -notmatch [regex]::Escape("Version $version")) {
+        throw "Metadata version does not match VERSION $version`: $metadataPath"
+    }
 }
 
 $recipeOpenBraces = ([regex]::Matches($recipesText, '\{')).Count

@@ -1,6 +1,8 @@
 {
     "ContextMenu_AuxiliaCrossbow_TestKit": "Auxilia's Crossbow: Spawn Test Kit",
     "ContextMenu_AuxiliaCrossbow_DropComparison": "Auxilia's Crossbow: Drop Bolt, Twigs, and Sapling",
+    "ContextMenu_AuxiliaCrossbow_CurrentMetalBolts": "Current ammunition: Metal Crossbow Bolts",
+    "ContextMenu_AuxiliaCrossbow_CurrentStoneBolts": "Current ammunition: Stone Crossbow Bolts",
     "ContextMenu_AuxiliaCrossbow_SelectMetalBolts": "Use Metal Crossbow Bolts",
     "ContextMenu_AuxiliaCrossbow_SelectStoneBolts": "Use Stone Crossbow Bolts"
 }

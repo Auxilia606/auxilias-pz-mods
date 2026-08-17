@@ -1,5 +1,5 @@
 version=1
 title=Auxilia's Crossbow
-description=Version 0.1.0. Craft historically inspired crossbows, recover bolts from hunted targets, and progress from improvised construction to a heavy arbalest.
+description=Version 0.2.0. Progress from Light to Heavy Crossbows, choose distinct Metal or Stone Bolts, and recover ammunition from hunted targets.
 tags=Build 42;Weapons;Crafting
 visibility=public

@@ -20,7 +20,7 @@ The final local path must contain:
 
 ## Spawn the test kit
 
-In debug mode, right-click any inventory item and choose **Auxilia's Crossbow: Spawn Test Kit**. The kit contains all three crossbows, 30 Metal Bolts, and 30 Stone Bolts.
+In debug mode, right-click any inventory item and choose **Auxilia's Crossbow: Spawn Test Kit**. The kit contains all three crossbows, 30 Metal Bolts, 30 Stone Bolts, Twigs, and a Sapling for dropped-model comparison.
 
 Console/full-type IDs retain their pre-redesign names for save compatibility. They display as Light Crossbow, Crossbow, and Heavy Crossbow respectively:
 
@@ -41,7 +41,7 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - A normally dropped Metal Bolt rests with its long axis across the ground, receives a non-central square offset, and gets randomized world rotation comparable to vanilla Twigs and Sapling; Place Item remains manually positioned by the player.
 - Wood, metal, cord, and leather texture regions appear on the intended parts instead of an untextured white model.
 - Each crossbow loads exactly one bolt and fires once before another reload.
-- With an unloaded crossbow, the inventory context menu switches between Metal and Stone Bolts.
+- With an unloaded crossbow, the inventory context menu shows the selected material and switches between Metal and Stone Bolts.
 - Pressing reload consumes the selected material, and unloading returns that same material without converting it.
 - The three range limits are visibly different.
 - Reload order is Light Crossbow, Crossbow, then Heavy Crossbow from fastest to slowest.
@@ -63,5 +63,5 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - Debug recipe-time and XP checks match `docs/VANILLA-RECIPE-ALIGNMENT.md`: `time = 600` for Light Crossbow and Crossbow, 900 for Heavy Crossbow, 230 for knapping, 200 for small forging, 100 for carving/assembly, and 60 for salvage with no XP.
 - Survivor bags and barricaded/safehouse distributions very rarely contain a crossbow.
 - Item names and recipe names change correctly between English and Korean.
-- The original seven mod items retain their dedicated icons with no black box, clipped edge, or missing texture.
-- Stone Bolt Heads use the recognizable vanilla chipped-stone artwork; material-specific bolts and broken bolts have correct names even where they share the same world silhouette.
+- All nine generated mod icons have no black box, clipped edge, or missing texture.
+- Stone Bolt Heads use the recognizable vanilla chipped-stone artwork; complete and broken Stone Bolts have visibly broader pale stone heads and lighter fletching than their Metal counterparts in both inventory and world views.

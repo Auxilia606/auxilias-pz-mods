@@ -28,7 +28,7 @@ Small Handles already come from vanilla wood-processing recipes, so the mod does
 
 A broken bolt cannot be turned directly into another complete bolt. The matching tool recovers a head of the same material; the player must supply a new shaft, feather, and binding before it can be fired again. Metal bolts have a 70% intact recovery chance, while the easier-to-source Stone Bolts have a 45% intact recovery chance. Both materials use the crossbow's weapon damage because Build 42 applies projectile damage from the weapon rather than the loose ammunition item.
 
-An unloaded crossbow defaults to Metal Bolts. Its inventory context menu can switch it between Metal and Stone Bolts; normal reload and unload actions then use the selected material. The two advanced head paths make component pairs because a suitable stone or metal piece has enough stock for more than one small head. Finished bolts are still assembled one at a time.
+An unloaded crossbow defaults to Metal Bolts. Its inventory context menu shows the current ammunition material and can switch it between Metal and Stone Bolts; normal reload and unload actions then use the selected material. The two advanced head paths make component pairs because a suitable stone or metal piece has enough stock for more than one small head. Finished bolts are still assembled one at a time.
 
 All eight bolt-related recipes remain automatically available when their Carving, Maintenance, Flint Knapping, or Blacksmith requirements are met. No magazine, schematic, or other recipe item is required.
 

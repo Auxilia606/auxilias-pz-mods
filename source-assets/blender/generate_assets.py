@@ -32,9 +32,11 @@ for directory in (MODEL_DIR, MODEL_TEXTURE_DIR, ITEM_TEXTURE_DIR, VALIDATION_DIR
 SWATCHES = {
     "Aged Oak": (0.02, 0.52, 0.52, 0.98),
     "Dark Stock": (0.52, 0.98, 0.52, 0.98),
-    "Forged Iron": (0.02, 0.32, 0.02, 0.48),
-    "Hemp Cord": (0.35, 0.64, 0.02, 0.48),
-    "Leather": (0.67, 0.98, 0.02, 0.48),
+    "Forged Iron": (0.02, 0.20, 0.02, 0.48),
+    "Chipped Stone": (0.21, 0.39, 0.02, 0.48),
+    "Hemp Cord": (0.40, 0.58, 0.02, 0.48),
+    "Leather": (0.59, 0.77, 0.02, 0.48),
+    "Pale Feather": (0.78, 0.98, 0.02, 0.48),
 }
 
 
@@ -248,7 +250,7 @@ def add_wrapping(coll, prefix, center_y, z, width, radius, mat, turns=4):
 
 def build_crossbow(name, tier, spec, mats):
     coll = new_collection(name)
-    wood, dark_wood, metal, cord, _leather = mats
+    wood, dark_wood, metal, cord, _leather = mats[:5]
     rear = spec["rear"]
     nose = spec["nose"]
     bow_y = spec["bow_y"]
@@ -324,8 +326,9 @@ def build_crossbow(name, tier, spec, mats):
     return coll
 
 
-def build_bolt(name, broken, mats):
-    wood, dark_wood, metal, cord, leather = mats
+def build_bolt(name, broken, mats, material_kind="metal"):
+    wood, dark_wood, metal, cord, leather, stone, feather = mats
+    is_stone = material_kind == "stone"
     coll = new_collection(name)
     if not broken:
         # A short, heavy quarrel silhouette matches the compact crossbows and
@@ -334,10 +337,23 @@ def build_bolt(name, broken, mats):
         # overlapping fletchings merged into one rectangular block.
         cylinder_part(coll, f"{name}_Shaft", (0, -0.010, 0), 0.006, 0.210, wood, vertices=10)
 
-        # Low-poly bodkin point with a separate socket/collar.  The point faces
-        # +Y, the same direction as the crossbows' rails and muzzles.
-        cylinder_part(coll, f"{name}_HeadSocket", (0, 0.088, 0), 0.009, 0.028, metal, vertices=8)
-        cone_part(coll, f"{name}_BodkinPoint", (0, 0.130, 0), 0.015, 0.070, metal, vertices=4)
+        # The metal bolt uses a narrow forged bodkin. The stone variant uses a
+        # broader asymmetric chipped profile so both its silhouette and palette
+        # remain recognisable at inventory scale.
+        if is_stone:
+            cylinder_part(coll, f"{name}_HeadBinding", (0, 0.088, 0), 0.009, 0.024, cord, vertices=8)
+            stone_profile = (
+                (0.098, -0.018),
+                (0.136, -0.013),
+                (0.158, -0.004),
+                (0.149, 0.006),
+                (0.116, 0.019),
+                (0.096, 0.012),
+            )
+            profile_prism(coll, f"{name}_ChippedPoint", stone_profile, 0.010, stone, edge=0.0012)
+        else:
+            cylinder_part(coll, f"{name}_HeadSocket", (0, 0.088, 0), 0.009, 0.028, metal, vertices=8)
+            cone_part(coll, f"{name}_BodkinPoint", (0, 0.130, 0), 0.015, 0.070, metal, vertices=4)
 
         # Three slim radial vanes form a recognisable feather silhouette without
         # making the bolt wider than the crossbow rail.  One vane sits uppermost;
@@ -348,8 +364,9 @@ def build_bolt(name, broken, mats):
             (-0.066, 0.014),
             (-0.050, 0.005),
         )
+        vane_material = feather if is_stone else leather
         for index, angle in enumerate((0.0, 120.0, 240.0), start=1):
-            vane = profile_prism(coll, f"{name}_Fletching_{index}", vane_profile, 0.003, leather, edge=0.0007)
+            vane = profile_prism(coll, f"{name}_Fletching_{index}", vane_profile, 0.003, vane_material, edge=0.0007)
             vane.rotation_euler.y = math.radians(angle)
 
         # Dark rear nock and two cord whippings visually separate the tail from
@@ -358,15 +375,28 @@ def build_bolt(name, broken, mats):
         cylinder_part(coll, f"{name}_FletchingWrapRear", (0, -0.104, 0), 0.0068, 0.007, cord, vertices=10)
         cylinder_part(coll, f"{name}_FletchingWrapFront", (0, -0.048, 0), 0.0068, 0.008, cord, vertices=10)
     else:
-        length = 0.18
-        cylinder_part(coll, f"{name}_Shaft", (0, 0, 0), 0.008, length, wood, vertices=10)
+        length = 0.16
+        cylinder_part(coll, f"{name}_Shaft", (0, -0.020, 0), 0.008, length, wood, vertices=10)
         beam_between(coll, f"{name}_Splinter", (0.010, -0.035, 0), (0.035, -0.095, 0.005), 0.009, 0.009, wood, edge=0.001)
+        if is_stone:
+            broken_stone_profile = (
+                (0.060, -0.016),
+                (0.098, -0.011),
+                (0.118, 0.002),
+                (0.079, 0.017),
+                (0.061, 0.010),
+            )
+            profile_prism(coll, f"{name}_ChippedPoint", broken_stone_profile, 0.010, stone, edge=0.0012)
+            cylinder_part(coll, f"{name}_HeadBinding", (0, 0.058, 0), 0.009, 0.018, cord, vertices=8)
+        else:
+            cylinder_part(coll, f"{name}_HeadSocket", (0, 0.058, 0), 0.009, 0.018, metal, vertices=8)
+            cone_part(coll, f"{name}_BodkinFragment", (0, 0.086, 0), 0.013, 0.040, metal, vertices=4)
     return coll
 
 
 def build_bolt_component_icons(mats):
     """Build icon-only geometry for the two crafting components."""
-    wood, dark_wood, metal, cord, _leather = mats
+    wood, dark_wood, metal, cord, _leather = mats[:5]
 
     shaft = new_collection("AuxiliaBoltShaft")
     cylinder_part(shaft, "AuxiliaBoltShaft_Shaft", (0, 0, 0), 0.009, 0.30, wood, vertices=10)
@@ -506,7 +536,15 @@ def make_palette_texture(filename):
     width = height = 128
     # Vanilla wood-stock firearms cluster around sRGB 121/58/7, with dark
     # walnut shadows around 80/35/10 and neutral gunmetal around 60/62/64.
-    colors = {"Aged Oak": (0.475, 0.225, 0.028), "Dark Stock": (0.31, 0.14, 0.040), "Forged Iron": (0.22, 0.24, 0.25), "Hemp Cord": (0.28, 0.20, 0.08), "Leather": (0.32, 0.105, 0.035)}
+    colors = {
+        "Aged Oak": (0.475, 0.225, 0.028),
+        "Dark Stock": (0.31, 0.14, 0.040),
+        "Forged Iron": (0.22, 0.24, 0.25),
+        "Chipped Stone": (0.43, 0.45, 0.42),
+        "Hemp Cord": (0.28, 0.20, 0.08),
+        "Leather": (0.32, 0.105, 0.035),
+        "Pale Feather": (0.66, 0.62, 0.50),
+    }
     pixels = []
     for y in range(height):
         v = y / (height - 1)
@@ -519,9 +557,9 @@ def make_palette_texture(filename):
                     break
             base = colors[swatch_name]
             grain = (((x * 17 + y * 11) % 19) - 9) / 420.0
-            if swatch_name in {"Aged Oak", "Dark Stock", "Leather"}:
+            if swatch_name in {"Aged Oak", "Dark Stock", "Leather", "Pale Feather"}:
                 grain += math.sin(y * 0.42 + x * 0.06) * 0.018
-            if swatch_name == "Forged Iron":
+            if swatch_name in {"Forged Iron", "Chipped Stone"}:
                 grain += (((x * 5 + y * 3) % 7) - 3) / 600.0
             pixels.extend((max(0, min(1, base[0] + grain)), max(0, min(1, base[1] + grain)), max(0, min(1, base[2] + grain)), 1.0))
     image = bpy.data.images.new(filename, width=width, height=height, alpha=True)
@@ -533,7 +571,7 @@ def make_palette_texture(filename):
 
 def apply_palette_to_preview_materials(image):
     """Render with the same atlas/UV path the game uses, not diffuse colors alone."""
-    for mat in (WOOD, DARK_WOOD, METAL, CORD, LEATHER):
+    for mat in (WOOD, DARK_WOOD, METAL, CORD, LEATHER, STONE, FEATHER):
         nodes = mat.node_tree.nodes
         links = mat.node_tree.links
         principled = nodes.get("Principled BSDF")
@@ -662,7 +700,7 @@ def render_bolt_placement(coll, asset_collections, camera):
     camera.location = (0.47, -0.54, 0.36)
     camera.data.ortho_scale = 0.43
     look_at(camera, (0, 0.005, 0.012))
-    scene.render.filepath = os.path.join(VALIDATION_DIR, "AuxiliaCrossbowBolt_placed.png")
+    scene.render.filepath = os.path.join(VALIDATION_DIR, f"{coll.name}_placed.png")
     bpy.ops.render.render(write_still=True)
 
     bpy.data.objects.remove(ground, do_unlink=True)
@@ -706,6 +744,7 @@ def validate_exports(asset_objects, icon_names):
         "AuxiliaReinforcedCrossbow": ((0.27, 0.30), (0.35, 0.38), (0.07, 0.10)),
         "AuxiliaHeavyArbalest": ((0.30, 0.34), (0.35, 0.38), (0.08, 0.11)),
         "AuxiliaCrossbowBolt": ((0.02, 0.04), (0.27, 0.29), (0.025, 0.045)),
+        "AuxiliaStoneCrossbowBolt": ((0.02, 0.05), (0.27, 0.30), (0.025, 0.045)),
     }
     for filename, original in asset_objects.items():
         source_min, source_max = object_bounds(original)
@@ -784,7 +823,9 @@ DARK_WOOD = material("Dark Stock", (0.31, 0.14, 0.040), roughness=0.82)
 METAL = material("Forged Iron", (0.22, 0.24, 0.25), metallic=0.35, roughness=0.64)
 CORD = material("Hemp Cord", (0.28, 0.20, 0.08), roughness=0.95)
 LEATHER = material("Leather", (0.32, 0.105, 0.035), roughness=0.88)
-MATERIALS = (WOOD, DARK_WOOD, METAL, CORD, LEATHER)
+STONE = material("Chipped Stone", (0.43, 0.45, 0.42), roughness=0.92)
+FEATHER = material("Pale Feather", (0.66, 0.62, 0.50), roughness=0.96)
+MATERIALS = (WOOD, DARK_WOOD, METAL, CORD, LEATHER, STONE, FEATHER)
 
 SPECS = {
     "AuxiliaImprovisedCrossbow": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.250, "curve": 0.034, "stock_width": 0.024, "body_width": 0.016, "lock_width": 0.020, "rail_width": 0.014, "limb_chord": 0.009, "limb_height": 0.014, "string_thickness": 0.0024},
@@ -795,10 +836,12 @@ SPECS = {
 improvised = build_crossbow("AuxiliaImprovisedCrossbow", 1, SPECS["AuxiliaImprovisedCrossbow"], MATERIALS)
 reinforced = build_crossbow("AuxiliaReinforcedCrossbow", 2, SPECS["AuxiliaReinforcedCrossbow"], MATERIALS)
 heavy = build_crossbow("AuxiliaHeavyArbalest", 3, SPECS["AuxiliaHeavyArbalest"], MATERIALS)
-bolt = build_bolt("AuxiliaCrossbowBolt", False, MATERIALS)
-broken_bolt = build_bolt("AuxiliaBrokenBolt", True, MATERIALS)
+bolt = build_bolt("AuxiliaCrossbowBolt", False, MATERIALS, "metal")
+stone_bolt = build_bolt("AuxiliaStoneCrossbowBolt", False, MATERIALS, "stone")
+broken_bolt = build_bolt("AuxiliaBrokenBolt", True, MATERIALS, "metal")
+broken_stone_bolt = build_bolt("AuxiliaBrokenStoneBolt", True, MATERIALS, "stone")
 bolt_shaft_icon, bolt_head_icon = build_bolt_component_icons(MATERIALS)
-assets = [improvised, reinforced, heavy, bolt, broken_bolt]
+assets = [improvised, reinforced, heavy, bolt, stone_bolt, broken_bolt, broken_stone_bolt]
 icon_assets = assets + [bolt_shaft_icon, bolt_head_icon]
 
 asset_objects = {}
@@ -817,12 +860,15 @@ render_icon(improvised, icon_assets, "AuxiliaImprovisedCrossbow", camera, 0.48)
 render_icon(reinforced, icon_assets, "AuxiliaReinforcedCrossbow", camera, 0.51)
 render_icon(heavy, icon_assets, "AuxiliaHeavyArbalest", camera, 0.55)
 render_icon(bolt, icon_assets, "AuxiliaCrossbowBolt", camera, 0.30, (0, 0.015, 0))
+render_icon(stone_bolt, icon_assets, "AuxiliaStoneCrossbowBolt", camera, 0.30, (0, 0.015, 0))
 render_icon(broken_bolt, icon_assets, "AuxiliaBrokenBolt", camera, 0.30, (0, 0.00, 0))
+render_icon(broken_stone_bolt, icon_assets, "AuxiliaBrokenStoneBolt", camera, 0.30, (0, 0.00, 0))
 render_icon(bolt_shaft_icon, icon_assets, "AuxiliaBoltShaft", camera, 0.38, (0, 0.00, 0))
 render_icon(bolt_head_icon, icon_assets, "AuxiliaBoltHead", camera, 0.21, (0, 0.00, 0))
 for collection in (improvised, reinforced, heavy):
     render_validation(collection, icon_assets, collection.name, camera)
 render_bolt_placement(bolt, icon_assets, camera)
+render_bolt_placement(stone_bolt, icon_assets, camera)
 render_promo(heavy, icon_assets, camera)
 
 # Headless Windows runs do not need an Explorer/File Browser thumbnail for the

@@ -1,6 +1,6 @@
 # Auxilia's Crossbow
 
-Current version: **0.1.0**
+Current version: **0.2.0**
 
 An original crossbow mod for Project Zomboid 42.20.
 
@@ -44,7 +44,7 @@ Run `tools/package.ps1` to validate the mod and create a versioned release ZIP p
 
 ## Verification status
 
-The 0.1.0 package was loaded by the installed Project Zomboid 42.20.2 dedicated server. The server reached `SERVER STARTED` with no Auxilia's Crossbow registry, script, model, or Lua errors, and its original five crafting recipes appeared in the game's generated recipe index. Follow-up interactive playtesting confirmed all three crossbows in game and verified bolt generation. The final vanilla-aligned, material-specific ammunition build also passed an isolated 42.20.2 server load: both ammo registries, all new items, and all eleven current recipes were accepted exactly once without an Auxilia-related error or warning. Ammunition switching, player-speed-adjusted crafting duration, and exact recovery behavior remain interactive acceptance checks. See `docs/SMOKE-TEST.md` and `docs/TESTING.md`.
+The 0.1.0 package and every post-release development milestone were loaded by the installed Project Zomboid 42.20.2 server or client without an Auxilia-related registry, script, model, or Lua error. Both ammunition registries, all current items, and all eleven recipes were accepted exactly once. The project owner completed the final single-player integration procedure on 2026-08-17, covering ammunition switching and preservation, crafting, firing, recovery, balance, loot, and English/Korean presentation. The 0.2.0 asset pipeline additionally round-tripped distinct Metal and Stone Bolt models and verified all nine generated item icons. See `docs/SMOKE-TEST.md` and `docs/TESTING.md`.
 
 ## License
 

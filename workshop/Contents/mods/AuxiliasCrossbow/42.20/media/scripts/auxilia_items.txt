@@ -16,8 +16,8 @@ module Base
         DisplayCategory = Ammo,
         ItemType = base:normal,
         Weight = 0.11,
-        Icon = AuxiliaCrossbowBolt,
-        WorldStaticModel = AuxiliaCrossbowBolt,
+        Icon = AuxiliaStoneCrossbowBolt,
+        WorldStaticModel = AuxiliaStoneCrossbowBolt,
         Tags = base:ammo;base:haswood,
     }
 }
@@ -74,8 +74,8 @@ module AuxiliasCrossbow
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.09,
-        Icon = AuxiliaBrokenBolt,
-        WorldStaticModel = Base.AuxiliaBrokenBolt,
+        Icon = AuxiliaBrokenStoneBolt,
+        WorldStaticModel = Base.AuxiliaBrokenStoneBolt,
     }
 
     item ImprovisedCrossbow
