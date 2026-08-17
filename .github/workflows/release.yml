@@ -2,8 +2,11 @@ name: Release
 
 on:
   push:
+    branches:
+      - master
     tags:
       - "v*.*.*"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -16,32 +19,59 @@ jobs:
     steps:
       - name: Check out tagged source
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-      - name: Verify tag and package version
+      - name: Resolve and verify release tag
         shell: pwsh
         run: |
           $version = (Get-Content -LiteralPath ./VERSION -Raw).Trim()
           $expectedTag = "v$version"
-          if ($env:GITHUB_REF_NAME -ne $expectedTag) {
+          if ($env:GITHUB_REF_TYPE -eq "tag" -and $env:GITHUB_REF_NAME -ne $expectedTag) {
             throw "Tag $env:GITHUB_REF_NAME does not match VERSION $version."
+          }
+          git rev-parse --verify "refs/tags/$expectedTag"
+          if ($LASTEXITCODE -ne 0) {
+            if ($env:GITHUB_REF_TYPE -eq "tag") {
+              throw "Required tag $expectedTag does not exist."
+            }
+            Write-Output "Tag $expectedTag does not exist yet; no release is due."
+            "SHOULD_RELEASE=false" | Out-File -FilePath $env:GITHUB_ENV -Append
+            exit 0
+          }
+          "SHOULD_RELEASE=true" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "RELEASE_TAG=$expectedTag" | Out-File -FilePath $env:GITHUB_ENV -Append
+          git checkout --detach $expectedTag
+
+          $taggedVersion = (Get-Content -LiteralPath ./VERSION -Raw).Trim()
+          if ($taggedVersion -ne $version) {
+            throw "Tagged VERSION $taggedVersion does not match expected version $version."
           }
 
       - name: Build and audit release package
+        if: env.SHOULD_RELEASE == 'true'
         shell: pwsh
         run: ./tools/package.ps1 -OutputDirectory "$env:RUNNER_TEMP/release"
 
       - name: Create GitHub release
+        if: env.SHOULD_RELEASE == 'true'
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          gh release view $env:RELEASE_TAG --repo $env:GITHUB_REPOSITORY 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Output "Release $env:RELEASE_TAG already exists."
+            exit 0
+          }
+
           $assets = Get-ChildItem -LiteralPath "$env:RUNNER_TEMP/release" -File |
             Select-Object -ExpandProperty FullName
           if ($assets.Count -ne 2) {
             throw "Expected a ZIP and SHA-256 file, found $($assets.Count) files."
           }
-          gh release create $env:GITHUB_REF_NAME @assets `
+          gh release create $env:RELEASE_TAG @assets `
             --repo $env:GITHUB_REPOSITORY `
-            --title $env:GITHUB_REF_NAME `
+            --title $env:RELEASE_TAG `
             --generate-notes `
             --verify-tag

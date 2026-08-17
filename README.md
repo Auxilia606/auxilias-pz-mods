@@ -47,7 +47,8 @@ Run `tools/package.ps1` to validate the mod and create a versioned release ZIP p
 
 GitHub Actions repeats validation and package auditing for every change to `master` and
 for every pull request. A matching semantic-version tag such as `v0.2.0` creates a
-GitHub release from the audited ZIP and checksum.
+GitHub release from the audited ZIP and checksum. A `master` update also backfills a
+missing release for the current tagged version without replacing an existing release.
 
 ## Verification status
 
