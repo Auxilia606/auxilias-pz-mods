@@ -1,0 +1,61 @@
+name: Balance feedback
+description: Share structured single-player balance observations for the 0.2.x stabilization cycle.
+title: "[Balance] "
+labels:
+  - balance
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Mod and game versions
+      placeholder: Auxilia 0.2.0 on Project Zomboid 42.20.2
+    validations:
+      required: true
+  - type: dropdown
+    id: weapon
+    attributes:
+      label: Crossbow tier
+      options:
+        - Light Crossbow
+        - Crossbow
+        - Heavy Crossbow
+        - All three
+    validations:
+      required: true
+  - type: dropdown
+    id: ammo
+    attributes:
+      label: Bolt material
+      options:
+        - Metal
+        - Stone
+        - Both
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Play context
+      description: Include relevant skills, sandbox loot settings, and approximate survival day.
+    validations:
+      required: true
+  - type: textarea
+    id: observations
+    attributes:
+      label: Observations
+      description: Describe ammunition availability, reload pressure, durability, noise, range, and damage where relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: samples
+    attributes:
+      label: Measurements
+      description: If available, include shots fired, hits, intact recoveries, broken recoveries, and crafting quantities.
+      placeholder: "Metal: 50 hits, 34 intact, 16 broken"
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Suggested adjustment
+      description: Explain what should change and what trade-off it would improve.
+    validations:
+      required: true

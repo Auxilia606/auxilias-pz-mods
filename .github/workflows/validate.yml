@@ -1,0 +1,36 @@
+name: Validate
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Validate mod files
+        shell: pwsh
+        run: ./tools/validate.ps1
+
+      - name: Build and audit package
+        shell: pwsh
+        run: ./tools/package.ps1 -OutputDirectory "$env:RUNNER_TEMP/package"
+
+      - name: Upload audited package
+        uses: actions/upload-artifact@v7
+        with:
+          name: AuxiliasCrossbow-${{ github.sha }}
+          path: ${{ runner.temp }}/package/*
+          if-no-files-found: error
+          retention-days: 14

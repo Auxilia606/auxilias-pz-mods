@@ -34,6 +34,9 @@ development priority and are deferred until the single-player work is complete.
 
 See `docs/TESTING.md` for installation and the debug test-kit workflow.
 
+Post-release bug and balance reports follow the evidence and release gates in
+`docs/STABILIZATION.md`. The next feature release is scoped in `docs/ROADMAP.md`.
+
 ## Recipe balance
 
 Crafting times, tools, workstations, materials, skill gates, and XP awards are calibrated against the installed stable 42.20.2 vanilla recipes. The comparison includes every Auxilia crafting recipe and records each previous and adjusted value in the [vanilla recipe alignment report](docs/VANILLA-RECIPE-ALIGNMENT.md).
@@ -41,6 +44,10 @@ Crafting times, tools, workstations, materials, skill gates, and XP awards are c
 ## Package
 
 Run `tools/package.ps1` to validate the mod and create a versioned release ZIP plus a SHA-256 checksum in `dist`. The ZIP contains `workshop.txt`, `preview.png`, and `Contents` at its root, ready to extract into a Project Zomboid Workshop folder.
+
+GitHub Actions repeats validation and package auditing for every change to `master` and
+for every pull request. A matching semantic-version tag such as `v0.2.0` creates a
+GitHub release from the audited ZIP and checksum.
 
 ## Verification status
 

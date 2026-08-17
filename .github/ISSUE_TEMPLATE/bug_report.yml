@@ -1,0 +1,69 @@
+name: Bug report
+description: Report a reproducible Auxilia's Crossbow problem in Project Zomboid 42.20.
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping stabilize the mod. Please test without unrelated mods when practical.
+  - type: input
+    id: mod-version
+    attributes:
+      label: Mod version
+      placeholder: 0.2.0
+    validations:
+      required: true
+  - type: input
+    id: game-version
+    attributes:
+      label: Project Zomboid version
+      placeholder: 42.20.2
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Single-player
+        - Host multiplayer
+        - Dedicated server
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include the weapon, selected bolt material, and action being performed.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Equip ...
+        2. Select ...
+        3. Reload ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs or screenshots
+      description: Attach the console excerpt or screenshot if available. Remove personal information first.
+  - type: checkboxes
+    id: isolation
+    attributes:
+      label: Isolation check
+      options:
+        - label: I reproduced this with only Auxilia's Crossbow enabled, or listed the other enabled mods above.
+          required: true

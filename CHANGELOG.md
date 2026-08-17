@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added GitHub Actions validation, audited package artifacts, and tag-driven releases.
+- Added structured bug and balance feedback forms for the 0.2.x stabilization cycle.
+- Documented the 0.2.1 release gates and the maintenance-focused 0.3.0 roadmap.
+
 ## 0.2.0 — 2026-08-17
 
 - Completed the final single-player integration procedure covering ammunition state, crafting, firing, recovery, balance, loot, and English/Korean presentation.
