@@ -17,6 +17,23 @@ module Base
         }
     }
 
+    model AuxiliaImprovisedCrossbowCocked
+    {
+        mesh = weapons/2handed/AuxiliaImprovisedCrossbowCocked,
+        texture = weapons/2handed/AuxiliaImprovisedCrossbowCocked,
+        scale = 0.01,
+        attachment muzzle
+        {
+            offset = 0.0 0.306 0.043,
+            rotate = -90.0 0.0 180.0,
+        }
+        attachment world
+        {
+            offset = 0.012 0.10 0.0,
+            rotate = 180.0 0.0 180.0,
+        }
+    }
+
     model AuxiliaReinforcedCrossbow
     {
         mesh = weapons/2handed/AuxiliaReinforcedCrossbow,
@@ -34,10 +51,44 @@ module Base
         }
     }
 
+    model AuxiliaReinforcedCrossbowCocked
+    {
+        mesh = weapons/2handed/AuxiliaReinforcedCrossbowCocked,
+        texture = weapons/2handed/AuxiliaReinforcedCrossbowCocked,
+        scale = 0.01,
+        attachment muzzle
+        {
+            offset = 0.0 0.306 0.043,
+            rotate = -90.0 0.0 180.0,
+        }
+        attachment world
+        {
+            offset = 0.012 0.10 0.0,
+            rotate = 180.0 0.0 180.0,
+        }
+    }
+
     model AuxiliaHeavyArbalest
     {
         mesh = weapons/2handed/AuxiliaHeavyArbalest,
         texture = weapons/2handed/AuxiliaHeavyArbalest,
+        scale = 0.01,
+        attachment muzzle
+        {
+            offset = 0.0 0.306 0.043,
+            rotate = -90.0 0.0 180.0,
+        }
+        attachment world
+        {
+            offset = 0.012 0.10 0.0,
+            rotate = 180.0 0.0 180.0,
+        }
+    }
+
+    model AuxiliaHeavyArbalestCocked
+    {
+        mesh = weapons/2handed/AuxiliaHeavyArbalestCocked,
+        texture = weapons/2handed/AuxiliaHeavyArbalestCocked,
         scale = 0.01,
         attachment muzzle
         {

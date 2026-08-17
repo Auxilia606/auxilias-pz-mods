@@ -213,11 +213,11 @@ module AuxiliasCrossbow
         time = 60,
         Tags = InHandCraft;Survivalist,
         category = Assembly,
-        timedAction = CraftKnifeSpear,
+        timedAction = AuxiliaRecoverBrokenBolt,
         inputs
         {
-            item 1 tags[base:pliers] mode:keep flags[MayDegradeVeryLight],
-            item 1 [AuxiliasCrossbow.BrokenBolt],
+            item 1 tags[base:pliers] mode:keep flags[Prop1;MayDegradeVeryLight],
+            item 1 [AuxiliasCrossbow.BrokenBolt] flags[Prop2],
         }
         outputs
         {
@@ -230,11 +230,11 @@ module AuxiliasCrossbow
         time = 60,
         Tags = InHandCraft;Survivalist,
         category = Assembly,
-        timedAction = CraftKnifeSpear,
+        timedAction = AuxiliaRecoverBrokenBolt,
         inputs
         {
-            item 1 tags[base:hammerstone;base:mallet;base:knappingtool] mode:keep flags[MayDegradeVeryLight],
-            item 1 [AuxiliasCrossbow.BrokenStoneBolt],
+            item 1 tags[base:hammerstone;base:mallet;base:knappingtool] mode:keep flags[Prop1;MayDegradeVeryLight],
+            item 1 [AuxiliasCrossbow.BrokenStoneBolt] flags[Prop2],
         }
         outputs
         {

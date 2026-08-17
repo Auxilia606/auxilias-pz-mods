@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Replaced the broken-bolt recovery recipe's full-size vanilla spear prop with the actual compact broken Metal or Stone Bolt and its matching tool.
+- Kept the ten independent 128×128 icon masters while installing 32×32 runtime copies, preventing equipped crossbows from overlapping adjacent hotbar slots.
+- Fixed a Build 42 client crash when firing a Stone Bolt after switching ammunition types. Both bolt items now self-reference their registered `AmmoType`, ensuring the engine initializes bullet-tracer configuration for the non-default Stone Bolt path.
+- Removed `base:ammo` from both Crossbow Bolt materials so vanilla Gather Gunpowder no longer accepts them as propellant-bearing cartridges.
+- Replaced every 3D-render-derived inventory image with a separate ten-icon hand-painted set and added a dedicated Stone Bolt Head icon instead of reusing Sharp Flint Flake artwork.
+- Changed the Blender pipeline to install and validate dedicated icon sources without regenerating them from the FBX scene.
+- Audited all eleven recipes and their shared vanilla tags; confirmed Twine consumes one drainable use per assembled bolt and found no further unrelated recipe-input collisions.
+- Rebuilt all three crossbows as separate relaxed and cocked models with fixed string and limb lengths, physically solved catch positions, and clearly exposed strings above the rail.
+- Added ammo-state model switching so loading bends the limbs and draws the string, while firing or unloading immediately restores the relaxed geometry; a release latch prevents delayed ammo synchronization from re-cocking the visual after a shot.
+- Added generated physics checks for string-length conservation, limb-length conservation, rearward cocked bend, and valid catch placement.
 - Deferred public Steam Workshop publication until the 1.0.0 completeness and quality gate.
 - Replaced the placeholder Workshop preview, mod poster, and icon with dedicated three-tier crossbow key art.
 - Added GitHub Actions validation, audited package artifacts, and tag-driven releases.

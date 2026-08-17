@@ -50,6 +50,12 @@ XP usually follows the primary skill gate in roughly ten-point steps. Small seco
 - Both completed Bolt recipes continue to consume one vanilla-tagged Feather and one Twine. Build 42 supplies Chicken and Turkey Feathers through animal butchering.
 - Stone and Metal Bolt Heads keep their existing raw-material yields: one Chipped Stone or one Iron/Steel Piece produces two heads. That matches the batch scale of vanilla small forged parts while completed ammunition remains one-at-a-time.
 
+## Cross-recipe compatibility audit
+
+Build 42.20.2's vanilla `GatherGunpowder` recipe destroys any item tagged `base:ammo` and returns Gunpowder. That tag is appropriate for cartridges and shotgun shells but not for mechanically launched bolts. Metal and Stone Crossbow Bolts therefore omit `base:ammo`; their reload behavior continues to use the dedicated `auxiliascrossbow:bolt` and `auxiliascrossbow:stonebolt` ammunition registries.
+
+The remaining shared inputs were checked against their installed vanilla definitions. `item 1 [Base.Twine]` consumes one of Twine's five `UseDelta = 0.2` uses, not a whole fresh spool. Chicken and Turkey Feathers expose `base:feather`, and the listed hand-tool tags resolve to the intended vanilla tool families. No other Auxilia output carries a vanilla recipe-input tag that changes it into an unrelated ingredient.
+
 ## Intentional project-specific differences
 
 Some advanced vanilla recipes require research or auto-learning thresholds. Auxilia recipes intentionally remain available through skill gates alone, as established by the mod's design. No magazine or schematic requirement was added during this balance pass.

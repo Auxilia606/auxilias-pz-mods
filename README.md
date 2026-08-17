@@ -59,7 +59,7 @@ missing release for the current tagged version without replacing an existing rel
 
 ## Verification status
 
-The 0.1.0 package and every post-release development milestone were loaded by the installed Project Zomboid 42.20.2 server or client without an Auxilia-related registry, script, model, or Lua error. Both ammunition registries, all current items, and all eleven recipes were accepted exactly once. The project owner completed the final single-player integration procedure on 2026-08-17, covering ammunition switching and preservation, crafting, firing, recovery, balance, loot, and English/Korean presentation. The 0.2.0 asset pipeline additionally round-tripped distinct Metal and Stone Bolt models and verified all nine generated item icons. See `docs/SMOKE-TEST.md` and `docs/TESTING.md`.
+The 0.1.0 package and every post-release development milestone were loaded by the installed Project Zomboid 42.20.2 server or client without an Auxilia-related registry, script, model, or Lua error. Both ammunition registries, all current items, and all eleven recipes were accepted exactly once. The project owner completed the final single-player integration procedure on 2026-08-17, covering ammunition switching and preservation, crafting, firing, recovery, balance, loot, and English/Korean presentation. The asset pipeline round-trips separate Metal and Stone Bolt models plus fixed-length relaxed/cocked states for all three crossbows. It also validates ten dedicated hand-painted item icons independently from the 3D models. See `docs/SMOKE-TEST.md` and `docs/TESTING.md`.
 
 ## License
 

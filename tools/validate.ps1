@@ -11,7 +11,9 @@ $requiredFiles = @(
     (Join-Path $versionRoot 'media\scripts\auxilia_items.txt'),
     (Join-Path $versionRoot 'media\scripts\auxilia_recipes.txt'),
     (Join-Path $versionRoot 'media\scripts\auxilia_models.txt'),
+    (Join-Path $versionRoot 'media\scripts\auxilia_timedactions.txt'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_AmmoSelection.lua'),
+    (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_ModelState.lua'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_TestKit.lua'),
     (Join-Path $versionRoot 'media\lua\server\AuxiliaCrossbow_Loot.lua'),
     (Join-Path $versionRoot 'media\lua\server\AuxiliaCrossbow_Recovery.lua'),
@@ -28,13 +30,17 @@ $requiredFiles = @(
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaHeavyArbalest.png'),
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaBoltShaft.png'),
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaBoltHead.png'),
+    (Join-Path $versionRoot 'media\textures\Item_AuxiliaStoneBoltHead.png'),
     (Join-Path $repoRoot 'docs\VANILLA-RECIPE-ALIGNMENT.md')
 )
 
 $modelNames = @(
     'AuxiliaImprovisedCrossbow',
+    'AuxiliaImprovisedCrossbowCocked',
     'AuxiliaReinforcedCrossbow',
+    'AuxiliaReinforcedCrossbowCocked',
     'AuxiliaHeavyArbalest',
+    'AuxiliaHeavyArbalestCocked',
     'AuxiliaCrossbowBolt',
     'AuxiliaStoneCrossbowBolt',
     'AuxiliaBrokenBolt',
@@ -110,9 +116,32 @@ if ($modelOpenBraces -ne $modelCloseBraces) {
 
 $generatorPath = Join-Path $repoRoot 'source-assets\blender\generate_assets.py'
 $generatorText = Get-Content -LiteralPath $generatorPath -Raw
-foreach ($pipelineCheck in @('finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
+foreach ($pipelineCheck in @('finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'circular_limb_points', 'fixed_string_length', 'crossbow_physics', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
     if ($generatorText -notmatch [regex]::Escape($pipelineCheck)) {
         throw "Blender model pipeline check is missing: $pipelineCheck"
+    }
+}
+
+$physicsReportPath = Join-Path $repoRoot 'work\model-validation\report.json'
+if (Test-Path -LiteralPath $physicsReportPath) {
+    $physicsReport = Get-Content -LiteralPath $physicsReportPath -Raw | ConvertFrom-Json
+    foreach ($crossbowName in @('AuxiliaImprovisedCrossbow', 'AuxiliaReinforcedCrossbow', 'AuxiliaHeavyArbalest')) {
+        $physics = $physicsReport.crossbow_physics.$crossbowName
+        if ($null -eq $physics) {
+            throw "Generated physics report is missing: $crossbowName"
+        }
+        if ([math]::Abs([double]$physics.string_length_delta) -gt 0.00001) {
+            throw "Cocked string length changed for $crossbowName"
+        }
+        if ([math]::Abs([double]$physics.sampled_limb_length_delta) -gt 0.0002) {
+            throw "Cocked limb arc length changed for $crossbowName"
+        }
+        if ([double]$physics.cocked_tip_y -ge [double]$physics.relaxed_tip_y) {
+            throw "Cocked limbs do not bend rearward for $crossbowName"
+        }
+        if ([double]$physics.catch_y -ge [double]$physics.cocked_tip_y) {
+            throw "Cocked string catch is not behind the limb tips for $crossbowName"
+        }
     }
 }
 if ($generatorText -notmatch 'axis_forward\s*=\s*"-Y"' -or $generatorText -notmatch 'axis_up\s*=\s*"Z"') {
@@ -152,14 +181,90 @@ if ($itemsText -match 'WeaponSprite\s*=\s*AuxiliasCrossbow\.') {
     throw 'WeaponSprite model names must be unqualified; model scripts are resolved from module Base.'
 }
 foreach ($iconCheck in @(
+    @{ Item = 'ImprovisedCrossbow'; Icon = 'AuxiliaImprovisedCrossbow' },
+    @{ Item = 'ReinforcedCrossbow'; Icon = 'AuxiliaReinforcedCrossbow' },
+    @{ Item = 'HeavyArbalest'; Icon = 'AuxiliaHeavyArbalest' },
+    @{ Item = 'AuxiliasCrossbowBolt'; Icon = 'AuxiliaCrossbowBolt' },
     @{ Item = 'BoltShaft'; Icon = 'AuxiliaBoltShaft' },
     @{ Item = 'BoltHead'; Icon = 'AuxiliaBoltHead' },
+    @{ Item = 'StoneBoltHead'; Icon = 'AuxiliaStoneBoltHead' },
     @{ Item = 'AuxiliasStoneCrossbowBolt'; Icon = 'AuxiliaStoneCrossbowBolt' },
+    @{ Item = 'BrokenBolt'; Icon = 'AuxiliaBrokenBolt' },
     @{ Item = 'BrokenStoneBolt'; Icon = 'AuxiliaBrokenStoneBolt' }
 )) {
     $iconPattern = "(?s)item\s+$($iconCheck.Item)\s*\{.*?Icon\s*=\s*$($iconCheck.Icon),"
     if ($itemsText -notmatch $iconPattern) {
         throw "Dedicated crafting-component icon is not assigned: $($iconCheck.Item)"
+    }
+}
+
+$iconSourceRoot = Join-Path $repoRoot 'source-assets\icons'
+$runtimeIconHashes = @{}
+foreach ($iconName in @(
+    'AuxiliaImprovisedCrossbow',
+    'AuxiliaReinforcedCrossbow',
+    'AuxiliaHeavyArbalest',
+    'AuxiliaCrossbowBolt',
+    'AuxiliaStoneCrossbowBolt',
+    'AuxiliaBrokenBolt',
+    'AuxiliaBrokenStoneBolt',
+    'AuxiliaBoltShaft',
+    'AuxiliaBoltHead',
+    'AuxiliaStoneBoltHead'
+)) {
+    $sourceIcon = Join-Path $iconSourceRoot "Item_$iconName.png"
+    $runtimeIcon = Join-Path $versionRoot "media\textures\Item_$iconName.png"
+    if (-not (Test-Path -LiteralPath $sourceIcon -PathType Leaf)) {
+        throw "Dedicated source icon is missing: $sourceIcon"
+    }
+    $iconBytes = [System.IO.File]::ReadAllBytes($sourceIcon)
+    if ($iconBytes.Length -lt 26 -or $iconBytes[0] -ne 137 -or $iconBytes[1] -ne 80 -or $iconBytes[2] -ne 78 -or $iconBytes[3] -ne 71) {
+        throw "Dedicated source icon is not a valid PNG: $sourceIcon"
+    }
+    $iconWidth = ($iconBytes[16] -shl 24) -bor ($iconBytes[17] -shl 16) -bor ($iconBytes[18] -shl 8) -bor $iconBytes[19]
+    $iconHeight = ($iconBytes[20] -shl 24) -bor ($iconBytes[21] -shl 16) -bor ($iconBytes[22] -shl 8) -bor $iconBytes[23]
+    if ($iconWidth -ne 128 -or $iconHeight -ne 128) {
+        throw "Dedicated source icon must be 128x128: $sourceIcon is ${iconWidth}x${iconHeight}"
+    }
+    if ($iconBytes[25] -notin @(4, 6)) {
+        throw "Dedicated source icon must contain an alpha channel: $sourceIcon"
+    }
+    $runtimeIconBytes = [System.IO.File]::ReadAllBytes($runtimeIcon)
+    $runtimeIconWidth = ($runtimeIconBytes[16] -shl 24) -bor ($runtimeIconBytes[17] -shl 16) -bor ($runtimeIconBytes[18] -shl 8) -bor $runtimeIconBytes[19]
+    $runtimeIconHeight = ($runtimeIconBytes[20] -shl 24) -bor ($runtimeIconBytes[21] -shl 16) -bor ($runtimeIconBytes[22] -shl 8) -bor $runtimeIconBytes[23]
+    if ($runtimeIconWidth -ne 32 -or $runtimeIconHeight -ne 32) {
+        throw "Runtime icon must be 32x32 so it stays inside one hotbar slot: $runtimeIcon is ${runtimeIconWidth}x${runtimeIconHeight}"
+    }
+    if ($runtimeIconBytes[25] -notin @(4, 6)) {
+        throw "Runtime icon must contain an alpha channel: $runtimeIcon"
+    }
+    $runtimeIconHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $runtimeIcon).Hash
+    if ($runtimeIconHashes.ContainsKey($runtimeIconHash)) {
+        throw "Dedicated runtime icons must remain distinct: $iconName duplicates $($runtimeIconHashes[$runtimeIconHash])"
+    }
+    $runtimeIconHashes[$runtimeIconHash] = $iconName
+}
+
+$timedActionsText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\scripts\auxilia_timedactions.txt') -Raw
+if ($timedActionsText -notmatch '(?s)timedAction\s+AuxiliaRecoverBrokenBolt\s*\{.*?actionAnim\s*=\s*Making,') {
+    throw 'The compact broken-bolt recovery timed action is missing.'
+}
+
+foreach ($boltAmmoCheck in @(
+    @{ Item = 'AuxiliasCrossbowBolt'; AmmoType = 'auxiliascrossbow:bolt' },
+    @{ Item = 'AuxiliasStoneCrossbowBolt'; AmmoType = 'auxiliascrossbow:stonebolt' }
+)) {
+    $boltItemName = $boltAmmoCheck.Item
+    $boltItemPattern = "(?s)item\s+$boltItemName\s*\{.*?\}"
+    $boltItemBlock = [regex]::Match($itemsText, $boltItemPattern).Value
+    if (-not $boltItemBlock) {
+        throw "Bolt item definition not found: $boltItemName"
+    }
+    if ($boltItemBlock -match 'base:ammo') {
+        throw "$boltItemName must not use base:ammo; vanilla GatherGunpowder accepts every item with that tag."
+    }
+    if ($boltItemBlock -notmatch "AmmoType\s*=\s*$([regex]::Escape($boltAmmoCheck.AmmoType)),") {
+        throw "$boltItemName must self-reference $($boltAmmoCheck.AmmoType) so Build 42 initializes its bullet-tracer configuration."
     }
 }
 foreach ($worldModelCheck in @(
@@ -211,6 +316,22 @@ function Get-CraftRecipeBlock {
 foreach ($recipeName in @('MakeLightCrossbow', 'MakeCrossbow', 'MakeHeavyCrossbow', 'CarveBoltShaft', 'ShapeBoltHead', 'KnappBoltHeads', 'ForgeBoltHeads', 'MakeStandardBolts', 'MakeStoneBolt', 'SalvageBrokenBolts', 'SalvageBrokenStoneBolt')) {
     if ($recipesText -notmatch [regex]::Escape("craftRecipe $recipeName")) {
         throw "Recipe definition not found: $recipeName"
+    }
+}
+
+foreach ($recoveryRecipeName in @('SalvageBrokenBolts', 'SalvageBrokenStoneBolt')) {
+    $recoveryRecipeBlock = Get-CraftRecipeBlock -Text $recipesText -Name $recoveryRecipeName
+    if ($recoveryRecipeBlock -notmatch 'timedAction\s*=\s*AuxiliaRecoverBrokenBolt,') {
+        throw "$recoveryRecipeName must use the compact broken-bolt recovery timed action."
+    }
+    if ($recoveryRecipeBlock -match 'timedAction\s*=\s*CraftKnifeSpear,') {
+        throw "$recoveryRecipeName must not display Base.SpearKnife at full size."
+    }
+    if ($recoveryRecipeBlock -notmatch 'Broken(?:Stone)?Bolt\]\s+flags\[Prop2\]') {
+        throw "$recoveryRecipeName must show its actual compact broken bolt as Prop2."
+    }
+    if ($recoveryRecipeBlock -notmatch 'mode:keep\s+flags\[Prop1;MayDegradeVeryLight\]') {
+        throw "$recoveryRecipeName must show its selected recovery tool as Prop1."
     }
 }
 
@@ -297,6 +418,24 @@ $reloadText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\shared
 foreach ($reloadCheck in @('ISReloadWeaponAction.setReloadSpeed', 'AuxiliasCrossbow.ImprovisedCrossbow', 'AuxiliasCrossbow.ReinforcedCrossbow', 'AuxiliasCrossbow.HeavyArbalest')) {
     if ($reloadText -notmatch [regex]::Escape($reloadCheck)) {
         throw "Tier-specific reload integration is missing: $reloadCheck"
+    }
+}
+
+$modelStateText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_ModelState.lua') -Raw
+foreach ($modelStateCheck in @(
+    'AuxiliaImprovisedCrossbowCocked',
+    'AuxiliaReinforcedCrossbowCocked',
+    'AuxiliaHeavyArbalestCocked',
+    'local ammoCount = weapon:getCurrentAmmoCount()',
+    'setWeaponSprite',
+    'resetEquippedHandsModels',
+    'releasedWeapons',
+    'Events.OnPlayerUpdate.Add',
+    'Events.OnWeaponSwingHitPoint.Add',
+    'Events.OnPlayerAttackFinished.Add'
+)) {
+    if ($modelStateText -notmatch [regex]::Escape($modelStateCheck)) {
+        throw "Crossbow model-state integration is missing: $modelStateCheck"
     }
 }
 

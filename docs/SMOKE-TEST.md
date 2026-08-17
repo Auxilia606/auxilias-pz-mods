@@ -151,3 +151,32 @@ Blender 5.2 regenerated and round-tripped seven FBX assets, including dedicated 
 The release validator passed 38 required-file checks and all six English/Korean translation files with exact key parity. A clean-deployment test inserted an obsolete sentinel into an existing test install, redeployed through the staged tree swap, and confirmed that the stale file was removed while all 48 source and destination files matched. A package-audit ZIP then matched every current workshop file by path, length, and SHA-256 hash.
 
 The clean 0.2.0 candidate was then loaded by the installed 42.20.2 dedicated server in no-Steam mode. The server loaded `AuxiliasCrossbow`, accepted all eleven recipes, reached `*** SERVER STARTED ****`, and shut down cleanly. The final server log contains no Auxilia-related error or warning; unrelated vanilla Build 42 warnings remain unchanged from the earlier isolated runs.
+
+## Development smoke test — fixed-length crossbow states and dedicated icons
+
+Date: 2026-08-17
+
+Blender 5.2 regenerated and round-tripped ten FBX assets: relaxed and cocked variants of all three crossbows plus the four intact/broken bolt models. Top, side, and isometric renders confirm that relaxed strings remain visible above the rail and cocked strings draw to an exposed central catch while the limbs bend rearward and inward.
+
+The generated physics report measures the same string length in both states to within `0.00000001` units. Sampled relaxed/cocked limb-length drift remains below `0.00009` units, inside the `0.0002` validation tolerance. Generation and static validation fail if either length changes beyond tolerance, if the cocked tips fail to move rearward, or if the catch is not behind the tips.
+
+The rebuilt mod was copied into a fresh isolated 42.20.2 dedicated-server cache. The server loaded `AuxiliasCrossbow`, registered all eleven Auxilia recipes exactly once, reached `*** SERVER STARTED ****`, and shut down cleanly. No Auxilia-related error or warning appeared in the server log.
+
+An isolated 42.20.2 client cache then loaded `AuxiliasCrossbow` through the main-menu asset and Lua initialization path. All six crossbow model definitions, ten dedicated icons, and the ammo-state client script were present; no Auxilia-related model, texture, script, or Lua error appeared. The final client-load rerun also covered the fired-weapon latch that holds the relaxed model through delayed ammo synchronization and repeats the release at `OnPlayerAttackFinished`.
+
+With the project owner's approval, the most recent Apocalypse save was copied to a separate `AuxiliaRuntimeSmoke` save and loaded in the installed 42.20.2 client. The temporary runtime harness resolved all ten item icon mappings to dedicated 128×128 textures, including `AuxiliaStoneBoltHead`, and then equipped every crossbow tier. Light, standard, and heavy variants each passed the complete `relaxed -> cocked -> fired/relaxed` sprite sequence. State captures and the client log confirmed that the standard and heavy equipped models are visible in-world, select their cocked model when ammunition is present, and immediately return to the relaxed model after the firing event. The harness restored the character's original hand items before reporting `PASS`; the temporary save and harness were removed after the check.
+
+## Stone Bolt tracer crash regression
+
+Date: 2026-08-17
+
+A user playtest exposed a Build 42 engine `NullPointerException` when the Heavy Crossbow fired after switching to Stone Bolts. The firing stack reached `IsoBulletTracerEffects.createEffect`, where the Stone Bolt `AmmoType` had no tracer configuration. Metal Bolts did not fail because all three weapon scripts reference the metal type by default, causing `Item.resolveItemTypes()` to initialize it. The Stone Bolt type was previously reachable only through the runtime inventory selector and therefore missed that initialization path.
+
+Both bolt item definitions now self-reference their registered `AmmoType`. This makes Build 42 initialize tracer configuration for both material paths during normal item resolution without restoring the invalid `base:ammo` tag. Static validation enforces the two item-to-registry mappings.
+
+The corrected build was then loaded from a separate copy of the most recent Apocalypse save. A temporary harness equipped a Heavy Crossbow, selected `auxiliascrossbow:stonebolt`, and set one loaded round. A real mouse aim/fire input passed through `CombatManager`, reached the weapon hit-point event, completed the attack, consumed the round from one to zero, and restored `AuxiliaHeavyArbalest`. No `IsoBulletTracerEffects`, `NullPointerException`, or `IngameState.updateInternal` error occurred, and the client remained running. The temporary save and harness were removed after the check.
+## 2026-08-18 — Recovery prop and hotbar icon regression
+
+The recovery recipes previously reused vanilla `CraftKnifeSpear`, whose timed-action definition forces the full-size `Base.SpearKnife` prop. Both Metal and Stone recovery now use `AuxiliaRecoverBrokenBolt` with the selected tool as `Prop1` and the actual broken bolt as `Prop2`. Their round-tripped model lengths are approximately 20.0 cm and 21.7 cm respectively, rather than spear length. The dedicated server loaded the updated mod and completed startup without an Auxilia script or recipe error.
+
+Build 42's `ISHotbar` uses 60-pixel slots but draws each item texture at native size. All ten independent hand-painted 128×128 masters are now downsampled to distinct transparent 32×32 runtime textures; the installed files were checked at 32×32, placing each texture entirely within one slot under the vanilla render calculation. Static validation passed with 47 required files and six translation files.

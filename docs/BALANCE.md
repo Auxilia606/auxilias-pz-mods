@@ -26,6 +26,8 @@ Bolts are assembled one at a time instead of being produced as an abstract bundl
 
 Small Handles already come from vanilla wood-processing recipes, so the mod does not duplicate the game's branch-to-wood-blank economy. Chicken and Turkey Feathers are supplied by Build 42's animal-butchering system, so the mod consumes the shared `base:feather` tag instead of adding duplicate feather loot. Duct Tape is no longer a substitute for proper fletching.
 
+Crossbow Bolts intentionally do not carry vanilla's `base:ammo` item tag. Build 42 uses that tag as the unrestricted input to `GatherGunpowder`, which would incorrectly let a mechanical bolt yield propellant. Crossbow loading is unaffected because Auxilia registers its two bolt materials through dedicated ammunition types.
+
 A broken bolt cannot be turned directly into another complete bolt. The matching tool recovers a head of the same material; the player must supply a new shaft, feather, and binding before it can be fired again. Metal bolts have a 70% intact recovery chance, while the easier-to-source Stone Bolts have a 45% intact recovery chance. Both materials use the crossbow's weapon damage because Build 42 applies projectile damage from the weapon rather than the loose ammunition item.
 
 An unloaded crossbow defaults to Metal Bolts. Its inventory context menu shows the current ammunition material and can switch it between Metal and Stone Bolts; normal reload and unload actions then use the selected material. The two advanced head paths make component pairs because a suitable stone or metal piece has enough stock for more than one small head. Finished bolts are still assembled one at a time.

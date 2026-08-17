@@ -1,4 +1,4 @@
-"""Generate, export, render, and validate Auxilia's Crossbow assets.
+"""Generate and validate 3D assets, then install the dedicated item icons.
 
 Run with Blender, not the system Python:
     blender --background --python generate_assets.py
@@ -12,7 +12,6 @@ import bpy
 import json
 import math
 import os
-import shutil
 from mathutils import Vector
 
 
@@ -23,10 +22,24 @@ VERSION_ROOT = os.path.join(MOD_ROOT, "42.20")
 MODEL_DIR = os.path.join(VERSION_ROOT, "media", "models_X", "weapons", "2handed")
 MODEL_TEXTURE_DIR = os.path.join(VERSION_ROOT, "media", "textures", "weapons", "2handed")
 ITEM_TEXTURE_DIR = os.path.join(VERSION_ROOT, "media", "textures")
+ICON_SOURCE_DIR = os.path.join(REPO_ROOT, "source-assets", "icons")
 VALIDATION_DIR = os.path.join(REPO_ROOT, "work", "model-validation")
 
 for directory in (MODEL_DIR, MODEL_TEXTURE_DIR, ITEM_TEXTURE_DIR, VALIDATION_DIR, SCRIPT_DIR):
     os.makedirs(directory, exist_ok=True)
+
+ICON_NAMES = (
+    "AuxiliaImprovisedCrossbow",
+    "AuxiliaReinforcedCrossbow",
+    "AuxiliaHeavyArbalest",
+    "AuxiliaCrossbowBolt",
+    "AuxiliaStoneCrossbowBolt",
+    "AuxiliaBrokenBolt",
+    "AuxiliaBrokenStoneBolt",
+    "AuxiliaBoltShaft",
+    "AuxiliaBoltHead",
+    "AuxiliaStoneBoltHead",
+)
 
 
 SWATCHES = {
@@ -238,6 +251,29 @@ def string_part(coll, name, points, mat, thickness=0.0035):
     return bpy.context.object
 
 
+def circular_limb_points(half_span, bow_y, z, bend_angle):
+    """Return a constant-arc-length limb bent rearward from the prod socket."""
+    if bend_angle <= 0:
+        raise ValueError("Crossbow limb bend angle must be positive")
+    radius = half_span / bend_angle
+    points = []
+    for fraction in (0.00, 0.18, 0.38, 0.58, 0.77, 0.91, 1.00):
+        angle = bend_angle * fraction
+        points.append((
+            radius * math.sin(angle),
+            bow_y - radius * (1.0 - math.cos(angle)),
+            z,
+        ))
+    return tuple(points)
+
+
+def polyline_length(points):
+    return sum(
+        (Vector(points[index]) - Vector(points[index - 1])).length
+        for index in range(1, len(points))
+    )
+
+
 def add_wrapping(coll, prefix, center_y, z, width, radius, mat, turns=4):
     for index in range(turns):
         x = (index - (turns - 1) * 0.5) * width / max(turns - 1, 1)
@@ -248,8 +284,9 @@ def add_wrapping(coll, prefix, center_y, z, width, radius, mat, turns=4):
         move_to_collection(obj, coll)
 
 
-def build_crossbow(name, tier, spec, mats):
-    coll = new_collection(name)
+def build_crossbow(name, tier, spec, mats, cocked=False):
+    model_name = f"{name}Cocked" if cocked else name
+    coll = new_collection(model_name)
     wood, dark_wood, metal, cord, _leather = mats[:5]
     rear = spec["rear"]
     nose = spec["nose"]
@@ -271,35 +308,23 @@ def build_crossbow(name, tier, spec, mats):
         (0.150, spec["body_width"], 0.004, 0.028),
         (nose, spec["body_width"], 0.006, 0.021),
     )
-    tapered_tiller(coll, f"{name}_Tiller", tiller_sections, stock_mat, edge=0.003)
-    cube_part(coll, f"{name}_ButtCap", (0, -rear + 0.006, -0.003), (spec["stock_width"] + 0.004, 0.012, 0.046), dark_wood, edge=0.0025)
+    tapered_tiller(coll, f"{model_name}_Tiller", tiller_sections, stock_mat, edge=0.003)
+    cube_part(coll, f"{model_name}_ButtCap", (0, -rear + 0.006, -0.003), (spec["stock_width"] + 0.004, 0.012, 0.046), dark_wood, edge=0.0025)
 
     rail_start = 0.020
     rail_end = nose + 0.006
-    cube_part(coll, f"{name}_BoltRail", (0, (rail_start + rail_end) * 0.5, 0.035), (spec["rail_width"], rail_end - rail_start, 0.010), trim_mat, edge=0.0015)
-    cube_part(coll, f"{name}_Lock", (0, 0.010, 0.029), (spec["lock_width"], 0.046, 0.014), trim_mat, edge=0.002)
-    cube_part(coll, f"{name}_Trigger", (0, 0.006, -0.030), (0.006, 0.014, 0.014), metal, rotation=(math.radians(-12), 0, 0), edge=0.001)
+    cube_part(coll, f"{model_name}_BoltRail", (0, (rail_start + rail_end) * 0.5, 0.035), (spec["rail_width"], rail_end - rail_start, 0.010), trim_mat, edge=0.0015)
+    cube_part(coll, f"{model_name}_Trigger", (0, 0.006, -0.030), (0.006, 0.014, 0.014), metal, rotation=(math.radians(-12), 0, 0), edge=0.001)
     # Keep the prod collar subordinate to the limbs. The previous deep block
     # interrupted the bow silhouette and made the center resemble a clamp.
-    cube_part(coll, f"{name}_ProdSocket", (0, bow_y + 0.002, 0.029), (spec["stock_width"] + 0.018, 0.038, 0.034), trim_mat, edge=0.003)
+    cube_part(coll, f"{model_name}_ProdSocket", (0, bow_y + 0.002, 0.029), (spec["stock_width"] + 0.018, 0.038, 0.034), trim_mat, edge=0.003)
 
     limb_mat = wood if tier == 1 else metal
-    curve = spec["curve"]
-    # A single monotonic sweep reads as a traditional crossbow prod from the
-    # isometric game camera. Avoid a reversed final segment: at game scale it
-    # looked like a hook or an open pair of pincers.
-    positive = tuple(
-        (half_width * fraction, bow_y + curve * sweep, 0.034)
-        for fraction, sweep in (
-            (0.00, 0.10),
-            (0.18, 0.07),
-            (0.38, 0.00),
-            (0.58, -0.10),
-            (0.77, -0.22),
-            (0.91, -0.34),
-            (1.00, -0.42),
-        )
-    )
+    bend_angle = spec["cocked_bend"] if cocked else spec["relaxed_bend"]
+    # The prod is a pair of constant-length circular arcs. Cocking changes the
+    # bend angle, not the authored limb length, so the tips move inward and
+    # rearward as a real crossbow stores energy in its prod.
+    positive = circular_limb_points(half_width, bow_y, 0.034, bend_angle)
     negative = tuple((-x, y, z) for x, y, z in positive)
     chord = spec["limb_chord"]
     height = spec["limb_height"]
@@ -308,18 +333,62 @@ def build_crossbow(name, tier, spec, mats):
     # as a narrow curved band without shrinking the complete weapon.
     chord_widths = tuple(chord * factor for factor in (1.00, 0.96, 0.88, 0.76, 0.63, 0.52, 0.40))
     thicknesses = tuple(height * factor for factor in (1.00, 0.98, 0.93, 0.84, 0.73, 0.62, 0.50))
-    curved_limb(coll, f"{name}_Limb_R", positive, chord_widths, thicknesses, limb_mat)
-    curved_limb(coll, f"{name}_Limb_L", negative, chord_widths, thicknesses, limb_mat)
+    curved_limb(coll, f"{model_name}_Limb_R", positive, chord_widths, thicknesses, limb_mat)
+    curved_limb(coll, f"{model_name}_Limb_L", negative, chord_widths, thicknesses, limb_mat)
 
     right_tip = positive[-1]
     left_tip = negative[-1]
-    latch = (0.0, 0.035, 0.042)
-    string_part(coll, f"{name}_String", (left_tip, latch, right_tip), cord, spec["string_thickness"])
+    relaxed_tip = circular_limb_points(half_width, bow_y, 0.034, spec["relaxed_bend"])[-1]
+    fixed_string_length = relaxed_tip[0] * 2.0
+    if cocked:
+        half_string = fixed_string_length * 0.5
+        lateral_run = abs(right_tip[0])
+        if lateral_run >= half_string:
+            raise RuntimeError(f"{model_name}: cocked tips leave no string length for the draw")
+        draw = math.sqrt(half_string * half_string - lateral_run * lateral_run)
+        latch = (0.0, right_tip[1] - draw, 0.047)
+        string_points = (
+            (left_tip[0], left_tip[1], 0.047),
+            latch,
+            (right_tip[0], right_tip[1], 0.047),
+        )
+    else:
+        string_points = (
+            (left_tip[0], left_tip[1], 0.047),
+            (right_tip[0], right_tip[1], 0.047),
+        )
+    string_part(coll, f"{model_name}_String", string_points, cord, spec["string_thickness"])
+
+    # The catch is positioned from the same fixed-string calculation used by
+    # the cocked model. Its slim sear link explains the forward catch without
+    # hiding the string inside the stock or moving the firing hand envelope.
+    cocked_tip = circular_limb_points(half_width, bow_y, 0.034, spec["cocked_bend"])[-1]
+    cocked_half_string = fixed_string_length * 0.5
+    cocked_draw = math.sqrt(cocked_half_string * cocked_half_string - cocked_tip[0] * cocked_tip[0])
+    catch_y = cocked_tip[1] - cocked_draw
+    cube_part(coll, f"{model_name}_StringCatch", (0, catch_y, 0.041), (spec["lock_width"], 0.020, 0.016), trim_mat, edge=0.002)
+    link_start = 0.016
+    link_end = catch_y - 0.010
+    cube_part(coll, f"{model_name}_SearLink", (0, (link_start + link_end) * 0.5, 0.012), (0.004, link_end - link_start, 0.005), metal, edge=0.001)
+
+    measured_string_length = polyline_length(string_points)
+    if abs(measured_string_length - fixed_string_length) > 0.00001:
+        raise RuntimeError(
+            f"{model_name}: string length changed by {measured_string_length - fixed_string_length:.6f} m"
+        )
+    coll["state"] = "cocked" if cocked else "relaxed"
+    coll["string_length"] = fixed_string_length
+    coll["measured_string_length"] = measured_string_length
+    coll["limb_arc_length"] = half_width
+    coll["measured_limb_length"] = polyline_length(positive)
+    coll["tip_half_span"] = abs(right_tip[0])
+    coll["tip_y"] = right_tip[1]
+    coll["catch_y"] = catch_y
 
     if tier == 1:
-        cube_part(coll, f"{name}_ProdBinding", (0, bow_y - 0.004, 0.029), (spec["stock_width"] + 0.022, 0.010, 0.038), cord, edge=0.002)
+        cube_part(coll, f"{model_name}_ProdBinding", (0, bow_y - 0.004, 0.029), (spec["stock_width"] + 0.022, 0.010, 0.038), cord, edge=0.002)
     elif tier == 2:
-        cube_part(coll, f"{name}_ProdBand", (0, bow_y - 0.004, 0.029), (spec["stock_width"] + 0.022, 0.010, 0.038), metal, edge=0.002)
+        cube_part(coll, f"{model_name}_ProdBand", (0, bow_y - 0.004, 0.029), (spec["stock_width"] + 0.022, 0.010, 0.038), metal, edge=0.002)
     # The top tier is intentionally mechanism-free. Its heavier silhouette
     # comes from the iron tiller and thicker steel prod alone.
 
@@ -392,21 +461,6 @@ def build_bolt(name, broken, mats, material_kind="metal"):
             cylinder_part(coll, f"{name}_HeadSocket", (0, 0.058, 0), 0.009, 0.018, metal, vertices=8)
             cone_part(coll, f"{name}_BodkinFragment", (0, 0.086, 0), 0.013, 0.040, metal, vertices=4)
     return coll
-
-
-def build_bolt_component_icons(mats):
-    """Build icon-only geometry for the two crafting components."""
-    wood, dark_wood, metal, cord, _leather = mats[:5]
-
-    shaft = new_collection("AuxiliaBoltShaft")
-    cylinder_part(shaft, "AuxiliaBoltShaft_Shaft", (0, 0, 0), 0.009, 0.30, wood, vertices=10)
-    cylinder_part(shaft, "AuxiliaBoltShaft_Nock", (0, -0.142, 0), 0.0115, 0.020, dark_wood, vertices=10)
-    cylinder_part(shaft, "AuxiliaBoltShaft_Wrap", (0, 0.105, 0), 0.011, 0.018, cord, vertices=10)
-
-    head = new_collection("AuxiliaBoltHead")
-    cone_part(head, "AuxiliaBoltHead_Point", (0, 0.025, 0), 0.042, 0.105, metal, vertices=4)
-    cylinder_part(head, "AuxiliaBoltHead_Tang", (0, -0.050, 0), 0.009, 0.070, metal, vertices=8)
-    return shaft, head
 
 
 def collection_objects(coll):
@@ -569,6 +623,24 @@ def make_palette_texture(filename):
     image.save()
 
 
+def install_item_icons(icon_names):
+    """Downsample authored 2D art to PZ's native 32 px runtime canvas."""
+    for icon_name in icon_names:
+        source = os.path.join(ICON_SOURCE_DIR, f"Item_{icon_name}.png")
+        destination = os.path.join(ITEM_TEXTURE_DIR, f"Item_{icon_name}.png")
+        if not os.path.isfile(source):
+            raise RuntimeError(f"Dedicated source icon is missing: {source}")
+        icon = bpy.data.images.load(source, check_existing=False)
+        if tuple(icon.size) != (128, 128):
+            bpy.data.images.remove(icon)
+            raise RuntimeError(f"{icon_name}: icon master must be 128x128")
+        icon.scale(32, 32)
+        icon.filepath_raw = destination
+        icon.file_format = "PNG"
+        icon.save()
+        bpy.data.images.remove(icon)
+
+
 def apply_palette_to_preview_materials(image):
     """Render with the same atlas/UV path the game uses, not diffuse colors alone."""
     for mat in (WOOD, DARK_WOOD, METAL, CORD, LEATHER, STONE, FEATHER):
@@ -636,20 +708,6 @@ def set_visible(target, asset_collections):
         coll.hide_render = coll is not target
 
 
-def render_icon(coll, asset_collections, filename, camera, scale, target=(0, 0.10, 0.015)):
-    scene = bpy.context.scene
-    set_visible(coll, asset_collections)
-    scene.render.film_transparent = True
-    scene.render.use_freestyle = True
-    scene.render.resolution_x = 128
-    scene.render.resolution_y = 128
-    camera.data.ortho_scale = scale
-    camera.location = (0.75, -0.82, 0.68)
-    look_at(camera, target)
-    scene.render.filepath = os.path.join(ITEM_TEXTURE_DIR, f"Item_{filename}.png")
-    bpy.ops.render.render(write_still=True)
-
-
 def render_validation(coll, asset_collections, filename, camera):
     scene = bpy.context.scene
     set_visible(coll, asset_collections)
@@ -658,11 +716,12 @@ def render_validation(coll, asset_collections, filename, camera):
     scene.world.color = (0.012, 0.016, 0.014)
     scene.render.resolution_x = 640
     scene.render.resolution_y = 480
+    base_filename = filename.removesuffix("Cocked")
     scales = {
         "AuxiliaImprovisedCrossbow": (0.50, 0.42, 0.42),
         "AuxiliaReinforcedCrossbow": (0.52, 0.44, 0.42),
         "AuxiliaHeavyArbalest": (0.56, 0.48, 0.44),
-    }[filename]
+    }[base_filename]
     views = {"iso": ((0.82, -0.84, 0.68), (0, 0.10, 0.015), scales[0]), "top": ((0.0, 0.10, 1.35), (0, 0.10, 0.0), scales[1]), "side": ((1.30, 0.10, 0.06), (0, 0.10, 0.0), scales[2])}
     for view_name, (location, target, scale) in views.items():
         camera.location = location
@@ -737,12 +796,20 @@ def import_fbx(filepath):
     return [obj for obj in bpy.context.scene.objects if obj not in before and obj.type == "MESH"]
 
 
-def validate_exports(asset_objects, icon_names):
-    report = {"coordinate_system": "X width, Y forward, Z up; action at origin", "assets": {}, "icons": {}}
+def validate_exports(asset_objects, icon_names, physics_report):
+    report = {
+        "coordinate_system": "X width, Y forward, Z up; action at origin",
+        "assets": {},
+        "icons": {},
+        "crossbow_physics": physics_report,
+    }
     expected_ranges = {
         "AuxiliaImprovisedCrossbow": ((0.24, 0.27), (0.35, 0.38), (0.07, 0.10)),
         "AuxiliaReinforcedCrossbow": ((0.27, 0.30), (0.35, 0.38), (0.07, 0.10)),
         "AuxiliaHeavyArbalest": ((0.30, 0.34), (0.35, 0.38), (0.08, 0.11)),
+        "AuxiliaImprovisedCrossbowCocked": ((0.22, 0.25), (0.35, 0.38), (0.07, 0.10)),
+        "AuxiliaReinforcedCrossbowCocked": ((0.25, 0.28), (0.35, 0.38), (0.07, 0.10)),
+        "AuxiliaHeavyArbalestCocked": ((0.28, 0.31), (0.35, 0.38), (0.08, 0.11)),
         "AuxiliaCrossbowBolt": ((0.02, 0.04), (0.27, 0.29), (0.025, 0.045)),
         "AuxiliaStoneCrossbowBolt": ((0.02, 0.05), (0.27, 0.30), (0.025, 0.045)),
     }
@@ -783,11 +850,12 @@ def validate_exports(asset_objects, icon_names):
         for obj in imported:
             bpy.data.objects.remove(obj, do_unlink=True)
     for icon_name in icon_names:
-        icon_path = os.path.join(ITEM_TEXTURE_DIR, f"Item_{icon_name}.png")
-        icon = bpy.data.images.load(icon_path, check_existing=False)
+        source_icon_path = os.path.join(ICON_SOURCE_DIR, f"Item_{icon_name}.png")
+        runtime_icon_path = os.path.join(ITEM_TEXTURE_DIR, f"Item_{icon_name}.png")
+        icon = bpy.data.images.load(source_icon_path, check_existing=False)
         width, height = icon.size
         if (width, height) != (128, 128):
-            raise RuntimeError(f"{icon_name}: icon must be 128x128, got {width}x{height}")
+            raise RuntimeError(f"{icon_name}: icon master must be 128x128, got {width}x{height}")
         pixels = icon.pixels[:]
         visible = []
         for index in range(width * height):
@@ -805,12 +873,18 @@ def validate_exports(asset_objects, icon_names):
         if not 0.015 <= coverage <= 0.55:
             raise RuntimeError(f"{icon_name}: visible coverage {coverage:.3f} is outside the expected range")
         report["icons"][icon_name] = {
-            "size": [width, height],
+            "source_size": [width, height],
             "visible_bounds": list(bounds),
             "edge_margin": edge_margin,
             "visible_coverage": round(coverage, 4),
         }
         bpy.data.images.remove(icon)
+        runtime_icon = bpy.data.images.load(runtime_icon_path, check_existing=False)
+        runtime_size = tuple(runtime_icon.size)
+        bpy.data.images.remove(runtime_icon)
+        if runtime_size != (32, 32):
+            raise RuntimeError(f"{icon_name}: runtime icon must be 32x32, got {runtime_size}")
+        report["icons"][icon_name]["runtime_size"] = list(runtime_size)
     report_path = os.path.join(VALIDATION_DIR, "report.json")
     with open(report_path, "w", encoding="utf-8") as handle:
         json.dump(report, handle, ensure_ascii=False, indent=2)
@@ -828,54 +902,73 @@ FEATHER = material("Pale Feather", (0.66, 0.62, 0.50), roughness=0.96)
 MATERIALS = (WOOD, DARK_WOOD, METAL, CORD, LEATHER, STONE, FEATHER)
 
 SPECS = {
-    "AuxiliaImprovisedCrossbow": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.250, "curve": 0.034, "stock_width": 0.024, "body_width": 0.016, "lock_width": 0.020, "rail_width": 0.014, "limb_chord": 0.009, "limb_height": 0.014, "string_thickness": 0.0024},
-    "AuxiliaReinforcedCrossbow": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.280, "curve": 0.038, "stock_width": 0.026, "body_width": 0.018, "lock_width": 0.022, "rail_width": 0.016, "limb_chord": 0.010, "limb_height": 0.017, "string_thickness": 0.0027},
-    "AuxiliaHeavyArbalest": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.315, "curve": 0.042, "stock_width": 0.028, "body_width": 0.020, "lock_width": 0.024, "rail_width": 0.018, "limb_chord": 0.012, "limb_height": 0.022, "string_thickness": 0.0032},
+    "AuxiliaImprovisedCrossbow": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.250, "relaxed_bend": 0.12, "cocked_bend": 0.58, "stock_width": 0.024, "body_width": 0.016, "lock_width": 0.020, "rail_width": 0.014, "limb_chord": 0.009, "limb_height": 0.014, "string_thickness": 0.0024},
+    "AuxiliaReinforcedCrossbow": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.280, "relaxed_bend": 0.12, "cocked_bend": 0.62, "stock_width": 0.026, "body_width": 0.018, "lock_width": 0.022, "rail_width": 0.016, "limb_chord": 0.010, "limb_height": 0.017, "string_thickness": 0.0027},
+    "AuxiliaHeavyArbalest": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.315, "relaxed_bend": 0.12, "cocked_bend": 0.66, "stock_width": 0.028, "body_width": 0.020, "lock_width": 0.024, "rail_width": 0.018, "limb_chord": 0.012, "limb_height": 0.022, "string_thickness": 0.0032},
 }
 
 improvised = build_crossbow("AuxiliaImprovisedCrossbow", 1, SPECS["AuxiliaImprovisedCrossbow"], MATERIALS)
 reinforced = build_crossbow("AuxiliaReinforcedCrossbow", 2, SPECS["AuxiliaReinforcedCrossbow"], MATERIALS)
 heavy = build_crossbow("AuxiliaHeavyArbalest", 3, SPECS["AuxiliaHeavyArbalest"], MATERIALS)
+improvised_cocked = build_crossbow("AuxiliaImprovisedCrossbow", 1, SPECS["AuxiliaImprovisedCrossbow"], MATERIALS, cocked=True)
+reinforced_cocked = build_crossbow("AuxiliaReinforcedCrossbow", 2, SPECS["AuxiliaReinforcedCrossbow"], MATERIALS, cocked=True)
+heavy_cocked = build_crossbow("AuxiliaHeavyArbalest", 3, SPECS["AuxiliaHeavyArbalest"], MATERIALS, cocked=True)
 bolt = build_bolt("AuxiliaCrossbowBolt", False, MATERIALS, "metal")
 stone_bolt = build_bolt("AuxiliaStoneCrossbowBolt", False, MATERIALS, "stone")
 broken_bolt = build_bolt("AuxiliaBrokenBolt", True, MATERIALS, "metal")
 broken_stone_bolt = build_bolt("AuxiliaBrokenStoneBolt", True, MATERIALS, "stone")
-bolt_shaft_icon, bolt_head_icon = build_bolt_component_icons(MATERIALS)
-assets = [improvised, reinforced, heavy, bolt, stone_bolt, broken_bolt, broken_stone_bolt]
-icon_assets = assets + [bolt_shaft_icon, bolt_head_icon]
+crossbows = [improvised, reinforced, heavy, improvised_cocked, reinforced_cocked, heavy_cocked]
+assets = crossbows + [bolt, stone_bolt, broken_bolt, broken_stone_bolt]
+
+physics_report = {}
+for relaxed, cocked in (
+    (improvised, improvised_cocked),
+    (reinforced, reinforced_cocked),
+    (heavy, heavy_cocked),
+):
+    string_delta = abs(relaxed["measured_string_length"] - cocked["measured_string_length"])
+    limb_delta = abs(relaxed["measured_limb_length"] - cocked["measured_limb_length"])
+    if string_delta > 0.00001:
+        raise RuntimeError(f"{relaxed.name}: relaxed/cocked string length differs by {string_delta:.6f} m")
+    if limb_delta > 0.0002:
+        raise RuntimeError(f"{relaxed.name}: relaxed/cocked limb length differs by {limb_delta:.6f} m")
+    physics_report[relaxed.name] = {
+        "relaxed_model": relaxed.name,
+        "cocked_model": cocked.name,
+        "string_length": round(relaxed["measured_string_length"], 6),
+        "string_length_delta": round(string_delta, 8),
+        "limb_arc_length": round(relaxed["limb_arc_length"], 6),
+        "sampled_limb_length_delta": round(limb_delta, 8),
+        "relaxed_tip_half_span": round(relaxed["tip_half_span"], 6),
+        "cocked_tip_half_span": round(cocked["tip_half_span"], 6),
+        "relaxed_tip_y": round(relaxed["tip_y"], 6),
+        "cocked_tip_y": round(cocked["tip_y"], 6),
+        "catch_y": round(cocked["catch_y"], 6),
+    }
 
 asset_objects = {}
 for collection in assets:
     asset_objects[collection.name] = finalize_collection(collection)
-for collection in (bolt_shaft_icon, bolt_head_icon):
-    finalize_collection(collection)
 for filename, obj in asset_objects.items():
     export_object(obj, filename)
     make_palette_texture(filename)
 
+install_item_icons(ICON_NAMES)
+
 apply_palette_to_preview_materials(bpy.data.images["AuxiliaImprovisedCrossbow"])
 
 camera = setup_render()
-render_icon(improvised, icon_assets, "AuxiliaImprovisedCrossbow", camera, 0.48)
-render_icon(reinforced, icon_assets, "AuxiliaReinforcedCrossbow", camera, 0.51)
-render_icon(heavy, icon_assets, "AuxiliaHeavyArbalest", camera, 0.55)
-render_icon(bolt, icon_assets, "AuxiliaCrossbowBolt", camera, 0.30, (0, 0.015, 0))
-render_icon(stone_bolt, icon_assets, "AuxiliaStoneCrossbowBolt", camera, 0.30, (0, 0.015, 0))
-render_icon(broken_bolt, icon_assets, "AuxiliaBrokenBolt", camera, 0.30, (0, 0.00, 0))
-render_icon(broken_stone_bolt, icon_assets, "AuxiliaBrokenStoneBolt", camera, 0.30, (0, 0.00, 0))
-render_icon(bolt_shaft_icon, icon_assets, "AuxiliaBoltShaft", camera, 0.38, (0, 0.00, 0))
-render_icon(bolt_head_icon, icon_assets, "AuxiliaBoltHead", camera, 0.21, (0, 0.00, 0))
-for collection in (improvised, reinforced, heavy):
-    render_validation(collection, icon_assets, collection.name, camera)
-render_bolt_placement(bolt, icon_assets, camera)
-render_bolt_placement(stone_bolt, icon_assets, camera)
-render_promo(heavy, icon_assets, camera)
+for collection in crossbows:
+    render_validation(collection, assets, collection.name, camera)
+render_bolt_placement(bolt, assets, camera)
+render_bolt_placement(stone_bolt, assets, camera)
+render_promo(heavy, assets, camera)
 
 # Headless Windows runs do not need an Explorer/File Browser thumbnail for the
 # generated source file. Blender 5.2's automatic preview cache can misdecode
 # the project path and create mojibake-named .thumbnails trees beside the repo.
 bpy.context.preferences.filepaths.file_preview_type = "NONE"
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(SCRIPT_DIR, "AuxiliasCrossbowAssets.blend"))
-report_path = validate_exports(asset_objects, [collection.name for collection in icon_assets])
+report_path = validate_exports(asset_objects, ICON_NAMES, physics_report)
 print(f"Auxilia's Crossbow assets generated under: {VERSION_ROOT}")
 print(f"Model validation report: {report_path}")

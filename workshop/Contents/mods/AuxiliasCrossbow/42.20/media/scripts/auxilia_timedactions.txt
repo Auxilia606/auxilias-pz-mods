@@ -1,0 +1,8 @@
+module Base
+{
+    timedAction AuxiliaRecoverBrokenBolt
+    {
+        metabolics = SedentaryActivity,
+        actionAnim = Making,
+    }
+}

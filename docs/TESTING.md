@@ -37,6 +37,11 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - In standing, aiming, firing, and reloading poses, both hands remain near the tiller and rail rather than the butt or prod.
 - No crossbow is sideways, mirrored, oversized, or centered through the character.
 - Limb halves, string ends, rail, lock, tiller, and prod socket remain visibly connected from every camera direction.
+- With no bolt loaded, the string runs straight between the relaxed limb tips and remains visible above the rail on all three crossbows.
+- Loading one bolt bends the limbs rearward/inward and draws the unchanged-length string to the central catch; no string segment is hidden inside the tiller.
+- Firing immediately restores the relaxed limb and string model on the shot, rather than leaving the crossbow visibly cocked while empty.
+- Unloading a bolt also restores the relaxed model, and re-equipping a loaded crossbow restores the cocked model.
+- Switch the Heavy Crossbow to Stone Bolts, load, and fire at both a target and empty ground. Neither shot may produce an `IsoBulletTracerEffects` error or return to the main menu.
 - Dropped/world models rest near the ground and keep the same orientation family as vanilla long guns.
 - A normally dropped Metal Bolt rests with its long axis across the ground, receives a non-central square offset, and gets randomized world rotation comparable to vanilla Twigs and Sapling; Place Item remains manually positioned by the player.
 - Wood, metal, cord, and leather texture regions appear on the intended parts instead of an untextured white model.
@@ -63,5 +68,6 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - Debug recipe-time and XP checks match `docs/VANILLA-RECIPE-ALIGNMENT.md`: `time = 600` for Light Crossbow and Crossbow, 900 for Heavy Crossbow, 230 for knapping, 200 for small forging, 100 for carving/assembly, and 60 for salvage with no XP.
 - Survivor bags and barricaded/safehouse distributions very rarely contain a crossbow.
 - Item names and recipe names change correctly between English and Korean.
-- All nine generated mod icons have no black box, clipped edge, or missing texture.
-- Stone Bolt Heads use the recognizable vanilla chipped-stone artwork; complete and broken Stone Bolts have visibly broader pale stone heads and lighter fletching than their Metal counterparts in both inventory and world views.
+- All ten dedicated mod icons have no black box, clipped edge, or missing texture and remain distinct from the 3D model textures.
+- Stone Bolt Heads use their dedicated compact knapped-point artwork rather than the vanilla Sharp Flint Flake icon; complete and broken Stone Bolts have visibly broader pale stone heads and lighter fletching than their Metal counterparts in both inventory and world views.
+- Neither Metal nor Stone Crossbow Bolts appear as valid inputs for vanilla **Gather Gunpowder**.
