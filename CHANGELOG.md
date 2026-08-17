@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Deferred public Steam Workshop publication until the 1.0.0 completeness and quality gate.
 - Replaced the placeholder Workshop preview, mod poster, and icon with dedicated three-tier crossbow key art.
 - Added GitHub Actions validation, audited package artifacts, and tag-driven releases.
 - Added structured bug and balance feedback forms for the 0.2.x stabilization cycle.

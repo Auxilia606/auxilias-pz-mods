@@ -54,3 +54,34 @@ a long single-player run.
 The exact 0.3.0 repair numbers remain intentionally unset until the first delivery step
 confirms the stable game's repair semantics. This avoids documenting fields or behavior
 that the installed build does not actually support.
+
+## Path to 1.0.0
+
+After the 0.3.0 maintenance milestone, development remains pre-release until the
+existing systems feel complete and coherent in sustained single-player play. Additional
+pre-1.0 milestones should be driven by recorded defects, balance evidence, usability
+gaps, and presentation quality rather than by a requirement to add more weapon tiers.
+
+Public Steam Workshop publication is intentionally deferred to 1.0.0. Before that
+point, `tools/deploy.ps1` remains a local testing workflow and GitHub packages remain
+development/test builds.
+
+### 1.0.0 and Steam Workshop release gate
+
+1. Complete the agreed single-player feature scope, including the 0.3.0 maintenance
+   milestone and every accepted pre-release blocker.
+2. Pass the complete procedure in `docs/TESTING.md` on the targeted stable Project
+   Zomboid build from a clean installation.
+3. Resolve or explicitly defer every accepted bug and balance report under the rules in
+   `docs/STABILIZATION.md`.
+4. Finalize Workshop presentation: cover, English and Korean description, screenshots,
+   optional video, tags, compatibility statement, and change summary.
+5. Build and verify the audited 1.0.0 ZIP and SHA-256 checksum, then test that exact
+   package from a clean extraction.
+6. Create the public Steam Workshop item, record its numeric Workshop ID in the project,
+   and verify a clean subscribe/download/enable cycle.
+7. Confirm the public Workshop contents and GitHub 1.0.0 release originate from the same
+   tagged source tree.
+
+Multiplayer support is not a 1.0.0 publication requirement unless the project scope is
+changed explicitly. The Workshop description must state the tested support level.

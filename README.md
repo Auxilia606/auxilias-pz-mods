@@ -37,6 +37,13 @@ See `docs/TESTING.md` for installation and the debug test-kit workflow.
 Post-release bug and balance reports follow the evidence and release gates in
 `docs/STABILIZATION.md`. The next feature release is scoped in `docs/ROADMAP.md`.
 
+## Distribution status
+
+Versions before 1.0.0 are development and test builds distributed through GitHub and
+the local Workshop deployment workflow. Public Steam Workshop publication is deferred
+until the 1.0.0 quality gate so the first Workshop release represents the intended
+complete mod rather than an early playable milestone.
+
 ## Recipe balance
 
 Crafting times, tools, workstations, materials, skill gates, and XP awards are calibrated against the installed stable 42.20.2 vanilla recipes. The comparison includes every Auxilia crafting recipe and records each previous and adjusted value in the [vanilla recipe alignment report](docs/VANILLA-RECIPE-ALIGNMENT.md).
