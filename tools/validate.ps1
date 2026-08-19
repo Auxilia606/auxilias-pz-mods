@@ -13,6 +13,7 @@ $requiredFiles = @(
     (Join-Path $versionRoot 'media\scripts\auxilia_models.txt'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_AmmoSelection.lua'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_ModelState.lua'),
+    (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_MuzzleFlash.lua'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_TestKit.lua'),
     (Join-Path $versionRoot 'media\lua\server\AuxiliaCrossbow_Loot.lua'),
     (Join-Path $versionRoot 'media\lua\server\AuxiliaCrossbow_Recovery.lua'),
@@ -171,7 +172,7 @@ $weaponModelChecks = @(
     @{ Item = 'HeavyArbalest'; Model = 'AuxiliaHeavyArbalest' }
 )
 foreach ($weaponCheck in $weaponModelChecks) {
-    $itemBlockPattern = "(?s)item\s+$($weaponCheck.Item)\s*\{.*?AttachmentType\s*=\s*Rifle,.*?IsAimedHandWeapon\s*=\s*true,.*?WeaponSprite\s*=\s*$($weaponCheck.Model),"
+    $itemBlockPattern = "(?s)item\s+$($weaponCheck.Item)\s*\{.*?AttachmentType\s*=\s*Rifle,.*?IsAimedFirearm\s*=\s*false,.*?IsAimedHandWeapon\s*=\s*true,.*?Ranged\s*=\s*true,.*?WeaponSprite\s*=\s*$($weaponCheck.Model),"
     if ($itemsText -notmatch $itemBlockPattern) {
         throw "Equipped model integration is incomplete: $($weaponCheck.Item)"
     }
@@ -450,6 +451,25 @@ foreach ($modelStateCheck in @(
 )) {
     if ($modelStateText -notmatch [regex]::Escape($modelStateCheck)) {
         throw "Crossbow model-state integration is missing: $modelStateCheck"
+    }
+}
+
+$muzzleFlashText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_MuzzleFlash.lua') -Raw
+foreach ($muzzleFlashCheck in @(
+    'AuxiliasCrossbow.ImprovisedCrossbow',
+    'AuxiliasCrossbow.ReinforcedCrossbow',
+    'AuxiliasCrossbow.HeavyArbalest',
+    'player:isDead()',
+    'player:isAiming()',
+    'player:getPrimaryHandItem()',
+    'player:setAngleFromAim()',
+    'player:updateBallistics()',
+    'Events.OnEquipPrimary.Add',
+    'Events.OnGameStart.Add',
+    'Events.OnPlayerUpdate.Add'
+)) {
+    if ($muzzleFlashText -notmatch [regex]::Escape($muzzleFlashCheck)) {
+        throw "Crossbow muzzle-flash suppression is missing: $muzzleFlashCheck"
     }
 }
 

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Prevented Build 42's firearm-only muzzle light and bright bullet tracer from being created for crossbow shots. Crossbows now use the aimed-hand ranged path plus a client-side ballistics update instead of the firearm-effects path.
 - Removed the spear-and-knife animation from every Bolt assembly and recovery recipe. Metal work now uses the small-part hand animation, while Stone head recovery uses the stone-working animation.
 - Replaced the broken-bolt recovery recipe's full-size vanilla spear prop with the actual compact broken Metal or Stone Bolt and its matching tool.
 - Kept the ten independent 128×128 icon masters while installing 32×32 runtime copies, preventing equipped crossbows from overlapping adjacent hotbar slots.
