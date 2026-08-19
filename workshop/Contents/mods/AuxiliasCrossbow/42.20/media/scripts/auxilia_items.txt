@@ -37,6 +37,7 @@ module AuxiliasCrossbow
         ItemType = base:normal,
         Weight = 0.06,
         Icon = AuxiliaBoltShaft,
+        StaticModel = Base.SmallHandle,
         WorldStaticModel = Base.SmallHandle,
         Tags = base:haswood,
     }

@@ -11,7 +11,6 @@ $requiredFiles = @(
     (Join-Path $versionRoot 'media\scripts\auxilia_items.txt'),
     (Join-Path $versionRoot 'media\scripts\auxilia_recipes.txt'),
     (Join-Path $versionRoot 'media\scripts\auxilia_models.txt'),
-    (Join-Path $versionRoot 'media\scripts\auxilia_timedactions.txt'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_AmmoSelection.lua'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_ModelState.lua'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_TestKit.lua'),
@@ -245,11 +244,6 @@ foreach ($iconName in @(
     $runtimeIconHashes[$runtimeIconHash] = $iconName
 }
 
-$timedActionsText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\scripts\auxilia_timedactions.txt') -Raw
-if ($timedActionsText -notmatch '(?s)timedAction\s+AuxiliaRecoverBrokenBolt\s*\{.*?actionAnim\s*=\s*Making,') {
-    throw 'The compact broken-bolt recovery timed action is missing.'
-}
-
 foreach ($boltAmmoCheck in @(
     @{ Item = 'AuxiliasCrossbowBolt'; AmmoType = 'auxiliascrossbow:bolt' },
     @{ Item = 'AuxiliasStoneCrossbowBolt'; AmmoType = 'auxiliascrossbow:stonebolt' }
@@ -321,9 +315,6 @@ foreach ($recipeName in @('MakeLightCrossbow', 'MakeCrossbow', 'MakeHeavyCrossbo
 
 foreach ($recoveryRecipeName in @('SalvageBrokenBolts', 'SalvageBrokenStoneBolt')) {
     $recoveryRecipeBlock = Get-CraftRecipeBlock -Text $recipesText -Name $recoveryRecipeName
-    if ($recoveryRecipeBlock -notmatch 'timedAction\s*=\s*AuxiliaRecoverBrokenBolt,') {
-        throw "$recoveryRecipeName must use the compact broken-bolt recovery timed action."
-    }
     if ($recoveryRecipeBlock -match 'timedAction\s*=\s*CraftKnifeSpear,') {
         throw "$recoveryRecipeName must not display Base.SpearKnife at full size."
     }
@@ -335,6 +326,29 @@ foreach ($recoveryRecipeName in @('SalvageBrokenBolts', 'SalvageBrokenStoneBolt'
     }
 }
 
+$metalRecoveryRecipe = Get-CraftRecipeBlock -Text $recipesText -Name 'SalvageBrokenBolts'
+if ($metalRecoveryRecipe -notmatch 'timedAction\s*=\s*MakingJewellery,') {
+    throw 'Metal-head recovery must use the small-part MakingJewellery animation.'
+}
+$stoneRecoveryRecipe = Get-CraftRecipeBlock -Text $recipesText -Name 'SalvageBrokenStoneBolt'
+if ($stoneRecoveryRecipe -notmatch 'timedAction\s*=\s*HammerStoneStanding,') {
+    throw 'Stone-head recovery must use the stone-working HammerStoneStanding animation.'
+}
+
+foreach ($assemblyRecipeName in @('MakeStandardBolts', 'MakeStoneBolt')) {
+    $assemblyRecipeBlock = Get-CraftRecipeBlock -Text $recipesText -Name $assemblyRecipeName
+    if ($assemblyRecipeBlock -notmatch 'timedAction\s*=\s*MakingJewellery,') {
+        throw "$assemblyRecipeName must use the small-part assembly animation."
+    }
+    if ($assemblyRecipeBlock -notmatch 'BoltShaft\]\s+flags\[Prop2\]') {
+        throw "$assemblyRecipeName must show the compact bolt shaft rather than a spear."
+    }
+}
+
+if ($recipesText -match 'CraftKnifeSpear') {
+    throw 'Crossbow recipes must never invoke the spear-and-knife animation.'
+}
+
 $vanillaAlignedRecipeChecks = @(
     @{ Recipe = 'MakeLightCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:20;Carving:20;Maintenance:10', 'item\s+1\s+\[Base\.Plank\]') },
     @{ Recipe = 'MakeCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:40;Carving:30;Maintenance:30', 'item\s+1\s+\[AuxiliasCrossbow\.ImprovisedCrossbow\]', 'item\s+1\s+\[Base\.MetalBar\]', 'tags\[base:screwdriver\]', 'tags\[base:pliers\]') },
@@ -343,8 +357,8 @@ $vanillaAlignedRecipeChecks = @(
     @{ Recipe = 'ShapeBoltHead'; Patterns = @('time\s*=\s*100', 'xpAward\s*=\s*Maintenance:5') },
     @{ Recipe = 'KnappBoltHeads'; Patterns = @('time\s*=\s*230', 'xpAward\s*=\s*FlintKnapping:20') },
     @{ Recipe = 'ForgeBoltHeads'; Patterns = @('time\s*=\s*200', 'xpAward\s*=\s*Blacksmith:20') },
-    @{ Recipe = 'MakeStandardBolts'; Patterns = @('time\s*=\s*100', 'Tags\s*=\s*InHandCraft;Survivalist', 'SkillRequired\s*=\s*Maintenance:1', 'timedAction\s*=\s*CraftKnifeSpear', 'xpAward\s*=\s*Maintenance:5') },
-    @{ Recipe = 'MakeStoneBolt'; Patterns = @('time\s*=\s*100', 'Tags\s*=\s*InHandCraft;Survivalist', 'SkillRequired\s*=\s*Maintenance:1', 'timedAction\s*=\s*CraftKnifeSpear', 'xpAward\s*=\s*Maintenance:5') },
+    @{ Recipe = 'MakeStandardBolts'; Patterns = @('time\s*=\s*100', 'Tags\s*=\s*InHandCraft;Survivalist', 'SkillRequired\s*=\s*Maintenance:1', 'timedAction\s*=\s*MakingJewellery', 'xpAward\s*=\s*Maintenance:5') },
+    @{ Recipe = 'MakeStoneBolt'; Patterns = @('time\s*=\s*100', 'Tags\s*=\s*InHandCraft;Survivalist', 'SkillRequired\s*=\s*Maintenance:1', 'timedAction\s*=\s*MakingJewellery', 'xpAward\s*=\s*Maintenance:5') },
     @{ Recipe = 'SalvageBrokenBolts'; Patterns = @('time\s*=\s*60', 'category\s*=\s*Assembly'); Forbidden = @('SkillRequired\s*=', 'xpAward\s*=') },
     @{ Recipe = 'SalvageBrokenStoneBolt'; Patterns = @('time\s*=\s*60', 'category\s*=\s*Assembly'); Forbidden = @('SkillRequired\s*=', 'xpAward\s*=') }
 )

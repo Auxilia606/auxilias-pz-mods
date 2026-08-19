@@ -170,12 +170,12 @@ module AuxiliasCrossbow
         Tags = InHandCraft;Survivalist,
         category = Weaponry,
         SkillRequired = Maintenance:1,
-        timedAction = CraftKnifeSpear,
+        timedAction = MakingJewellery,
         xpAward = Maintenance:5,
         inputs
         {
-            item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
-            item 1 [AuxiliasCrossbow.BoltShaft],
+            item 1 tags[base:sharpknife] mode:keep flags[Prop1;IsNotDull;MayDegradeLight],
+            item 1 [AuxiliasCrossbow.BoltShaft] flags[Prop2],
             item 1 [AuxiliasCrossbow.BoltHead],
             item 1 tags[base:feather],
             item 1 [Base.Twine],
@@ -192,12 +192,12 @@ module AuxiliasCrossbow
         Tags = InHandCraft;Survivalist,
         category = Weaponry,
         SkillRequired = Maintenance:1,
-        timedAction = CraftKnifeSpear,
+        timedAction = MakingJewellery,
         xpAward = Maintenance:5,
         inputs
         {
-            item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
-            item 1 [AuxiliasCrossbow.BoltShaft],
+            item 1 tags[base:sharpknife] mode:keep flags[Prop1;IsNotDull;MayDegradeLight],
+            item 1 [AuxiliasCrossbow.BoltShaft] flags[Prop2],
             item 1 [AuxiliasCrossbow.StoneBoltHead],
             item 1 tags[base:feather],
             item 1 [Base.Twine],
@@ -213,7 +213,7 @@ module AuxiliasCrossbow
         time = 60,
         Tags = InHandCraft;Survivalist,
         category = Assembly,
-        timedAction = AuxiliaRecoverBrokenBolt,
+        timedAction = MakingJewellery,
         inputs
         {
             item 1 tags[base:pliers] mode:keep flags[Prop1;MayDegradeVeryLight],
@@ -230,7 +230,7 @@ module AuxiliasCrossbow
         time = 60,
         Tags = InHandCraft;Survivalist,
         category = Assembly,
-        timedAction = AuxiliaRecoverBrokenBolt,
+        timedAction = HammerStoneStanding,
         inputs
         {
             item 1 tags[base:hammerstone;base:mallet;base:knappingtool] mode:keep flags[Prop1;MayDegradeVeryLight],

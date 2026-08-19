@@ -2,7 +2,7 @@
 
 This document records the balance pass against the installed stable Project Zomboid 42.20.2 data. The authoritative vanilla sources are under `media/scripts/generated` in the game installation.
 
-Build 42.20.2 does not provide a vanilla bow, crossbow, arrow, or bolt crafting chain. Auxilia therefore uses the closest recipes by operation: carved handles and spears for wooden parts, improvised two-handed weapons for complete crossbows, knapped blades for stone heads, forged nails/hooks/spear heads for metal parts, and spear assembly/reclamation for final assembly and salvage.
+Build 42.20.2 does not provide a vanilla bow, crossbow, arrow, or bolt crafting chain. Auxilia therefore uses the closest recipes by operation: carved handles and spears for wooden parts, improvised two-handed weapons for complete crossbows, knapped blades for stone heads, forged nails/hooks/spear heads for metal parts, and spear assembly/reclamation for recipe timing and balance. The visible timed actions use compact-part or stone-working animations because the vanilla spear action displays a knife-tipped spear prop.
 
 ## Vanilla anchors
 
