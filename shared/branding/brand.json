@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "sourceCanvas": 1254,
+  "outputCanvas": 512,
+  "safeAreaPercent": 8,
+  "subjectWidthPercent": {
+    "minimum": 58,
+    "maximum": 76
+  },
+  "palette": {
+    "backgroundDark": "#242424",
+    "backgroundLight": "#333333",
+    "foreground": "#D8DDDE",
+    "secondary": "#8E999C",
+    "accent": "#D95F20"
+  }
+}

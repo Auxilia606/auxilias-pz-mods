@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "mods": [
+    {
+      "slug": "auxilias-crossbow",
+      "displayName": "Auxilia's Crossbow",
+      "modId": "AuxiliasCrossbow",
+      "path": "mods/auxilias-crossbow",
+      "packageName": "AuxiliasCrossbow",
+      "releaseTagPrefix": "auxilias-crossbow/v",
+      "coverSource": "source-assets/workshop/AuxiliasCrossbow-cover-source.png",
+      "sharedLua": []
+    }
+  ]
+}

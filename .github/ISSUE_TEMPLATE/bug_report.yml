@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible Auxilia's Crossbow problem in Project Zomboid 42.20.
+description: Report a reproducible problem in an Auxilia Project Zomboid mod.
 title: "[Bug] "
 labels:
   - bug
@@ -8,6 +8,14 @@ body:
     attributes:
       value: |
         Thanks for helping stabilize the mod. Please test without unrelated mods when practical.
+  - type: dropdown
+    id: mod
+    attributes:
+      label: Mod
+      options:
+        - Auxilia's Crossbow
+    validations:
+      required: true
   - type: input
     id: mod-version
     attributes:
@@ -36,7 +44,7 @@ body:
     id: problem
     attributes:
       label: What happened?
-      description: Include the weapon, selected bolt material, and action being performed.
+      description: Include the affected item or feature and the action being performed.
     validations:
       required: true
   - type: textarea
@@ -65,5 +73,5 @@ body:
     attributes:
       label: Isolation check
       options:
-        - label: I reproduced this with only Auxilia's Crossbow enabled, or listed the other enabled mods above.
+        - label: I reproduced this with only the affected Auxilia mod enabled, or listed the other enabled mods above.
           required: true

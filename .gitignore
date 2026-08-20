@@ -6,6 +6,9 @@
 work/
 logs/
 dist/
+mods/*/work/
+mods/*/logs/
+mods/*/dist/
 
 # OS/editor files
 .DS_Store

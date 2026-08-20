@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: Test procedure
-    url: https://github.com/Auxilia606/auxilias-crossbow/blob/master/docs/TESTING.md
+    url: https://github.com/Auxilia606/auxilias-crossbow/blob/master/mods/auxilias-crossbow/docs/TESTING.md
     about: Check the supported setup and acceptance procedure before reporting a problem.

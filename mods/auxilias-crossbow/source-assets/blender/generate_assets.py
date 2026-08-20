@@ -17,8 +17,12 @@ from mathutils import Vector
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
+MONOREPO_ROOT = os.path.abspath(os.path.join(REPO_ROOT, "..", ".."))
+GAME_CONFIG_PATH = os.path.join(MONOREPO_ROOT, "config", "project-zomboid.json")
+with open(GAME_CONFIG_PATH, "r", encoding="utf-8") as game_config_file:
+    GAME_RELEASE_LINE = json.load(game_config_file)["target"]["releaseLine"]
 MOD_ROOT = os.path.join(REPO_ROOT, "workshop", "Contents", "mods", "AuxiliasCrossbow")
-VERSION_ROOT = os.path.join(MOD_ROOT, "42.20")
+VERSION_ROOT = os.path.join(MOD_ROOT, GAME_RELEASE_LINE)
 MODEL_DIR = os.path.join(VERSION_ROOT, "media", "models_X", "weapons", "2handed")
 MODEL_TEXTURE_DIR = os.path.join(VERSION_ROOT, "media", "textures", "weapons", "2handed")
 ITEM_TEXTURE_DIR = os.path.join(VERSION_ROOT, "media", "textures")
