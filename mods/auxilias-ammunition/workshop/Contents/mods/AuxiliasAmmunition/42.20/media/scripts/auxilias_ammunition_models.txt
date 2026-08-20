@@ -1,0 +1,9 @@
+module Base
+{
+    model AuxiliaBulletMold_Ground
+    {
+        mesh = WorldItems/BulletMold,
+        texture = WorldItems/BulletMold,
+        scale = 0.4,
+    }
+}

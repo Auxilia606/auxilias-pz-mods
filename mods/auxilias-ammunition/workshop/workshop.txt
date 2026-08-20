@@ -1,0 +1,5 @@
+version=1
+title=Auxilia's Ammunition
+description=Version 1.0.0. Build pottery molds, refine renewable propellant ingredients, form primers and casings, then assemble every vanilla firearm caliber at the Hand Press.
+tags=Build 42;Weapons;Crafting
+visibility=public

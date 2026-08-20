@@ -10,6 +10,16 @@
       "releaseTagPrefix": "auxilias-crossbow/v",
       "coverSource": "source-assets/workshop/AuxiliasCrossbow-cover-source.png",
       "sharedLua": []
+    },
+    {
+      "slug": "auxilias-ammunition",
+      "displayName": "Auxilia's Ammunition",
+      "modId": "AuxiliasAmmunition",
+      "path": "mods/auxilias-ammunition",
+      "packageName": "AuxiliasAmmunition",
+      "releaseTagPrefix": "auxilias-ammunition/v",
+      "coverSource": "source-assets/workshop/AuxiliasAmmunition-cover-source.png",
+      "sharedLua": []
     }
   ]
 }

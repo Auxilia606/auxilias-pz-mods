@@ -1,0 +1,21 @@
+{
+    "AuxiliasAmmunition.AmmunitionManual1": "야전 탄약 제작 I",
+    "AuxiliasAmmunition.AmmunitionManual2": "야전 탄약 제작 II",
+    "AuxiliasAmmunition.AmmunitionManual3": "야전 탄약 제작 III",
+    "AuxiliasAmmunition.BulletMold": "소성된 탄두 주형",
+    "AuxiliasAmmunition.BulletMoldUnfired": "굽지 않은 탄두 주형",
+    "AuxiliasAmmunition.FactoryPrimer": "공장제 뇌관",
+    "AuxiliasAmmunition.HeavyPistolCasing": "대형 권총 탄피",
+    "AuxiliasAmmunition.HeavyPistolProjectile": "대형 권총 탄두",
+    "AuxiliasAmmunition.ImprovisedPrimer": "급조 뇌관",
+    "AuxiliasAmmunition.MineralSalts": "가공된 광물염",
+    "AuxiliasAmmunition.RifleCasing": "소총 탄피",
+    "AuxiliasAmmunition.RifleProjectile": "소총 탄두",
+    "AuxiliasAmmunition.ShotCharge": "산탄 장약",
+    "AuxiliasAmmunition.ShotgunHull": "산탄총 탄피",
+    "AuxiliasAmmunition.ShotgunMold": "소성된 산탄 주형",
+    "AuxiliasAmmunition.ShotgunMoldUnfired": "굽지 않은 산탄 주형",
+    "AuxiliasAmmunition.SmallPistolCasing": "소형 권총 탄피",
+    "AuxiliasAmmunition.SmallPistolProjectile": "소형 권총 탄두",
+    "AuxiliasAmmunition.SurvivalPropellant": "생존자용 추진제"
+}

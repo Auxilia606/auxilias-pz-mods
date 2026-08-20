@@ -1,0 +1,210 @@
+module AuxiliasAmmunition
+{
+    item BulletMoldUnfired
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.6,
+        Icon = ClayMold_GlassPane_Unfired,
+        WorldStaticModel = Base.AuxiliaBulletMold_Ground,
+        Tooltip = Tooltip_item_AuxAmmo_UnfiredMold,
+    }
+
+    item BulletMold
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.5,
+        Icon = BulletMold,
+        WorldStaticModel = Base.AuxiliaBulletMold_Ground,
+        Tags = base:destructible;base:breakonsmithing,
+        Tooltip = Tooltip_item_AuxAmmo_BulletMold,
+    }
+
+    item ShotgunMoldUnfired
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.6,
+        Icon = ClayMold_GlassPane_Unfired,
+        WorldStaticModel = Base.ShotGunShellsMold_Ground,
+        Tooltip = Tooltip_item_AuxAmmo_UnfiredMold,
+    }
+
+    item ShotgunMold
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.5,
+        Icon = AuxAmmoShotgunMold,
+        WorldStaticModel = Base.ShotGunShellsMold_Ground,
+        Tags = base:destructible;base:breakonsmithing,
+        Tooltip = Tooltip_item_AuxAmmo_ShotgunMold,
+    }
+
+    item SmallPistolProjectile
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.01,
+        Icon = PistolAmmo,
+        WorldStaticModel = Base.9mmRounds,
+        Tooltip = Tooltip_item_AuxAmmo_SmallProjectile,
+    }
+
+    item HeavyPistolProjectile
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.015,
+        Icon = PistolAmmo,
+        WorldStaticModel = Base.38SpecialBullets,
+        Tooltip = Tooltip_item_AuxAmmo_HeavyProjectile,
+    }
+
+    item RifleProjectile
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.02,
+        Icon = RifleAmmo308loose,
+        WorldStaticModel = Base.RifleAmmo,
+        Tooltip = Tooltip_item_AuxAmmo_RifleProjectile,
+    }
+
+    item ShotCharge
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.03,
+        Icon = ShotgunAmmo,
+        WorldStaticModel = Base.ShotGunShells,
+        Tooltip = Tooltip_item_AuxAmmo_ShotCharge,
+    }
+
+    item SmallPistolCasing
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.008,
+        Icon = BrassScrap,
+        WorldStaticModel = Base.BrassScrap,
+        Tooltip = Tooltip_item_AuxAmmo_SmallCasing,
+    }
+
+    item HeavyPistolCasing
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.012,
+        Icon = BrassScrap,
+        WorldStaticModel = Base.BrassScrap,
+        Tooltip = Tooltip_item_AuxAmmo_HeavyCasing,
+    }
+
+    item RifleCasing
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.02,
+        Icon = BrassScrap,
+        WorldStaticModel = Base.BrassScrap,
+        Tooltip = Tooltip_item_AuxAmmo_RifleCasing,
+    }
+
+    item ShotgunHull
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.025,
+        Icon = ShotgunAmmo,
+        WorldStaticModel = Base.ShotGunShells,
+        Tooltip = Tooltip_item_AuxAmmo_ShotgunHull,
+    }
+
+    item MineralSalts
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.01,
+        Icon = Limestone,
+        WorldStaticModel = Base.LimestoneCrushed,
+        Tooltip = Tooltip_item_AuxAmmo_MineralSalts,
+    }
+
+    item SurvivalPropellant
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.003,
+        Icon = GunpowderJar,
+        WorldStaticModel = Base.GunPowder,
+        Tooltip = Tooltip_item_AuxAmmo_Propellant,
+    }
+
+    item ImprovisedPrimer
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.001,
+        Icon = Copper_Scrap,
+        WorldStaticModel = Base.CopperScrap,
+        Tooltip = Tooltip_item_AuxAmmo_ImprovisedPrimer,
+    }
+
+    item FactoryPrimer
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.001,
+        Icon = Copper_Scrap,
+        count = 20,
+        WorldStaticModel = Base.CopperScrap,
+        Tooltip = Tooltip_item_AuxAmmo_FactoryPrimer,
+    }
+
+    item AmmunitionManual1
+    {
+        DisplayCategory = RecipeResource,
+        ItemType = base:literature,
+        Weight = 0.5,
+        Icon = Magazine_Armory1,
+        BoredomChange = -20,
+        StressChange = -15,
+        LearnedRecipes = AuxAmmoShapeBulletMold;AuxAmmoFireBulletMold;AuxAmmoShapeShotgunMold;AuxAmmoFireShotgunMold;AuxAmmoCastSmallPistolProjectiles;AuxAmmoFormSmallPistolCasings,
+        StaticModel = Base.Magazine,
+        WorldStaticModel = Base.MagazineGround,
+        Tags = base:magazine,
+        OnCreate = ItemCodeOnCreate.onCreateRecipeMagazine,
+    }
+
+    item AmmunitionManual2
+    {
+        DisplayCategory = RecipeResource,
+        ItemType = base:literature,
+        Weight = 0.5,
+        Icon = Magazine_Armory2,
+        BoredomChange = -20,
+        StressChange = -15,
+        LearnedRecipes = AuxAmmoRefineMineralSalts;AuxAmmoBlendSurvivalPropellant;AuxAmmoFormImprovisedPrimers;AuxAmmoAssemble9mm;AuxAmmoAssemble38;AuxAmmoCastHeavyPistolProjectiles;AuxAmmoFormHeavyPistolCasings;AuxAmmoAssemble45;AuxAmmoAssemble357,
+        StaticModel = Base.Magazine,
+        WorldStaticModel = Base.MagazineGround,
+        Tags = base:magazine,
+        OnCreate = ItemCodeOnCreate.onCreateRecipeMagazine,
+    }
+
+    item AmmunitionManual3
+    {
+        DisplayCategory = RecipeResource,
+        ItemType = base:literature,
+        Weight = 0.5,
+        Icon = Magazine_Metalworking2,
+        BoredomChange = -20,
+        StressChange = -15,
+        LearnedRecipes = AuxAmmoCastRifleProjectiles;AuxAmmoCastShotCharges;AuxAmmoFormRifleCasings;AuxAmmoFormShotgunHulls;AuxAmmoAssemble44;AuxAmmoAssemble556;AuxAmmoAssemble3030;AuxAmmoAssemble308;AuxAmmoAssembleShotgun,
+        StaticModel = Base.Magazine,
+        WorldStaticModel = Base.MagazineGround,
+        Tags = base:magazine,
+        OnCreate = ItemCodeOnCreate.onCreateRecipeMagazine,
+    }
+}

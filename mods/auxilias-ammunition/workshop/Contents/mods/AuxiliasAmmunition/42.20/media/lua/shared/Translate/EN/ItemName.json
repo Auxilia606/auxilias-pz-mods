@@ -1,0 +1,21 @@
+{
+    "AuxiliasAmmunition.AmmunitionManual1": "Field Ammunition I",
+    "AuxiliasAmmunition.AmmunitionManual2": "Field Ammunition II",
+    "AuxiliasAmmunition.AmmunitionManual3": "Field Ammunition III",
+    "AuxiliasAmmunition.BulletMold": "Fired Bullet Mold",
+    "AuxiliasAmmunition.BulletMoldUnfired": "Unfired Bullet Mold",
+    "AuxiliasAmmunition.FactoryPrimer": "Factory Primer",
+    "AuxiliasAmmunition.HeavyPistolCasing": "Large Pistol Casing",
+    "AuxiliasAmmunition.HeavyPistolProjectile": "Large Pistol Projectile",
+    "AuxiliasAmmunition.ImprovisedPrimer": "Improvised Primer",
+    "AuxiliasAmmunition.MineralSalts": "Processed Mineral Salts",
+    "AuxiliasAmmunition.RifleCasing": "Rifle Casing",
+    "AuxiliasAmmunition.RifleProjectile": "Rifle Projectile",
+    "AuxiliasAmmunition.ShotCharge": "Shot Charge",
+    "AuxiliasAmmunition.ShotgunHull": "Shotgun Hull",
+    "AuxiliasAmmunition.ShotgunMold": "Fired Shotgun Mold",
+    "AuxiliasAmmunition.ShotgunMoldUnfired": "Unfired Shotgun Mold",
+    "AuxiliasAmmunition.SmallPistolCasing": "Small Pistol Casing",
+    "AuxiliasAmmunition.SmallPistolProjectile": "Small Pistol Projectile",
+    "AuxiliasAmmunition.SurvivalPropellant": "Survival Propellant"
+}

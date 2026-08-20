@@ -1,0 +1,17 @@
+{
+    "Tooltip_item_AuxAmmo_BulletMold": "권총과 소총 탄두를 묶음으로 주조하는 재사용 가능한 세라믹 주형입니다.",
+    "Tooltip_item_AuxAmmo_FactoryPrimer": "신뢰성 높은 공장제 부품입니다. 탄약 보관소에서 드물게 발견됩니다.",
+    "Tooltip_item_AuxAmmo_HeavyCasing": ".45 오토와 .44 매그넘 탄약용으로 성형한 탄피입니다.",
+    "Tooltip_item_AuxAmmo_HeavyProjectile": ".45 오토와 .44 매그넘 탄약용으로 주조한 탄두입니다.",
+    "Tooltip_item_AuxAmmo_ImprovisedPrimer": "높은 기술로 재생 가능한 자원에서 만든 야전 탄약용 점화 부품입니다.",
+    "Tooltip_item_AuxAmmo_MineralSalts": "추진제와 뇌관에 쓰는, 현실 제조법과 무관하게 추상화한 원료입니다.",
+    "Tooltip_item_AuxAmmo_Propellant": "폭발물용 화약을 대체하지 않는 재생 가능한 탄약 전용 추진제입니다.",
+    "Tooltip_item_AuxAmmo_RifleCasing": "바닐라 소총 탄약용으로 성형한 탄피입니다.",
+    "Tooltip_item_AuxAmmo_RifleProjectile": "바닐라 소총 탄약용으로 주조한 탄두입니다.",
+    "Tooltip_item_AuxAmmo_ShotCharge": "산탄총 탄약 한 발에 필요한 산탄 장약입니다.",
+    "Tooltip_item_AuxAmmo_ShotgunHull": "산탄총 탄약 한 발에 필요한 몸통과 금속 베이스입니다.",
+    "Tooltip_item_AuxAmmo_ShotgunMold": "Build 42의 미사용 산탄 몰드 자산을 활용한 재사용 가능한 세라믹 주형입니다.",
+    "Tooltip_item_AuxAmmo_SmallCasing": "9mm, .38 스페셜, .357 매그넘 탄약용으로 성형한 탄피입니다.",
+    "Tooltip_item_AuxAmmo_SmallProjectile": "9mm, .38 스페셜, .357 매그넘 탄약용으로 주조한 탄두입니다.",
+    "Tooltip_item_AuxAmmo_UnfiredMold": "깨지기 쉬운 점토 주형입니다. 사용하기 전에 가마에서 소성하십시오."
+}
