@@ -4,7 +4,7 @@
 
 - Installed the Workshop poster and mod-list icon beside the Build 42.20 metadata so the game
   no longer renders white placeholders when it selects the versioned `mod.info`.
-- Derived the string plane from each prod tip's actual thickness so relaxed and cocked strings seat directly into the limb surfaces with a validated shallow overlap, and changed back-slot attachment to the broad-head orientation so the prod lies flat against the character instead of protruding rearward.
+- Routed the relaxed and cocked strings through the limb-tip centerlines so they visibly exit the terminal nocks instead of resting on top of the prods, and corrected the cord specification for Blender's radius-based curve bevel; also changed back-slot attachment to the broad-head orientation so the prod lies flat against the character instead of protruding rearward.
 - Consolidated ten identical per-model textures into one shared crossbow atlas and updated
   every model declaration and asset check to use it.
 - Reworked the Workshop cover alongside Auxilia's Ammunition so both releases share the

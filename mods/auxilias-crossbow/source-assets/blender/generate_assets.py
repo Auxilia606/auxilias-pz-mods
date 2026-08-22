@@ -343,16 +343,17 @@ def build_crossbow(name, tier, spec, mats, cocked=False):
 
     right_tip = positive[-1]
     left_tip = negative[-1]
-    limb_tip_top_z = right_tip[2] + thicknesses[-1] * 0.5
-    # Seat the string tube directly into the tapered limb-tip surface. Its
-    # height is derived from the actual tip thickness instead of being held at
-    # an arbitrary global Z or bridged by a spacer. A shallow 0.5 mm overlap
-    # survives beveling and FBX conversion without visibly cutting through.
-    intended_string_tip_overlap = 0.0005
-    string_plane_z = limb_tip_top_z + spec["string_thickness"] - intended_string_tip_overlap
-    string_tip_overlap = limb_tip_top_z - (string_plane_z - spec["string_thickness"])
-    if not 0.0 < string_tip_overlap <= 0.001:
-        raise RuntimeError(f"{model_name}: string does not seat cleanly into the limb tips")
+    limb_tip_half_height = thicknesses[-1] * 0.5
+    # `bevel_depth` is a radius, while the tier values describe the intended
+    # visible cord diameter. Route that cord through the limb-tip centreline so
+    # it exits the rear/inner face of the terminal nock. Placing it above the
+    # tip, even with a nominal overlap, still read as a cord laid on the prod.
+    string_radius = spec["string_thickness"] * 0.5
+    string_plane_z = right_tip[2]
+    string_tip_center_offset = abs(string_plane_z - right_tip[2])
+    string_tip_vertical_clearance = limb_tip_half_height - string_radius
+    if string_tip_center_offset > 0.000001 or string_tip_vertical_clearance < 0.0005:
+        raise RuntimeError(f"{model_name}: string does not pass through the limb-tip nock")
 
     relaxed_tip = circular_limb_points(half_width, bow_y, 0.034, spec["relaxed_bend"])[-1]
     fixed_string_length = relaxed_tip[0] * 2.0
@@ -373,7 +374,7 @@ def build_crossbow(name, tier, spec, mats, cocked=False):
             (left_tip[0], left_tip[1], string_plane_z),
             (right_tip[0], right_tip[1], string_plane_z),
         )
-    string_part(coll, f"{model_name}_String", string_points, cord, spec["string_thickness"])
+    string_part(coll, f"{model_name}_String", string_points, cord, string_radius)
 
     # The catch is positioned from the same fixed-string calculation used by
     # the cocked model. Its slim sear link explains the forward catch without
@@ -400,7 +401,9 @@ def build_crossbow(name, tier, spec, mats, cocked=False):
     coll["tip_half_span"] = abs(right_tip[0])
     coll["tip_y"] = right_tip[1]
     coll["catch_y"] = catch_y
-    coll["string_tip_overlap"] = string_tip_overlap
+    coll["string_radius"] = string_radius
+    coll["string_tip_center_offset"] = string_tip_center_offset
+    coll["string_tip_vertical_clearance"] = string_tip_vertical_clearance
 
     if tier == 1:
         cube_part(coll, f"{model_name}_ProdBinding", (0, bow_y - 0.004, 0.029), (spec["stock_width"] + 0.022, 0.010, 0.038), cord, edge=0.002)
@@ -948,9 +951,14 @@ for relaxed, cocked in (
         raise RuntimeError(f"{relaxed.name}: relaxed/cocked string length differs by {string_delta:.6f} m")
     if limb_delta > 0.0002:
         raise RuntimeError(f"{relaxed.name}: relaxed/cocked limb length differs by {limb_delta:.6f} m")
-    minimum_string_tip_overlap = min(relaxed["string_tip_overlap"], cocked["string_tip_overlap"])
-    if not 0.0 < minimum_string_tip_overlap <= 0.001:
-        raise RuntimeError(f"{relaxed.name}: string has invalid direct tip contact")
+    maximum_string_tip_center_offset = max(
+        relaxed["string_tip_center_offset"], cocked["string_tip_center_offset"]
+    )
+    minimum_string_tip_vertical_clearance = min(
+        relaxed["string_tip_vertical_clearance"], cocked["string_tip_vertical_clearance"]
+    )
+    if maximum_string_tip_center_offset > 0.000001 or minimum_string_tip_vertical_clearance < 0.0005:
+        raise RuntimeError(f"{relaxed.name}: string has invalid limb-tip nock seating")
     physics_report[relaxed.name] = {
         "relaxed_model": relaxed.name,
         "cocked_model": cocked.name,
@@ -963,7 +971,9 @@ for relaxed, cocked in (
         "relaxed_tip_y": round(relaxed["tip_y"], 6),
         "cocked_tip_y": round(cocked["tip_y"], 6),
         "catch_y": round(cocked["catch_y"], 6),
-        "minimum_string_tip_overlap": round(minimum_string_tip_overlap, 6),
+        "string_radius": round(relaxed["string_radius"], 6),
+        "maximum_string_tip_center_offset": round(maximum_string_tip_center_offset, 8),
+        "minimum_string_tip_vertical_clearance": round(minimum_string_tip_vertical_clearance, 6),
     }
 
 asset_objects = {}

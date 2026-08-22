@@ -135,7 +135,7 @@ if ($modelOpenBraces -ne $modelCloseBraces) {
 
 $generatorPath = Join-Path $repoRoot 'source-assets\blender\generate_assets.py'
 $generatorText = Get-Content -LiteralPath $generatorPath -Raw
-foreach ($pipelineCheck in @('MODEL_TEXTURE_NAME', 'finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'circular_limb_points', 'fixed_string_length', 'string_tip_overlap', 'crossbow_physics', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
+foreach ($pipelineCheck in @('MODEL_TEXTURE_NAME', 'finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'circular_limb_points', 'fixed_string_length', 'string_tip_center_offset', 'string_tip_vertical_clearance', 'crossbow_physics', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
     if ($generatorText -notmatch [regex]::Escape($pipelineCheck)) {
         throw "Blender model pipeline check is missing: $pipelineCheck"
     }
@@ -161,8 +161,8 @@ if (Test-Path -LiteralPath $physicsReportPath) {
         if ([double]$physics.catch_y -ge [double]$physics.cocked_tip_y) {
             throw "Cocked string catch is not behind the limb tips for $crossbowName"
         }
-        if ([double]$physics.minimum_string_tip_overlap -le 0.0 -or [double]$physics.minimum_string_tip_overlap -gt 0.001) {
-            throw "String does not seat directly into the limb tips for $crossbowName"
+        if ([math]::Abs([double]$physics.maximum_string_tip_center_offset) -gt 0.000001 -or [double]$physics.minimum_string_tip_vertical_clearance -lt 0.0005) {
+            throw "String does not pass through the limb-tip nocks for $crossbowName"
         }
     }
 }
