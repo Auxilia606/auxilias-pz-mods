@@ -188,7 +188,10 @@ foreach ($file in $translationFiles) {
 $itemTranslationKeys = $translations.EN['ItemName.json']
 foreach ($id in $itemIds) { if ("AuxiliasAmmunition.$id" -notin $itemTranslationKeys) { throw "Missing item translation: $id" } }
 $recipeTranslationKeys = $translations.EN['Recipes.json']
-foreach ($id in $recipeIds) { if ("Recipe_$id" -notin $recipeTranslationKeys) { throw "Missing recipe translation: $id" } }
+foreach ($id in $recipeIds) { if ($id -notin $recipeTranslationKeys) { throw "Missing recipe translation: $id" } }
+if (@($recipeTranslationKeys | Where-Object { $_ -like 'Recipe_*' }).Count -gt 0) {
+    throw 'Build 42 Recipes.json keys must match craftRecipe IDs without a Recipe_ prefix.'
+}
 
 $luaFiles = @(Get-ChildItem -LiteralPath (Join-Path $versionRoot 'media\lua') -Recurse -Filter '*.lua' -File)
 if ($luaFiles.Count -ne 1 -or $luaFiles[0].FullName -ne $lootPath) { throw 'The release may contain only the server loot-injection Lua file.' }

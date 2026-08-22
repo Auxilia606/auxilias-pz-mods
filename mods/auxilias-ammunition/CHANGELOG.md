@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed all Build 42 crafting recipe translations so the crafting UI shows localized names
+  instead of internal `AuxAmmo*` IDs.
 - Replaced reused vanilla component art with dedicated projectile, shot-charge, casing,
   hull, and primer icons that remain distinct at the 32×32 inventory size.
 - Reworked the Workshop cover as part of the shared Auxilia visual family: worn dark
