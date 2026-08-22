@@ -17,7 +17,6 @@ module AuxiliasAmmunition
         Weight = 0.5,
         Icon = BulletMold,
         WorldStaticModel = Base.AuxiliaBulletMold_Ground,
-        Tags = base:destructible;base:breakonsmithing,
         Tooltip = Tooltip_item_AuxAmmo_BulletMold,
     }
 
@@ -38,7 +37,6 @@ module AuxiliasAmmunition
         Weight = 0.5,
         Icon = AuxAmmoShotgunMold,
         WorldStaticModel = Base.ShotGunShellsMold_Ground,
-        Tags = base:destructible;base:breakonsmithing,
         Tooltip = Tooltip_item_AuxAmmo_ShotgunMold,
     }
 

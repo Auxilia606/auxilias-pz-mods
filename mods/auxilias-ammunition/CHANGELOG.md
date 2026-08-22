@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed fired bullet and shotgun molds becoming broken during projectile casting despite being
+  documented as reusable.
 - Fixed all Build 42 crafting recipe translations so the crafting UI shows localized names
   instead of internal `AuxAmmo*` IDs.
 - Replaced reused vanilla component art with dedicated projectile, shot-charge, casing,

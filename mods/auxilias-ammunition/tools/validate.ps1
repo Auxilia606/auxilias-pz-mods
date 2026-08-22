@@ -89,6 +89,17 @@ if ($itemIds.Count -ne 19 -or @($itemIds | Select-Object -Unique).Count -ne 19) 
 if ($recipeIds.Count -ne 24 -or @($recipeIds | Select-Object -Unique).Count -ne 24) { throw "Expected 24 unique craft recipes; found $($recipeIds.Count)." }
 if (([regex]::Matches($recipesText, '(?m)^\s*NeedToBeLearn\s*=\s*true,')).Count -ne 24) { throw 'Every recipe must require knowledge.' }
 
+foreach ($moldId in @('BulletMold','ShotgunMold')) {
+    $moldPattern = "(?ms)^\s*item\s+$([regex]::Escape($moldId))\s*\{(?<body>.*?)^\s*\}"
+    $moldMatch = [regex]::Match($itemsText, $moldPattern)
+    if (-not $moldMatch.Success) { throw "Missing reusable mold item: $moldId" }
+    if ($moldMatch.Groups['body'].Value -match 'base:(?:destructible|breakonsmithing)') {
+        throw "Reusable mold may not carry a smithing-break tag: $moldId"
+    }
+}
+$retainedMoldInputs = [regex]::Matches($recipesText, '(?m)^\s*item\s+1\s+\[AuxiliasAmmunition\.(?:BulletMold|ShotgunMold)\]\s+mode:keep,\s*$')
+if ($retainedMoldInputs.Count -ne 4) { throw 'Every projectile casting recipe must retain its reusable mold.' }
+
 $allowedTags = @('PotteryBench','KilnSmall','KilnLarge','Furnace','AdvancedFurnace','HandPress','WoodCharcoal')
 foreach ($match in [regex]::Matches($recipesText, '(?m)^\s*Tags\s*=\s*([^,]+),')) {
     foreach ($tag in $match.Groups[1].Value.Split(';')) { if ($tag.Trim() -notin $allowedTags) { throw "Unknown workstation tag: $tag" } }

@@ -45,7 +45,8 @@ and a two-player dedicated server if that build is available:
 
 1. Inspect all EN and KO names/tooltips and the Ammunition crafting category.
 2. Read each manual and verify its recipe tier; verify high-skill fallback on an old save.
-3. Craft both molds, all component batches, and all nine final outputs at their required stations.
+3. Craft both molds, all component batches, and all nine final outputs at their required stations;
+   run consecutive projectile batches and confirm both fired molds remain usable and unbroken.
 4. Fire each vanilla gun using crafted vanilla rounds; reload magazines and revolvers normally.
 5. Have two players share a station/container, craft sequentially, reconnect, and confirm counts.
 6. Generate new gun-store, police, SWAT, and military containers and sample manual/primer rarity.
