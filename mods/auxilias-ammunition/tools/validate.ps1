@@ -6,7 +6,7 @@ Add-Type -AssemblyName System.Drawing
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $monorepoRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot '..\..'))
-$target = (Get-Content -LiteralPath (Join-Path $monorepoRoot 'config\project-zomboid.json') -Raw | ConvertFrom-Json).target
+$target = (Get-Content -LiteralPath (Join-Path $monorepoRoot 'config\project-zomboid.json') -Raw -Encoding UTF8 | ConvertFrom-Json).target
 $releaseLine = [string]$target.releaseLine
 $modRoot = Join-Path $repoRoot 'workshop\Contents\mods\AuxiliasAmmunition'
 $versionRoot = Join-Path $modRoot $releaseLine
@@ -176,7 +176,7 @@ foreach ($language in @('EN','KO')) {
     foreach ($file in $translationFiles) {
         $path = Join-Path $translationRoot "$language\$file"
         if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing translation: $path" }
-        $json = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json
+        $json = Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
         $keys = @($json.PSObject.Properties.Name | Sort-Object)
         foreach ($property in $json.PSObject.Properties) { if ($property.Value -isnot [string] -or [string]::IsNullOrWhiteSpace($property.Value)) { throw "Empty translation: $path -> $($property.Name)" } }
         $translations[$language][$file] = $keys

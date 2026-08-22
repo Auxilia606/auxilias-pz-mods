@@ -9,7 +9,7 @@ Add-Type -AssemblyName System.Drawing
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $monorepoRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot '..\..'))
 $gameConfigPath = Join-Path $monorepoRoot 'config\project-zomboid.json'
-$gameReleaseLine = [string]((Get-Content -LiteralPath $gameConfigPath -Raw | ConvertFrom-Json).target.releaseLine)
+$gameReleaseLine = [string]((Get-Content -LiteralPath $gameConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json).target.releaseLine)
 if ($gameReleaseLine -notmatch '^\d+\.\d+$') {
     throw "Invalid central Project Zomboid release line: $gameReleaseLine"
 }

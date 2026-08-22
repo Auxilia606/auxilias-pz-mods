@@ -22,7 +22,7 @@ function Get-PngSize {
 $repoRoot = Get-MonorepoRoot
 $target = Get-GameTarget
 $projects = @(Get-ModProjects -Mod $Mod)
-$branding = Get-Content -LiteralPath (Join-Path $repoRoot 'shared\branding\brand.json') -Raw | ConvertFrom-Json
+$branding = Get-Content -LiteralPath (Join-Path $repoRoot 'shared\branding\brand.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $expectedPreviewSizes = @(128, 64, 32)
 if ((@($branding.previewSizes) -join ',') -ne ($expectedPreviewSizes -join ',')) {
     throw "Brand review previews must remain 128, 64, and 32px; found $(@($branding.previewSizes) -join ', ')."
@@ -40,8 +40,16 @@ foreach ($property in @('slug', 'modId', 'path', 'packageName', 'releaseTagPrefi
 }
 
 $registeredPaths = @($allProjects.path | ForEach-Object { $_.Replace('/', '\').TrimEnd('\') })
+$repoPrefix = $repoRoot.TrimEnd([char[]]@(
+    [System.IO.Path]::DirectorySeparatorChar,
+    [System.IO.Path]::AltDirectorySeparatorChar
+)) + [System.IO.Path]::DirectorySeparatorChar
 $unregistered = @(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'mods') -Directory | Where-Object {
-    $relative = [System.IO.Path]::GetRelativePath($repoRoot, $_.FullName).TrimEnd('\')
+    $fullPath = [System.IO.Path]::GetFullPath($_.FullName)
+    if (-not $fullPath.StartsWith($repoPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Mod directory escapes the repository: $fullPath"
+    }
+    $relative = $fullPath.Substring($repoPrefix.Length).TrimEnd('\')
     $relative -notin $registeredPaths
 })
 if ($unregistered.Count -gt 0) {

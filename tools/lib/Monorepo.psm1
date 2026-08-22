@@ -10,7 +10,7 @@ function Read-MonorepoJson {
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
         throw "Configuration file not found: $Path"
     }
-    return Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
+    return Get-Content -LiteralPath $Path -Raw -Encoding UTF8 | ConvertFrom-Json
 }
 
 function Get-ModRegistry {
@@ -62,7 +62,10 @@ function Get-ModProjects {
 
     foreach ($project in $selected) {
         $projectPath = [System.IO.Path]::GetFullPath((Join-Path $root $project.path))
-        $rootPrefix = [System.IO.Path]::TrimEndingDirectorySeparator($root) + [System.IO.Path]::DirectorySeparatorChar
+        $rootPrefix = $root.TrimEnd([char[]]@(
+            [System.IO.Path]::DirectorySeparatorChar,
+            [System.IO.Path]::AltDirectorySeparatorChar
+        )) + [System.IO.Path]::DirectorySeparatorChar
         if (-not $projectPath.StartsWith($rootPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
             throw "Mod path escapes the repository: $($project.path)"
         }

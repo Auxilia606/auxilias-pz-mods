@@ -6,7 +6,7 @@ $gameConfigPath = Join-Path $monorepoRoot 'config\project-zomboid.json'
 if (-not (Test-Path -LiteralPath $gameConfigPath -PathType Leaf)) {
     throw "Central Project Zomboid version configuration not found: $gameConfigPath"
 }
-$gameTarget = (Get-Content -LiteralPath $gameConfigPath -Raw | ConvertFrom-Json).target
+$gameTarget = (Get-Content -LiteralPath $gameConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json).target
 $gameReleaseLine = [string]$gameTarget.releaseLine
 if ($gameReleaseLine -notmatch '^\d+\.\d+$') {
     throw "Invalid central Project Zomboid release line: $gameReleaseLine"
@@ -80,7 +80,7 @@ foreach ($language in @('EN', 'KO')) {
 
 $jsonFiles = Get-ChildItem -LiteralPath $translationRoot -Recurse -Filter '*.json'
 foreach ($jsonFile in $jsonFiles) {
-    $translation = Get-Content -LiteralPath $jsonFile.FullName -Raw | ConvertFrom-Json
+    $translation = Get-Content -LiteralPath $jsonFile.FullName -Raw -Encoding UTF8 | ConvertFrom-Json
     foreach ($property in $translation.PSObject.Properties) {
         if ($property.Value -isnot [string] -or [string]::IsNullOrWhiteSpace($property.Value)) {
             throw "Translation value must be a non-empty string: $($jsonFile.FullName) -> $($property.Name)"
@@ -89,8 +89,8 @@ foreach ($jsonFile in $jsonFiles) {
 }
 
 foreach ($translationFile in $translationFiles) {
-    $english = Get-Content -LiteralPath (Join-Path $translationRoot "EN\$translationFile") -Raw | ConvertFrom-Json
-    $korean = Get-Content -LiteralPath (Join-Path $translationRoot "KO\$translationFile") -Raw | ConvertFrom-Json
+    $english = Get-Content -LiteralPath (Join-Path $translationRoot "EN\$translationFile") -Raw -Encoding UTF8 | ConvertFrom-Json
+    $korean = Get-Content -LiteralPath (Join-Path $translationRoot "KO\$translationFile") -Raw -Encoding UTF8 | ConvertFrom-Json
     $keyDifference = @(Compare-Object $english.PSObject.Properties.Name $korean.PSObject.Properties.Name)
     if ($keyDifference.Count -gt 0) {
         throw "English/Korean translation keys differ in $translationFile`: $($keyDifference.InputObject -join ', ')"
@@ -139,7 +139,7 @@ foreach ($pipelineCheck in @('MODEL_TEXTURE_NAME', 'finalize_collection', 'assig
 
 $physicsReportPath = Join-Path $repoRoot 'work\model-validation\report.json'
 if (Test-Path -LiteralPath $physicsReportPath) {
-    $physicsReport = Get-Content -LiteralPath $physicsReportPath -Raw | ConvertFrom-Json
+    $physicsReport = Get-Content -LiteralPath $physicsReportPath -Raw -Encoding UTF8 | ConvertFrom-Json
     foreach ($crossbowName in @('AuxiliaImprovisedCrossbow', 'AuxiliaReinforcedCrossbow', 'AuxiliaHeavyArbalest')) {
         $physics = $physicsReport.crossbow_physics.$crossbowName
         if ($null -eq $physics) {

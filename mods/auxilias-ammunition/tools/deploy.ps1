@@ -8,7 +8,10 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $source = (Resolve-Path -LiteralPath (Join-Path $repoRoot 'workshop')).Path
 $validateScript = Join-Path $PSScriptRoot 'validate.ps1'
 $resolvedDestination = [System.IO.Path]::GetFullPath($Destination)
-$normalizedDestination = [System.IO.Path]::TrimEndingDirectorySeparator($resolvedDestination)
+$normalizedDestination = $resolvedDestination.TrimEnd([char[]]@(
+    [System.IO.Path]::DirectorySeparatorChar,
+    [System.IO.Path]::AltDirectorySeparatorChar
+))
 $destinationName = [System.IO.Path]::GetFileName($normalizedDestination)
 $destinationParent = [System.IO.Path]::GetDirectoryName($normalizedDestination)
 
@@ -40,12 +43,20 @@ function Assert-NoReparsePoint {
 function Get-TreeManifest {
     param([Parameter(Mandatory)] [string] $Root)
 
-    $rootPath = [System.IO.Path]::TrimEndingDirectorySeparator([System.IO.Path]::GetFullPath($Root))
+    $rootPath = [System.IO.Path]::GetFullPath($Root).TrimEnd([char[]]@(
+        [System.IO.Path]::DirectorySeparatorChar,
+        [System.IO.Path]::AltDirectorySeparatorChar
+    ))
+    $rootPrefix = $rootPath + [System.IO.Path]::DirectorySeparatorChar
     return @(
         Get-ChildItem -LiteralPath $rootPath -Recurse -File -Force |
             ForEach-Object {
+                $fullPath = [System.IO.Path]::GetFullPath($_.FullName)
+                if (-not $fullPath.StartsWith($rootPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+                    throw "Manifest file escapes the deployment root: $fullPath"
+                }
                 [pscustomobject]@{
-                    Path = [System.IO.Path]::GetRelativePath($rootPath, $_.FullName).Replace('\', '/')
+                    Path = $fullPath.Substring($rootPrefix.Length).Replace('\', '/')
                     Length = $_.Length
                     Hash = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
                 }

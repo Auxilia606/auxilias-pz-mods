@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $monorepoRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot '..\..'))
 $gameConfigPath = Join-Path $monorepoRoot 'config\project-zomboid.json'
-$gameReleaseLine = [string]((Get-Content -LiteralPath $gameConfigPath -Raw | ConvertFrom-Json).target.releaseLine)
+$gameReleaseLine = [string]((Get-Content -LiteralPath $gameConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json).target.releaseLine)
 if ($gameReleaseLine -notmatch '^\d+\.\d+$') {
     throw "Invalid central Project Zomboid release line: $gameReleaseLine"
 }
@@ -93,8 +93,16 @@ try {
     }
 
     $sourceByPath = @{}
+    $workshopPrefix = [System.IO.Path]::GetFullPath($workshopRoot).TrimEnd([char[]]@(
+        [System.IO.Path]::DirectorySeparatorChar,
+        [System.IO.Path]::AltDirectorySeparatorChar
+    )) + [System.IO.Path]::DirectorySeparatorChar
     foreach ($sourceFile in $sourceFiles) {
-        $relativePath = [System.IO.Path]::GetRelativePath($workshopRoot, $sourceFile.FullName).Replace('\', '/')
+        $sourceFullPath = [System.IO.Path]::GetFullPath($sourceFile.FullName)
+        if (-not $sourceFullPath.StartsWith($workshopPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+            throw "Package source file escapes the Workshop root: $sourceFullPath"
+        }
+        $relativePath = $sourceFullPath.Substring($workshopPrefix.Length).Replace('\', '/')
         $sourceByPath[$relativePath] = $sourceFile
     }
 
@@ -113,7 +121,7 @@ try {
 
             $entryStream = $entry.Open()
             try {
-                $entryHash = [Convert]::ToHexString($sha256.ComputeHash($entryStream))
+                $entryHash = -join @($sha256.ComputeHash($entryStream) | ForEach-Object { $_.ToString('X2') })
             }
             finally {
                 $entryStream.Dispose()

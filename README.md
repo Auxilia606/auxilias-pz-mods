@@ -29,6 +29,10 @@
 ./tools/validate.ps1 -Mod auxilias-crossbow
 ./tools/package.ps1 -Mod auxilias-crossbow
 
+# 특정 모드 또는 등록된 모든 모드를 로컬 게임 폴더에 배포
+./tools/deploy.ps1 -Mod auxilias-crossbow
+./tools/deploy.ps1 -All
+
 # 모든 모드의 릴리스 패키지 생성
 ./tools/package.ps1
 
@@ -37,7 +41,9 @@
 ```
 
 패키지는 기본적으로 `dist/<mod-slug>/`에 생성된다. 로컬 게임 설치는
-`./tools/deploy.ps1 -Mod <slug>`를 사용한다.
+`./tools/deploy.ps1 -Mod <slug>`를 사용하며, `./tools/deploy.ps1 -All`은
+`config/mods.json`에 등록된 모든 모드를 배포한다. 기본 배포 루트는
+`$env:USERPROFILE\Zomboid\Workshop`이고 `-DestinationRoot <path>`로 바꿀 수 있다.
 
 ## 공통 변경 정책
 

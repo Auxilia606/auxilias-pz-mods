@@ -42,7 +42,7 @@ function Save-SquarePng {
 }
 
 $repoRoot = Get-MonorepoRoot
-$branding = Get-Content -LiteralPath (Join-Path $repoRoot 'shared\branding\brand.json') -Raw | ConvertFrom-Json
+$branding = Get-Content -LiteralPath (Join-Path $repoRoot 'shared\branding\brand.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $projects = @(Get-ModProjects -Mod $Mod)
 
 foreach ($project in $projects) {
