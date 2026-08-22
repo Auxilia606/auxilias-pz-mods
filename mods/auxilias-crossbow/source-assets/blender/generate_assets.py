@@ -343,6 +343,17 @@ def build_crossbow(name, tier, spec, mats, cocked=False):
 
     right_tip = positive[-1]
     left_tip = negative[-1]
+    limb_tip_top_z = right_tip[2] + thicknesses[-1] * 0.5
+    # Seat the string tube directly into the tapered limb-tip surface. Its
+    # height is derived from the actual tip thickness instead of being held at
+    # an arbitrary global Z or bridged by a spacer. A shallow 0.5 mm overlap
+    # survives beveling and FBX conversion without visibly cutting through.
+    intended_string_tip_overlap = 0.0005
+    string_plane_z = limb_tip_top_z + spec["string_thickness"] - intended_string_tip_overlap
+    string_tip_overlap = limb_tip_top_z - (string_plane_z - spec["string_thickness"])
+    if not 0.0 < string_tip_overlap <= 0.001:
+        raise RuntimeError(f"{model_name}: string does not seat cleanly into the limb tips")
+
     relaxed_tip = circular_limb_points(half_width, bow_y, 0.034, spec["relaxed_bend"])[-1]
     fixed_string_length = relaxed_tip[0] * 2.0
     if cocked:
@@ -351,16 +362,16 @@ def build_crossbow(name, tier, spec, mats, cocked=False):
         if lateral_run >= half_string:
             raise RuntimeError(f"{model_name}: cocked tips leave no string length for the draw")
         draw = math.sqrt(half_string * half_string - lateral_run * lateral_run)
-        latch = (0.0, right_tip[1] - draw, 0.047)
+        latch = (0.0, right_tip[1] - draw, string_plane_z)
         string_points = (
-            (left_tip[0], left_tip[1], 0.047),
+            (left_tip[0], left_tip[1], string_plane_z),
             latch,
-            (right_tip[0], right_tip[1], 0.047),
+            (right_tip[0], right_tip[1], string_plane_z),
         )
     else:
         string_points = (
-            (left_tip[0], left_tip[1], 0.047),
-            (right_tip[0], right_tip[1], 0.047),
+            (left_tip[0], left_tip[1], string_plane_z),
+            (right_tip[0], right_tip[1], string_plane_z),
         )
     string_part(coll, f"{model_name}_String", string_points, cord, spec["string_thickness"])
 
@@ -389,6 +400,7 @@ def build_crossbow(name, tier, spec, mats, cocked=False):
     coll["tip_half_span"] = abs(right_tip[0])
     coll["tip_y"] = right_tip[1]
     coll["catch_y"] = catch_y
+    coll["string_tip_overlap"] = string_tip_overlap
 
     if tier == 1:
         cube_part(coll, f"{model_name}_ProdBinding", (0, bow_y - 0.004, 0.029), (spec["stock_width"] + 0.022, 0.010, 0.038), cord, edge=0.002)
@@ -936,6 +948,9 @@ for relaxed, cocked in (
         raise RuntimeError(f"{relaxed.name}: relaxed/cocked string length differs by {string_delta:.6f} m")
     if limb_delta > 0.0002:
         raise RuntimeError(f"{relaxed.name}: relaxed/cocked limb length differs by {limb_delta:.6f} m")
+    minimum_string_tip_overlap = min(relaxed["string_tip_overlap"], cocked["string_tip_overlap"])
+    if not 0.0 < minimum_string_tip_overlap <= 0.001:
+        raise RuntimeError(f"{relaxed.name}: string has invalid direct tip contact")
     physics_report[relaxed.name] = {
         "relaxed_model": relaxed.name,
         "cocked_model": cocked.name,
@@ -948,6 +963,7 @@ for relaxed, cocked in (
         "relaxed_tip_y": round(relaxed["tip_y"], 6),
         "cocked_tip_y": round(cocked["tip_y"], 6),
         "catch_y": round(cocked["catch_y"], 6),
+        "minimum_string_tip_overlap": round(minimum_string_tip_overlap, 6),
     }
 
 asset_objects = {}

@@ -36,6 +36,7 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 
 - In standing, aiming, firing, and reloading poses, both hands remain near the tiller and rail rather than the butt or prod.
 - No crossbow is sideways, mirrored, oversized, or centered through the character.
+- In the back hotbar slot, inspect the character from behind and both sides: the prod lies close to the back instead of pointing outward; repeat with a backpack equipped.
 - Limb halves, string ends, rail, lock, tiller, and prod socket remain visibly connected from every camera direction.
 - With no bolt loaded, the string runs straight between the relaxed limb tips and remains visible above the rail on all three crossbows.
 - Loading one bolt bends the limbs rearward/inward and draws the unchanged-length string to the central catch; no string segment is hidden inside the tiller.

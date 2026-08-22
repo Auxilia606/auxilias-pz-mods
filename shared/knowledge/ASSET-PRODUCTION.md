@@ -24,6 +24,11 @@ default asset conventions for this monorepo.
 - Re-import generated FBX files and compare dimensions, UV layers, material count, and model
   bounds. A successful export alone does not prove the game-facing file is sound.
 - Keep validation renders and editable Blender sources outside the installable tree.
+- `AttachmentType` selects the character-model transform used by hotbar slots; a model's
+  `world` attachment controls placed-world presentation and does not correct its position on
+  the character. Match the attachment category to the model silhouette and test both normal
+  and backpack replacement transforms. In Build 42.20, `Rifle` suits narrow long guns while
+  `Shovel` includes the axial roll needed to keep a broad head or prod close to the back.
 
 ## Workshop artwork
 

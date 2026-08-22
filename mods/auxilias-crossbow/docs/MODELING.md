@@ -13,7 +13,7 @@ Project Zomboid firearm models use:
 
 Installed vanilla long-gun meshes occupy approximately Y `-0.18` to `0.50`. The crossbows deliberately use the same origin convention so the existing `Rifle` animation does not attach the character at the center or butt of the weapon.
 
-Blender exports with `-Y` forward and `Z` up. The FBX files carry centimeter unit metadata, so every game model block uses `scale = 0.01`. The model blocks live in `module Base`, while each item uses an unqualified `WeaponSprite` name and `AttachmentType = Rifle`; these details are required by Build 42's equipped-model lookup.
+Blender exports with `-Y` forward and `Z` up. The FBX files carry centimeter unit metadata, so every game model block uses `scale = 0.01`. The model blocks live in `module Base`, while each item uses an unqualified `WeaponSprite` name; these details are required by Build 42's equipped-model lookup. The items use `AttachmentType = Shovel` only for the hotbar back slot because its broad-head attachment rolls the crossbow prod flat against the back. Held aiming still uses `SwingAnim = Rifle` and the existing two-handed rifle animation set.
 
 The game-export copy receives a baked 180-degree X-axis correction. Blender's own FBX importer restores the authored axes from metadata, while Project Zomboid otherwise reads both the longitudinal and height axes reversed. Every asset is also collapsed to one FBX material, matching the vanilla firearm meshes; per-part colors remain encoded in the single shared `AuxiliaCrossbowAtlas.png` UV texture. Multiple material slots caused Build 42 to omit non-primary weapon parts in game.
 
@@ -31,7 +31,7 @@ All three equipped models use the vanilla sawn-off double-barrel shotgun hand en
 
 The tier silhouettes intentionally avoid pulleys, windlasses, pistol grips, foregrips, cheek pads, and decorative braces. Every model is built around a low tiller, bolt rail, lock, prod, string, and compact trigger. Each prod is sampled from a circular arc with a fixed arc length: the relaxed and cocked versions change curvature and tip position without stretching or shortening either limb. Its top-view chord stays narrow (`0.009`, `0.010`, and `0.012`) independently of span, bend, and vertical thickness, producing a slim curved-band silhouette instead of a broad crescent. Light Crossbow uses a wooden prod and cord binding, Crossbow adds a steel prod and metal fittings, and Heavy Crossbow uses an iron tiller with the thickest steel prod.
 
-The relaxed string runs straight from tip to tip above the rail. The cocked string uses the exact same total length and forms two visible segments from the bent tips to the central catch. The catch position is solved from the fixed string length rather than chosen artistically. Generated measurements permit at most `0.00001` units of string-length drift and `0.0002` units of sampled limb-length drift. Current string deltas are `0.0`, `0.00000001`, and `0.00000001` units for Light, standard, and Heavy respectively.
+The relaxed string runs straight from tip to tip above the rail. Its Z position is derived from each tier's actual tapered tip thickness and string radius, seating the string tube directly into the limb-tip surface by `0.0005` units rather than using a fixed global height or an intermediate spacer. The cocked string uses the exact same total length and forms two visible segments from the bent tips to the central catch. The catch position is solved from the fixed string length rather than chosen artistically. Generated measurements permit at most `0.00001` units of string-length drift and `0.0002` units of sampled limb-length drift, and generation fails unless direct string-to-tip overlap remains positive and no deeper than `0.001` units.
 
 At runtime `AuxiliaCrossbow_ModelState.lua` selects the cocked model whenever the equipped weapon contains its one bolt, selects the relaxed model when empty, and forces the relaxed model at both the weapon-swing hit point and attack-finished events so the string releases on the firing frame. A fired-weapon latch keeps the relaxed model authoritative until the client observes the empty weapon, preventing delayed ammo synchronization from briefly redrawing the string. The implementation follows the same Build 42 `setWeaponSprite` plus `resetEquippedHandsModels` mechanism used by vanilla fishing rods.
 
@@ -70,10 +70,12 @@ Both intact bolts receive dedicated `_placed.png` validation renders. The pipeli
 
 - Each limb is one continuous tapered mesh from socket to tip, with no floating segments.
 - The relaxed string is straight between the tips; the cocked string touches both tips and the central catch without changing total length.
+- The string tube seats directly into both limb-tip surfaces with no spacer, air gap, or visible deep intersection from top, side, or isometric views.
 - The cocked limbs bend rearward and slightly inward while retaining the relaxed limb arc length.
 - The tiller, rail, lock, prod socket, limbs, and string visibly connect.
 - Light, standard, and Heavy models have distinct material treatment and progressively wider, thicker limbs while sharing one compact length.
 - No model is mirrored, rotated onto its side, or centered on the butt after FBX re-import.
+- In the back hotbar slot, the broad prod lies close and approximately parallel to the character's back instead of projecting rearward like a rifle-mounted crossbar.
 - Equipped and aimed views in both left- and right-facing directions must be checked interactively in Project Zomboid after changing dimensions or the origin. Reloading must visibly change to the cocked model, firing must visibly return to the relaxed model, and unloading must also return to relaxed. Dropped-item checks are part of the later practical test.
 
 The Build 42.20.2 client check loads and aims all three weapons in an isolated debug scenario. Direct-window screenshots in both aim directions are used to confirm complete single-material rendering, compact torso clearance, forward-facing limbs, correct top/bottom orientation, and two-handed alignment for Light, standard, and Heavy models.

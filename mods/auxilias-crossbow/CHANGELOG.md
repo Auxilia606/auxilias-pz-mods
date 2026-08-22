@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Derived the string plane from each prod tip's actual thickness so relaxed and cocked strings seat directly into the limb surfaces with a validated shallow overlap, and changed back-slot attachment to the broad-head orientation so the prod lies flat against the character instead of protruding rearward.
 - Consolidated ten identical per-model textures into one shared crossbow atlas and updated
   every model declaration and asset check to use it.
 - Reworked the Workshop cover alongside Auxilia's Ammunition so both releases share the
