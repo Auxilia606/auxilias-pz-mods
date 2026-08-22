@@ -93,7 +93,9 @@ foreach ($project in $projects) {
     $outputImages = @(
         (Join-Path $workshopRoot 'preview.png'),
         (Join-Path $modRoot 'poster.png'),
-        (Join-Path $modRoot 'icon.png')
+        (Join-Path $modRoot 'icon.png'),
+        (Join-Path $versionRoot 'poster.png'),
+        (Join-Path $versionRoot 'icon.png')
     )
     $hashes = foreach ($imagePath in $outputImages) {
         $size = Get-PngSize -Path $imagePath
@@ -103,7 +105,7 @@ foreach ($project in $projects) {
         (Get-FileHash -LiteralPath $imagePath -Algorithm SHA256).Hash
     }
     if (@($hashes | Select-Object -Unique).Count -ne 1) {
-        throw "preview.png, poster.png, and icon.png must be identical for $($project.slug)."
+        throw "Workshop preview and every root/versioned poster and icon must be identical for $($project.slug)."
     }
 
     $coverSource = Join-Path $project.FullPath $project.coverSource

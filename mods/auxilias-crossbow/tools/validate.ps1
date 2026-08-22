@@ -16,7 +16,11 @@ $versionRoot = Join-Path $modRoot $gameReleaseLine
 
 $requiredFiles = @(
     (Join-Path $modRoot 'mod.info'),
+    (Join-Path $modRoot 'poster.png'),
+    (Join-Path $modRoot 'icon.png'),
     (Join-Path $versionRoot 'mod.info'),
+    (Join-Path $versionRoot 'poster.png'),
+    (Join-Path $versionRoot 'icon.png'),
     (Join-Path $versionRoot 'media\registries.lua'),
     (Join-Path $versionRoot 'media\scripts\auxilia_items.txt'),
     (Join-Path $versionRoot 'media\scripts\auxilia_recipes.txt'),

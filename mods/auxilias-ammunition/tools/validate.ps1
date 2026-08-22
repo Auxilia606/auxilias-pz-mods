@@ -54,7 +54,8 @@ $requiredFiles = @(
     (Join-Path $repoRoot 'docs\reports\RELEASE-VALIDATION-1.0.0.md'),
     (Join-Path $repoRoot 'workshop\workshop.txt'), (Join-Path $repoRoot 'workshop\preview.png'),
     (Join-Path $modRoot 'mod.info'), (Join-Path $modRoot 'poster.png'), (Join-Path $modRoot 'icon.png'),
-    (Join-Path $versionRoot 'mod.info'), $itemsPath, $recipesPath, $modelsPath, $lootPath,
+    (Join-Path $versionRoot 'mod.info'), (Join-Path $versionRoot 'poster.png'), (Join-Path $versionRoot 'icon.png'),
+    $itemsPath, $recipesPath, $modelsPath, $lootPath,
     (Join-Path $repoRoot 'tools\sync-icons.ps1'),
     (Join-Path $repoRoot 'source-assets\workshop\AuxiliasAmmunition-cover-source.png'),
     (Join-Path $repoRoot 'source-assets\icons\AuxAmmoShotgunMold-source.png')
@@ -215,14 +216,20 @@ foreach ($forbidden in @('OnWeaponSwingHitPoint','OnWeaponSwing','OnPlayerAttack
     if ($allRuntimeText -match [regex]::Escape($forbidden)) { throw "Forbidden v1 runtime feature found: $forbidden" }
 }
 
-$distributionImages = @((Join-Path $repoRoot 'workshop\preview.png'), (Join-Path $modRoot 'poster.png'), (Join-Path $modRoot 'icon.png'))
+$distributionImages = @(
+    (Join-Path $repoRoot 'workshop\preview.png'),
+    (Join-Path $modRoot 'poster.png'),
+    (Join-Path $modRoot 'icon.png'),
+    (Join-Path $versionRoot 'poster.png'),
+    (Join-Path $versionRoot 'icon.png')
+)
 $hashes = @()
 foreach ($image in $distributionImages) {
     $size = Get-PngSize $image
     if ($size.Width -ne 512 -or $size.Height -ne 512) { throw "Workshop image must be 512x512: $image" }
     $hashes += (Get-FileHash -LiteralPath $image -Algorithm SHA256).Hash
 }
-if (@($hashes | Select-Object -Unique).Count -ne 1) { throw 'Workshop preview, poster, and icon must be identical.' }
+if (@($hashes | Select-Object -Unique).Count -ne 1) { throw 'Workshop preview and every root/versioned poster and icon must be identical.' }
 $coverSize = Get-PngSize (Join-Path $repoRoot 'source-assets\workshop\AuxiliasAmmunition-cover-source.png')
 if ($coverSize.Width -ne $coverSize.Height -or $coverSize.Width -lt 1254) { throw 'Workshop cover source must be square and at least 1254px.' }
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Installed the Workshop poster and mod-list icon beside the Build 42.20 metadata so the game
+  no longer renders white placeholders when it selects the versioned `mod.info`.
 - Fixed fired bullet and shotgun molds becoming broken during projectile casting despite being
   documented as reusable.
 - Fixed all Build 42 crafting recipe translations so the crafting UI shows localized names

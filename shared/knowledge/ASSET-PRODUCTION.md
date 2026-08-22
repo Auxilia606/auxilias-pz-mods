@@ -32,8 +32,10 @@ default asset conventions for this monorepo.
 
 ## Workshop artwork
 
-- Treat `preview.png`, mod `poster.png`, and mod `icon.png` as distribution derivatives of one
-  high-resolution source and verify their hashes when the project requires identical files.
+- Treat `preview.png` plus the root and release-line copies of mod `poster.png` and `icon.png`
+  as distribution derivatives of one high-resolution source and verify their hashes when the
+  project requires identical files. A release-line `mod.info` resolves these image paths from
+  its own directory, so the images must be copied beside both root and versioned metadata.
 - Review at 512, 128, 64, and 32 pixels. The 32-pixel pass catches weak silhouettes and lost
   accents that remain invisible at authoring size.
 - Related mods should share composition rules rather than duplicate the exact subject: camera

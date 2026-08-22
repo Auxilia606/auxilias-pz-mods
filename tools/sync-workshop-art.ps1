@@ -55,10 +55,13 @@ foreach ($project in $projects) {
 
         $workshopRoot = Join-Path $project.FullPath 'workshop'
         $modRoot = Join-Path $workshopRoot "Contents\mods\$($project.modId)"
+        $versionRoot = Join-Path $modRoot (Get-GameTarget).releaseLine
         $outputPath = Join-Path $workshopRoot 'preview.png'
         Save-SquarePng -Source $source -Size ([int]$branding.outputCanvas) -Destination $outputPath
-        Copy-Item -LiteralPath $outputPath -Destination (Join-Path $modRoot 'poster.png') -Force
-        Copy-Item -LiteralPath $outputPath -Destination (Join-Path $modRoot 'icon.png') -Force
+        foreach ($metadataRoot in @($modRoot, $versionRoot)) {
+            Copy-Item -LiteralPath $outputPath -Destination (Join-Path $metadataRoot 'poster.png') -Force
+            Copy-Item -LiteralPath $outputPath -Destination (Join-Path $metadataRoot 'icon.png') -Force
+        }
 
         $previewRoot = Join-Path $project.FullPath 'work\branding'
         foreach ($previewSize in @($branding.previewSizes)) {
@@ -68,5 +71,5 @@ foreach ($project in $projects) {
     finally {
         $source.Dispose()
     }
-    Write-Host "Synchronized Workshop art for $($project.slug) and rendered 128/64/32px review previews."
+    Write-Host "Synchronized Workshop art beside root and versioned metadata for $($project.slug) and rendered 128/64/32px review previews."
 }

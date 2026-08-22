@@ -25,6 +25,8 @@ mods/<slug>/
         ├── poster.png
         └── <releaseLine>/
             ├── mod.info
+            ├── icon.png
+            ├── poster.png
             └── media/
 ```
 
