@@ -47,7 +47,7 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.01,
-        Icon = PistolAmmo,
+        Icon = AuxAmmoSmallPistolProjectile,
         WorldStaticModel = Base.9mmRounds,
         Tooltip = Tooltip_item_AuxAmmo_SmallProjectile,
     }
@@ -57,7 +57,7 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.015,
-        Icon = PistolAmmo,
+        Icon = AuxAmmoHeavyPistolProjectile,
         WorldStaticModel = Base.38SpecialBullets,
         Tooltip = Tooltip_item_AuxAmmo_HeavyProjectile,
     }
@@ -67,7 +67,7 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.02,
-        Icon = RifleAmmo308loose,
+        Icon = AuxAmmoRifleProjectile,
         WorldStaticModel = Base.RifleAmmo,
         Tooltip = Tooltip_item_AuxAmmo_RifleProjectile,
     }
@@ -77,7 +77,7 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.03,
-        Icon = ShotgunAmmo,
+        Icon = AuxAmmoShotCharge,
         WorldStaticModel = Base.ShotGunShells,
         Tooltip = Tooltip_item_AuxAmmo_ShotCharge,
     }
@@ -87,7 +87,7 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.008,
-        Icon = BrassScrap,
+        Icon = AuxAmmoSmallPistolCasing,
         WorldStaticModel = Base.BrassScrap,
         Tooltip = Tooltip_item_AuxAmmo_SmallCasing,
     }
@@ -97,7 +97,7 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.012,
-        Icon = BrassScrap,
+        Icon = AuxAmmoHeavyPistolCasing,
         WorldStaticModel = Base.BrassScrap,
         Tooltip = Tooltip_item_AuxAmmo_HeavyCasing,
     }
@@ -107,7 +107,7 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.02,
-        Icon = BrassScrap,
+        Icon = AuxAmmoRifleCasing,
         WorldStaticModel = Base.BrassScrap,
         Tooltip = Tooltip_item_AuxAmmo_RifleCasing,
     }
@@ -117,7 +117,7 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.025,
-        Icon = ShotgunAmmo,
+        Icon = AuxAmmoShotgunHull,
         WorldStaticModel = Base.ShotGunShells,
         Tooltip = Tooltip_item_AuxAmmo_ShotgunHull,
     }
@@ -147,7 +147,7 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.001,
-        Icon = Copper_Scrap,
+        Icon = AuxAmmoImprovisedPrimer,
         WorldStaticModel = Base.CopperScrap,
         Tooltip = Tooltip_item_AuxAmmo_ImprovisedPrimer,
     }
@@ -157,7 +157,7 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.001,
-        Icon = Copper_Scrap,
+        Icon = AuxAmmoFactoryPrimer,
         count = 20,
         WorldStaticModel = Base.CopperScrap,
         Tooltip = Tooltip_item_AuxAmmo_FactoryPrimer,

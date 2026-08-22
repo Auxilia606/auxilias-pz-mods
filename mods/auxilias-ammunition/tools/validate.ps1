@@ -2,6 +2,8 @@ param()
 
 $ErrorActionPreference = 'Stop'
 
+Add-Type -AssemblyName System.Drawing
+
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $monorepoRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot '..\..'))
 $target = (Get-Content -LiteralPath (Join-Path $monorepoRoot 'config\project-zomboid.json') -Raw | ConvertFrom-Json).target
@@ -26,6 +28,25 @@ function Get-PngSize([string]$Path) {
     }
 }
 
+function Get-PngAlphaRange([string]$Path) {
+    $bitmap = [System.Drawing.Bitmap]::new($Path)
+    try {
+        $minimum = 255
+        $maximum = 0
+        for ($y = 0; $y -lt $bitmap.Height; $y++) {
+            for ($x = 0; $x -lt $bitmap.Width; $x++) {
+                $alpha = $bitmap.GetPixel($x, $y).A
+                if ($alpha -lt $minimum) { $minimum = $alpha }
+                if ($alpha -gt $maximum) { $maximum = $alpha }
+            }
+        }
+        [pscustomobject]@{ Minimum = $minimum; Maximum = $maximum }
+    }
+    finally {
+        $bitmap.Dispose()
+    }
+}
+
 $requiredFiles = @(
     (Join-Path $repoRoot 'VERSION'), (Join-Path $repoRoot 'README.md'), (Join-Path $repoRoot 'CHANGELOG.md'),
     (Join-Path $repoRoot 'docs\VANILLA-AMMO-AUDIT.md'), (Join-Path $repoRoot 'docs\DESIGN.md'),
@@ -34,7 +55,7 @@ $requiredFiles = @(
     (Join-Path $repoRoot 'workshop\workshop.txt'), (Join-Path $repoRoot 'workshop\preview.png'),
     (Join-Path $modRoot 'mod.info'), (Join-Path $modRoot 'poster.png'), (Join-Path $modRoot 'icon.png'),
     (Join-Path $versionRoot 'mod.info'), $itemsPath, $recipesPath, $modelsPath, $lootPath,
-    (Join-Path $versionRoot 'media\textures\Item_AuxAmmoShotgunMold.png'),
+    (Join-Path $repoRoot 'tools\sync-icons.ps1'),
     (Join-Path $repoRoot 'source-assets\workshop\AuxiliasAmmunition-cover-source.png'),
     (Join-Path $repoRoot 'source-assets\icons\AuxAmmoShotgunMold-source.png')
 )
@@ -93,13 +114,59 @@ foreach ($reference in $customReferences) { if ($reference -notin $itemIds) { th
 $manualCoverage = @([regex]::Matches($itemsText, 'AuxAmmo[A-Za-z0-9_]+') | ForEach-Object { $_.Value } | Where-Object { $_ -in $recipeIds })
 foreach ($recipeId in $recipeIds) { if (($manualCoverage | Where-Object { $_ -eq $recipeId }).Count -ne 1) { throw "Recipe must appear in exactly one manual: $recipeId" } }
 
-$vanillaIcons = @('ClayMold_GlassPane_Unfired','BulletMold','PistolAmmo','RifleAmmo308loose','ShotgunAmmo','BrassScrap','Limestone','GunpowderJar','Copper_Scrap','Magazine_Armory1','Magazine_Armory2','Magazine_Metalworking2')
+$customIconAssignments = [ordered]@{
+    ShotgunMold = 'AuxAmmoShotgunMold'
+    SmallPistolProjectile = 'AuxAmmoSmallPistolProjectile'
+    HeavyPistolProjectile = 'AuxAmmoHeavyPistolProjectile'
+    RifleProjectile = 'AuxAmmoRifleProjectile'
+    ShotCharge = 'AuxAmmoShotCharge'
+    SmallPistolCasing = 'AuxAmmoSmallPistolCasing'
+    HeavyPistolCasing = 'AuxAmmoHeavyPistolCasing'
+    RifleCasing = 'AuxAmmoRifleCasing'
+    ShotgunHull = 'AuxAmmoShotgunHull'
+    ImprovisedPrimer = 'AuxAmmoImprovisedPrimer'
+    FactoryPrimer = 'AuxAmmoFactoryPrimer'
+}
+$vanillaIcons = @('ClayMold_GlassPane_Unfired','BulletMold','Limestone','GunpowderJar','Magazine_Armory1','Magazine_Armory2','Magazine_Metalworking2')
 foreach ($icon in @([regex]::Matches($itemsText, '(?m)^\s*Icon\s*=\s*([^,]+),') | ForEach-Object { $_.Groups[1].Value.Trim() })) {
     if ($icon -in $vanillaIcons) { continue }
     $iconPath = Join-Path $versionRoot "media\textures\Item_$icon.png"
     if (-not (Test-Path -LiteralPath $iconPath -PathType Leaf)) { throw "Missing custom icon: $iconPath" }
     $size = Get-PngSize $iconPath
     if ($size.Width -ne 32 -or $size.Height -ne 32) { throw "Inventory icon must be 32x32: $iconPath" }
+}
+
+$sourceIconHashes = @()
+$runtimeIconHashes = @()
+foreach ($assignment in $customIconAssignments.GetEnumerator()) {
+    $itemPattern = "(?ms)^\s*item\s+$([regex]::Escape($assignment.Key))\s*\{.*?^\s*Icon\s*=\s*$([regex]::Escape($assignment.Value)),.*?^\s*\}"
+    if ($itemsText -notmatch $itemPattern) {
+        throw "Dedicated icon assignment is missing: $($assignment.Key) -> $($assignment.Value)"
+    }
+
+    $sourceIconPath = Join-Path $repoRoot "source-assets\icons\Item_$($assignment.Value).png"
+    $runtimeIconPath = Join-Path $versionRoot "media\textures\Item_$($assignment.Value).png"
+    foreach ($iconCheck in @(@($sourceIconPath, 128), @($runtimeIconPath, 32))) {
+        if (-not (Test-Path -LiteralPath $iconCheck[0] -PathType Leaf)) {
+            throw "Missing dedicated icon: $($iconCheck[0])"
+        }
+        $iconSize = Get-PngSize $iconCheck[0]
+        if ($iconSize.Width -ne $iconCheck[1] -or $iconSize.Height -ne $iconCheck[1]) {
+            throw "Dedicated icon must be $($iconCheck[1])x$($iconCheck[1]): $($iconCheck[0])"
+        }
+        $alphaRange = Get-PngAlphaRange $iconCheck[0]
+        if ($alphaRange.Minimum -ne 0 -or $alphaRange.Maximum -ne 255) {
+            throw "Dedicated icon must contain transparent background and opaque subject pixels: $($iconCheck[0])"
+        }
+    }
+    $sourceIconHashes += (Get-FileHash -LiteralPath $sourceIconPath -Algorithm SHA256).Hash
+    $runtimeIconHashes += (Get-FileHash -LiteralPath $runtimeIconPath -Algorithm SHA256).Hash
+}
+if (@($sourceIconHashes | Select-Object -Unique).Count -ne $customIconAssignments.Count) {
+    throw 'Dedicated 128x128 icon masters must all be visually distinct files.'
+}
+if (@($runtimeIconHashes | Select-Object -Unique).Count -ne $customIconAssignments.Count) {
+    throw 'Dedicated 32x32 runtime icons must all be visually distinct files.'
 }
 
 $translationFiles = @('IG_UI.json','ItemName.json','Recipes.json','Tooltip.json')

@@ -20,6 +20,11 @@ consume vanilla ammo continue to work without patches. Factory primers remain a 
 shortcut. High skill levels automatically reveal recipes so existing saves are not locked
 out if their manuals were generated before the mod was added.
 
+Projectiles, shot charge, casings, hulls, primers, and the fired shotgun mold use dedicated
+icons so components that frequently share an inventory remain distinguishable at 32×32.
+Run the repository-level `tools/sync-icons.ps1 -Mod auxilias-ammunition` after changing a
+128×128 master in `source-assets/icons`.
+
 ## Installation
 
 Copy the contents of `workshop` into a Project Zomboid Workshop staging directory, or

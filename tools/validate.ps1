@@ -23,6 +23,13 @@ $repoRoot = Get-MonorepoRoot
 $target = Get-GameTarget
 $projects = @(Get-ModProjects -Mod $Mod)
 $branding = Get-Content -LiteralPath (Join-Path $repoRoot 'shared\branding\brand.json') -Raw | ConvertFrom-Json
+$expectedPreviewSizes = @(128, 64, 32)
+if ((@($branding.previewSizes) -join ',') -ne ($expectedPreviewSizes -join ',')) {
+    throw "Brand review previews must remain 128, 64, and 32px; found $(@($branding.previewSizes) -join ', ')."
+}
+if (-not (Test-Path -LiteralPath (Join-Path $repoRoot 'tools\sync-workshop-art.ps1') -PathType Leaf)) {
+    throw 'Workshop-art synchronization tool is missing.'
+}
 
 $allProjects = @(Get-ModProjects)
 foreach ($property in @('slug', 'modId', 'path', 'packageName', 'releaseTagPrefix')) {

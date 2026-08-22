@@ -25,6 +25,7 @@ MOD_ROOT = os.path.join(REPO_ROOT, "workshop", "Contents", "mods", "AuxiliasCros
 VERSION_ROOT = os.path.join(MOD_ROOT, GAME_RELEASE_LINE)
 MODEL_DIR = os.path.join(VERSION_ROOT, "media", "models_X", "weapons", "2handed")
 MODEL_TEXTURE_DIR = os.path.join(VERSION_ROOT, "media", "textures", "weapons", "2handed")
+MODEL_TEXTURE_NAME = "AuxiliaCrossbowAtlas"
 ITEM_TEXTURE_DIR = os.path.join(VERSION_ROOT, "media", "textures")
 ICON_SOURCE_DIR = os.path.join(REPO_ROOT, "source-assets", "icons")
 VALIDATION_DIR = os.path.join(REPO_ROOT, "work", "model-validation")
@@ -590,7 +591,7 @@ def export_object(obj, filename):
     bpy.data.meshes.remove(game_mesh)
 
 
-def make_palette_texture(filename):
+def make_palette_texture():
     width = height = 128
     # Vanilla wood-stock firearms cluster around sRGB 121/58/7, with dark
     # walnut shadows around 80/35/10 and neutral gunmetal around 60/62/64.
@@ -620,11 +621,12 @@ def make_palette_texture(filename):
             if swatch_name in {"Forged Iron", "Chipped Stone"}:
                 grain += (((x * 5 + y * 3) % 7) - 3) / 600.0
             pixels.extend((max(0, min(1, base[0] + grain)), max(0, min(1, base[1] + grain)), max(0, min(1, base[2] + grain)), 1.0))
-    image = bpy.data.images.new(filename, width=width, height=height, alpha=True)
+    image = bpy.data.images.new(MODEL_TEXTURE_NAME, width=width, height=height, alpha=True)
     image.pixels = pixels
-    image.filepath_raw = os.path.join(MODEL_TEXTURE_DIR, f"{filename}.png")
+    image.filepath_raw = os.path.join(MODEL_TEXTURE_DIR, f"{MODEL_TEXTURE_NAME}.png")
     image.file_format = "PNG"
     image.save()
+    return image
 
 
 def install_item_icons(icon_names):
@@ -784,11 +786,9 @@ def render_promo(heavy, asset_collections, camera):
     camera.data.ortho_scale = 0.56
     camera.location = (0.82, -0.88, 0.72)
     look_at(camera, (0, 0.10, 0.015))
-    poster = os.path.join(MOD_ROOT, "poster.png")
-    scene.render.filepath = poster
+    promo_reference = os.path.join(VALIDATION_DIR, "AuxiliaCrossbow-promo-reference.png")
+    scene.render.filepath = promo_reference
     bpy.ops.render.render(write_still=True)
-    shutil.copy2(poster, os.path.join(MOD_ROOT, "icon.png"))
-    shutil.copy2(poster, os.path.join(REPO_ROOT, "workshop", "preview.png"))
 
 
 def import_fbx(filepath):
@@ -955,11 +955,12 @@ for collection in assets:
     asset_objects[collection.name] = finalize_collection(collection)
 for filename, obj in asset_objects.items():
     export_object(obj, filename)
-    make_palette_texture(filename)
+
+palette_texture = make_palette_texture()
 
 install_item_icons(ICON_NAMES)
 
-apply_palette_to_preview_materials(bpy.data.images["AuxiliaImprovisedCrossbow"])
+apply_palette_to_preview_materials(palette_texture)
 
 camera = setup_render()
 for collection in crossbows:

@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "sourceCanvas": 1254,
   "outputCanvas": 512,
+  "previewSizes": [128, 64, 32],
   "safeAreaPercent": 8,
   "subjectWidthPercent": {
     "minimum": 58,

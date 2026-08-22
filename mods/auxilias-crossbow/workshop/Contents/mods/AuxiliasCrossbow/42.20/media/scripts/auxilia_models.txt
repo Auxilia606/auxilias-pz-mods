@@ -3,7 +3,7 @@ module Base
     model AuxiliaImprovisedCrossbow
     {
         mesh = weapons/2handed/AuxiliaImprovisedCrossbow,
-        texture = weapons/2handed/AuxiliaImprovisedCrossbow,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
         scale = 0.01,
         attachment muzzle
         {
@@ -20,7 +20,7 @@ module Base
     model AuxiliaImprovisedCrossbowCocked
     {
         mesh = weapons/2handed/AuxiliaImprovisedCrossbowCocked,
-        texture = weapons/2handed/AuxiliaImprovisedCrossbowCocked,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
         scale = 0.01,
         attachment muzzle
         {
@@ -37,7 +37,7 @@ module Base
     model AuxiliaReinforcedCrossbow
     {
         mesh = weapons/2handed/AuxiliaReinforcedCrossbow,
-        texture = weapons/2handed/AuxiliaReinforcedCrossbow,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
         scale = 0.01,
         attachment muzzle
         {
@@ -54,7 +54,7 @@ module Base
     model AuxiliaReinforcedCrossbowCocked
     {
         mesh = weapons/2handed/AuxiliaReinforcedCrossbowCocked,
-        texture = weapons/2handed/AuxiliaReinforcedCrossbowCocked,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
         scale = 0.01,
         attachment muzzle
         {
@@ -71,7 +71,7 @@ module Base
     model AuxiliaHeavyArbalest
     {
         mesh = weapons/2handed/AuxiliaHeavyArbalest,
-        texture = weapons/2handed/AuxiliaHeavyArbalest,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
         scale = 0.01,
         attachment muzzle
         {
@@ -88,7 +88,7 @@ module Base
     model AuxiliaHeavyArbalestCocked
     {
         mesh = weapons/2handed/AuxiliaHeavyArbalestCocked,
-        texture = weapons/2handed/AuxiliaHeavyArbalestCocked,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
         scale = 0.01,
         attachment muzzle
         {
@@ -105,7 +105,7 @@ module Base
     model AuxiliaCrossbowBolt
     {
         mesh = weapons/2handed/AuxiliaCrossbowBolt,
-        texture = weapons/2handed/AuxiliaCrossbowBolt,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
         scale = 0.01,
         attachment world
         {
@@ -117,7 +117,7 @@ module Base
     model AuxiliaStoneCrossbowBolt
     {
         mesh = weapons/2handed/AuxiliaStoneCrossbowBolt,
-        texture = weapons/2handed/AuxiliaStoneCrossbowBolt,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
         scale = 0.01,
         attachment world
         {
@@ -129,7 +129,7 @@ module Base
     model AuxiliaBrokenBolt
     {
         mesh = weapons/2handed/AuxiliaBrokenBolt,
-        texture = weapons/2handed/AuxiliaBrokenBolt,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
         scale = 0.01,
         attachment world
         {
@@ -141,7 +141,7 @@ module Base
     model AuxiliaBrokenStoneBolt
     {
         mesh = weapons/2handed/AuxiliaBrokenStoneBolt,
-        texture = weapons/2handed/AuxiliaBrokenStoneBolt,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
         scale = 0.01,
         attachment world
         {

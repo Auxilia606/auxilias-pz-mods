@@ -41,6 +41,7 @@ $requiredFiles = @(
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaBoltShaft.png'),
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaBoltHead.png'),
     (Join-Path $versionRoot 'media\textures\Item_AuxiliaStoneBoltHead.png'),
+    (Join-Path $versionRoot 'media\textures\weapons\2handed\AuxiliaCrossbowAtlas.png'),
     (Join-Path $repoRoot 'docs\VANILLA-RECIPE-ALIGNMENT.md')
 )
 
@@ -59,7 +60,6 @@ $modelNames = @(
 
 foreach ($modelName in $modelNames) {
     $requiredFiles += Join-Path $versionRoot "media\models_X\weapons\2handed\$modelName.fbx"
-    $requiredFiles += Join-Path $versionRoot "media\textures\weapons\2handed\$modelName.png"
 }
 
 $missing = @($requiredFiles | Where-Object { -not (Test-Path -LiteralPath $_ -PathType Leaf) })
@@ -103,19 +103,24 @@ if ($modelsText -notmatch '(?m)^\s*module\s+Base\s*$') {
 }
 
 foreach ($modelName in $modelNames) {
-    $modelBlockPattern = "(?s)model\s+$([regex]::Escape($modelName))\s*\{.*?mesh\s*=\s*weapons/2handed/$([regex]::Escape($modelName)),.*?texture\s*=\s*weapons/2handed/$([regex]::Escape($modelName)),.*?scale\s*=\s*0\.01,"
+    $modelBlockPattern = "(?s)model\s+$([regex]::Escape($modelName))\s*\{.*?mesh\s*=\s*weapons/2handed/$([regex]::Escape($modelName)),.*?texture\s*=\s*weapons/2handed/AuxiliaCrossbowAtlas,.*?scale\s*=\s*0\.01,"
     if ($modelsText -notmatch $modelBlockPattern) {
         throw "Mesh/texture/scale model definition is incomplete: $modelName"
     }
 
     $fbxFile = Get-Item -LiteralPath (Join-Path $versionRoot "media\models_X\weapons\2handed\$modelName.fbx")
-    $textureFile = Get-Item -LiteralPath (Join-Path $versionRoot "media\textures\weapons\2handed\$modelName.png")
     if ($fbxFile.Length -lt 20000) {
         throw "FBX is unexpectedly small: $($fbxFile.FullName)"
     }
-    if ($textureFile.Length -lt 4096) {
-        throw "Model texture is unexpectedly small or flat: $($textureFile.FullName)"
-    }
+}
+
+$modelTextureRoot = Join-Path $versionRoot 'media\textures\weapons\2handed'
+$modelTextures = @(Get-ChildItem -LiteralPath $modelTextureRoot -Filter '*.png' -File)
+if ($modelTextures.Count -ne 1 -or $modelTextures[0].Name -ne 'AuxiliaCrossbowAtlas.png') {
+    throw 'Crossbow models must share the single AuxiliaCrossbowAtlas.png texture.'
+}
+if ($modelTextures[0].Length -lt 4096) {
+    throw "Model texture is unexpectedly small or flat: $($modelTextures[0].FullName)"
 }
 
 $modelOpenBraces = ([regex]::Matches($modelsText, '\{')).Count
@@ -126,7 +131,7 @@ if ($modelOpenBraces -ne $modelCloseBraces) {
 
 $generatorPath = Join-Path $repoRoot 'source-assets\blender\generate_assets.py'
 $generatorText = Get-Content -LiteralPath $generatorPath -Raw
-foreach ($pipelineCheck in @('finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'circular_limb_points', 'fixed_string_length', 'crossbow_physics', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
+foreach ($pipelineCheck in @('MODEL_TEXTURE_NAME', 'finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'circular_limb_points', 'fixed_string_length', 'crossbow_physics', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
     if ($generatorText -notmatch [regex]::Escape($pipelineCheck)) {
         throw "Blender model pipeline check is missing: $pipelineCheck"
     }

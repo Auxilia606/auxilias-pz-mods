@@ -1,6 +1,6 @@
 # Crossbow model pipeline
 
-The ten 3D assets are generated from `source-assets/blender/generate_assets.py` with Blender 5.2 LTS: relaxed and cocked variants of all three crossbows plus four intact/broken bolt models. The script is the source of truth for generated FBX files, model textures, validation renders, the poster, and the `.blend` file. Inventory artwork has a separate source of truth under `source-assets/icons`.
+The ten 3D assets are generated from `source-assets/blender/generate_assets.py` with Blender 5.2 LTS: relaxed and cocked variants of all three crossbows plus four intact/broken bolt models. The script is the source of truth for generated FBX files, the shared model texture, validation renders, and the `.blend` file. Inventory artwork has a separate source of truth under `source-assets/icons`. The Workshop cover source lives under `source-assets/workshop` and is synchronized independently with `tools/sync-workshop-art.ps1`; Blender's promotional render is retained only as a geometry and material reference under `work/model-validation`.
 
 ## Coordinate frame
 
@@ -15,7 +15,7 @@ Installed vanilla long-gun meshes occupy approximately Y `-0.18` to `0.50`. The 
 
 Blender exports with `-Y` forward and `Z` up. The FBX files carry centimeter unit metadata, so every game model block uses `scale = 0.01`. The model blocks live in `module Base`, while each item uses an unqualified `WeaponSprite` name and `AttachmentType = Rifle`; these details are required by Build 42's equipped-model lookup.
 
-The game-export copy receives a baked 180-degree X-axis correction. Blender's own FBX importer restores the authored axes from metadata, while Project Zomboid otherwise reads both the longitudinal and height axes reversed. Every asset is also collapsed to one FBX material, matching the vanilla firearm meshes; per-part colors remain encoded in the shared UV texture atlas. Multiple material slots caused Build 42 to omit non-primary weapon parts in game.
+The game-export copy receives a baked 180-degree X-axis correction. Blender's own FBX importer restores the authored axes from metadata, while Project Zomboid otherwise reads both the longitudinal and height axes reversed. Every asset is also collapsed to one FBX material, matching the vanilla firearm meshes; per-part colors remain encoded in the single shared `AuxiliaCrossbowAtlas.png` UV texture. Multiple material slots caused Build 42 to omit non-primary weapon parts in game.
 
 | Asset | Width X | Length Y | Height Z |
 |---|---:|---:|---:|

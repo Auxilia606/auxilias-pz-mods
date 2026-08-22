@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Replaced reused vanilla component art with dedicated projectile, shot-charge, casing,
+  hull, and primer icons that remain distinct at the 32×32 inventory size.
+- Reworked the Workshop cover as part of the shared Auxilia visual family: worn dark
+  workbench, warm upper-left light, blackened metal, and restrained rust-orange accents.
+- Added reproducible icon and Workshop-art synchronization from high-resolution sources.
+
 ## 1.0.0 — 2026-08-20
 
 - Added a complete late-game production loop for all nine vanilla Build 42 ammunition types.
