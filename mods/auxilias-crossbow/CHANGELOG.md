@@ -17,8 +17,9 @@
 - Reworked the Workshop cover alongside Auxilia's Ammunition so both releases share the
   same worn-workbench composition, lighting, material palette, and rust-orange accent.
 - Prevented Build 42's firearm-only muzzle light and bright bullet tracer from being created for crossbow shots. Crossbows now use the aimed-hand ranged path plus a client-side ballistics update instead of the firearm-effects path.
-- Removed the spear-and-knife animation from every Bolt assembly and recovery recipe. Metal work now uses the small-part hand animation, while Stone head recovery uses the stone-working animation.
-- Replaced the broken-bolt recovery recipe's full-size vanilla spear prop with the actual compact broken Metal or Stone Bolt and its matching tool.
+- Removed the spear-and-knife animation from every Bolt assembly and recovery recipe. Assembly and recovery now use the compact small-part hand animation, while only actual Stone head knapping uses the stone-working animation.
+- Replaced the broken-bolt recovery recipe's full-size vanilla spear prop with the actual compact broken Bolt and a material-appropriate removal tool: Pliers for Metal heads and a sharp knife for Stone heads.
+- Corrected the English Stone head recipe's `Knap` spelling, identified the Nail-shaped head as Metal, and aligned the Heavy Crossbow's documentation with its hardwood tiller, steel prod, and iron fittings.
 - Kept the ten independent 128×128 icon masters while installing 32×32 runtime copies, preventing equipped crossbows from overlapping adjacent hotbar slots.
 - Fixed a Build 42 client crash when firing a Stone Bolt after switching ammunition types. Both bolt items now self-reference their registered `AmmoType`, ensuring the engine initializes bullet-tracer configuration for the non-default Stone Bolt path.
 - Removed `base:ammo` from both Crossbow Bolt materials so vanilla Gather Gunpowder no longer accepts them as propellant-bearing cartridges.

@@ -109,6 +109,17 @@ foreach ($translationFile in $translationFiles) {
     }
 }
 
+$englishRecipes = Get-Content -LiteralPath (Join-Path $translationRoot 'EN\Recipes.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$expectedEnglishRecipeNames = @{
+    ShapeBoltHead = 'Shape Metal Crossbow Bolt Head from Nail'
+    KnappBoltHeads = 'Knap Stone Crossbow Bolt Heads'
+}
+foreach ($recipeName in $expectedEnglishRecipeNames.Keys) {
+    if ($englishRecipes.$recipeName -ne $expectedEnglishRecipeNames[$recipeName]) {
+        throw "English recipe name is inconsistent: $recipeName -> $($englishRecipes.$recipeName)"
+    }
+}
+
 $modelsText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\scripts\auxilia_models.txt') -Raw
 if ($modelsText -notmatch '(?m)^\s*module\s+Base\s*$') {
     throw 'Weapon model scripts must be declared in module Base for WeaponSprite lookup.'
@@ -401,7 +412,7 @@ foreach ($recoveryRecipeName in @('SalvageBrokenBolts', 'SalvageBrokenStoneBolt'
     if ($recoveryRecipeBlock -notmatch 'Broken(?:Stone)?Bolt\]\s+flags\[Prop2\]') {
         throw "$recoveryRecipeName must show its actual compact broken bolt as Prop2."
     }
-    if ($recoveryRecipeBlock -notmatch 'mode:keep\s+flags\[Prop1;MayDegradeVeryLight\]') {
+    if ($recoveryRecipeBlock -notmatch 'mode:keep\s+flags\[[^\]]*Prop1[^\]]*MayDegradeVeryLight[^\]]*\]') {
         throw "$recoveryRecipeName must show its selected recovery tool as Prop1."
     }
 }
@@ -411,8 +422,14 @@ if ($metalRecoveryRecipe -notmatch 'timedAction\s*=\s*MakingJewellery,') {
     throw 'Metal-head recovery must use the small-part MakingJewellery animation.'
 }
 $stoneRecoveryRecipe = Get-CraftRecipeBlock -Text $recipesText -Name 'SalvageBrokenStoneBolt'
-if ($stoneRecoveryRecipe -notmatch 'timedAction\s*=\s*HammerStoneStanding,') {
-    throw 'Stone-head recovery must use the stone-working HammerStoneStanding animation.'
+if ($stoneRecoveryRecipe -notmatch 'timedAction\s*=\s*MakingJewellery,') {
+    throw 'Stone-head recovery must use the compact MakingJewellery animation.'
+}
+if ($stoneRecoveryRecipe -notmatch 'tags\[base:sharpknife\]\s+mode:keep\s+flags\[Prop1;IsNotDull;MayDegradeVeryLight\]') {
+    throw 'Stone-head recovery must cut away bindings with a non-dull sharp knife.'
+}
+if ($stoneRecoveryRecipe -match 'base:(?:hammerstone|mallet|knappingtool)') {
+    throw 'Stone-head recovery must not strike the intact head with a knapping or hammering tool.'
 }
 
 foreach ($assemblyRecipeName in @('MakeStandardBolts', 'MakeStoneBolt')) {

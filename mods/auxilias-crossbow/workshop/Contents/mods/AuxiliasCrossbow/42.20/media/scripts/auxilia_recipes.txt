@@ -230,10 +230,10 @@ module AuxiliasCrossbow
         time = 60,
         Tags = InHandCraft;Survivalist,
         category = Assembly,
-        timedAction = HammerStoneStanding,
+        timedAction = MakingJewellery,
         inputs
         {
-            item 1 tags[base:hammerstone;base:mallet;base:knappingtool] mode:keep flags[Prop1;MayDegradeVeryLight],
+            item 1 tags[base:sharpknife] mode:keep flags[Prop1;IsNotDull;MayDegradeVeryLight],
             item 1 [AuxiliasCrossbow.BrokenStoneBolt] flags[Prop2],
         }
         outputs

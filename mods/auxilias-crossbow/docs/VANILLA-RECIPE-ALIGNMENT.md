@@ -37,8 +37,8 @@ XP usually follows the primary skill gate in roughly ten-point steps. Small seco
 | Forge Metal Bolt Heads | time 180; Blacksmith 20 XP | **time 200; Blacksmith 20 XP** | Exact small forged-part batch baseline |
 | Assemble Metal Bolt | time 60; Carving 4 + Maintenance 2 XP | **time 100; Maintenance 5 XP** | Spear/implement assembly; component skills are earned upstream |
 | Assemble Stone Bolt | time 60; Carving 4 + Knapping 2 XP | **time 100; Maintenance 5 XP** | Same final assembly regardless of head material |
-| Recover Metal Head | time 45; Maintenance 2 gate / 4 XP | **time 60; no skill gate / no XP** | Matches `ReclaimFromSpear` |
-| Recover Stone Head | time 45; Knapping 2 gate / 4 XP | **time 60; no skill gate / no XP** | Matches `ReclaimFromSpear` |
+| Recover Metal Head | time 45; Maintenance 2 gate / 4 XP | **time 60; no skill gate / no XP** | Pliers extract the socketed head; timing matches `ReclaimFromSpear` |
+| Recover Stone Head | time 45; Knapping 2 gate / 4 XP | **time 60; no skill gate / no XP** | A sharp knife removes bindings and broken wood without striking the intact stone head; timing matches `ReclaimFromSpear` |
 
 `W`, `C`, `M`, and `B` abbreviate Woodwork, Carving, Maintenance, and Blacksmith in the compact table. Skill requirements on the three complete crossbows remain unchanged; the XP awards now reflect those gates using vanilla-style increments.
 
@@ -60,4 +60,4 @@ The remaining shared inputs were checked against their installed vanilla definit
 
 Some advanced vanilla recipes require research or auto-learning thresholds. Auxilia recipes intentionally remain available through skill gates alone, as established by the mod's design. No magazine or schematic requirement was added during this balance pass.
 
-The Light and standard Crossbows use multiple skills because their recipes combine stock shaping, joinery, and mechanical fitting. The Heavy Crossbow upgrade requires only Maintenance and Blacksmith because it reuses a completed Crossbow and replaces its primary structure with forged iron. Linear upgrade inputs and material cost limit the recipes' usefulness for repeatable XP farming.
+The Light and standard Crossbows use multiple skills because their recipes combine stock shaping, joinery, and mechanical fitting. The Heavy Crossbow upgrade requires only Maintenance and Blacksmith because it reuses the completed Crossbow's hardwood tiller while adding a steel prod and reinforced iron fittings. Linear upgrade inputs and material cost limit the recipes' usefulness for repeatable XP farming.

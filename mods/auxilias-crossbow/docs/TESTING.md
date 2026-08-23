@@ -71,6 +71,8 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - Duct Tape cannot replace the feather.
 - Butchering a chicken or turkey supplies vanilla feathers usable by both bolt assembly recipes.
 - One Broken Bolt yields one reusable head of its original material and never a complete bolt.
+- Metal-head recovery requires Pliers, while Stone-head recovery requires a non-dull sharp knife; knapping tools and mallets cannot substitute for the knife.
+- Both recovery recipes use the compact small-parts action rather than hammering the intact head or displaying a full-size spear prop.
 - In a sufficiently large recovery sample, Metal Bolts approach 70% intact and Stone Bolts approach 45% intact.
 - Crafting recipes unlock only when every listed skill requirement is met.
 - Debug recipe-time and XP checks match `docs/VANILLA-RECIPE-ALIGNMENT.md`: `time = 600` for Light Crossbow and Crossbow, 900 for Heavy Crossbow, 230 for knapping, 200 for small forging, 100 for carving/assembly, and 60 for salvage with no XP.
