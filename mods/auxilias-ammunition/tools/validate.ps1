@@ -16,6 +16,13 @@ $itemsPath = Join-Path $scriptRoot 'auxilias_ammunition_items.txt'
 $recipesPath = Join-Path $scriptRoot 'auxilias_ammunition_recipes.txt'
 $modelsPath = Join-Path $scriptRoot 'auxilias_ammunition_models.txt'
 $lootPath = Join-Path $versionRoot 'media\lua\server\AuxiliasAmmunition_Loot.lua'
+$componentModelAssignments = [ordered]@{
+    SmallPistolProjectile = 'AuxAmmoSmallPistolProjectile_Ground'
+    HeavyPistolProjectile = 'AuxAmmoHeavyPistolProjectile_Ground'
+    RifleProjectile = 'AuxAmmoRifleProjectile_Ground'
+    ShotCharge = 'AuxAmmoShotCharge_Ground'
+    ShotgunHull = 'AuxAmmoShotgunHull_Ground'
+}
 
 function Get-PngSize([string]$Path) {
     $bytes = [System.IO.File]::ReadAllBytes($Path)
@@ -50,16 +57,22 @@ function Get-PngAlphaRange([string]$Path) {
 $requiredFiles = @(
     (Join-Path $repoRoot 'VERSION'), (Join-Path $repoRoot 'README.md'), (Join-Path $repoRoot 'CHANGELOG.md'),
     (Join-Path $repoRoot 'docs\VANILLA-AMMO-AUDIT.md'), (Join-Path $repoRoot 'docs\DESIGN.md'),
-    (Join-Path $repoRoot 'docs\BALANCE.md'), (Join-Path $repoRoot 'docs\TESTING.md'),
+    (Join-Path $repoRoot 'docs\BALANCE.md'), (Join-Path $repoRoot 'docs\TESTING.md'), (Join-Path $repoRoot 'docs\MODELING.md'),
     (Join-Path $repoRoot 'docs\reports\RELEASE-VALIDATION-1.0.0.md'),
     (Join-Path $repoRoot 'workshop\workshop.txt'), (Join-Path $repoRoot 'workshop\preview.png'),
     (Join-Path $modRoot 'mod.info'), (Join-Path $modRoot 'poster.png'), (Join-Path $modRoot 'icon.png'),
     (Join-Path $versionRoot 'mod.info'), (Join-Path $versionRoot 'poster.png'), (Join-Path $versionRoot 'icon.png'),
     $itemsPath, $recipesPath, $modelsPath, $lootPath,
     (Join-Path $repoRoot 'tools\sync-icons.ps1'),
+    (Join-Path $repoRoot 'source-assets\blender\generate_components.py'),
+    (Join-Path $repoRoot 'source-assets\blender\AuxiliasAmmunitionComponents.blend'),
     (Join-Path $repoRoot 'source-assets\workshop\AuxiliasAmmunition-cover-source.png'),
-    (Join-Path $repoRoot 'source-assets\icons\AuxAmmoShotgunMold-source.png')
+    (Join-Path $repoRoot 'source-assets\icons\AuxAmmoShotgunMold-source.png'),
+    (Join-Path $versionRoot 'media\textures\WorldItems\AuxAmmoComponentAtlas.png')
 )
+foreach ($modelName in $componentModelAssignments.Values) {
+    $requiredFiles += Join-Path $versionRoot "media\models_X\WorldItems\$modelName.fbx"
+}
 foreach ($path in $requiredFiles) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing required file: $path" }
 }
@@ -83,6 +96,38 @@ foreach ($entry in @(@($itemsPath, $itemsText), @($recipesPath, $recipesText), @
     if (([regex]::Matches($entry[1], '\{')).Count -ne ([regex]::Matches($entry[1], '\}')).Count) { throw "Unbalanced braces: $($entry[0])" }
 }
 if ($itemsText -match '(?m)^\s*module\s+Base\s*$' -or $recipesText -match '(?m)^\s*module\s+Base\s*$') { throw 'Items and recipes may not override module Base.' }
+
+foreach ($assignment in $componentModelAssignments.GetEnumerator()) {
+    $itemPattern = "(?ms)^\s*item\s+$([regex]::Escape($assignment.Key))\s*\{.*?^\s*WorldStaticModel\s*=\s*Base\.$([regex]::Escape($assignment.Value)),.*?^\s*\}"
+    if ($itemsText -notmatch $itemPattern) {
+        throw "Dedicated component model assignment is missing: $($assignment.Key) -> $($assignment.Value)"
+    }
+    $modelPattern = "(?ms)^\s*model\s+$([regex]::Escape($assignment.Value))\s*\{.*?^\s*mesh\s*=\s*WorldItems/$([regex]::Escape($assignment.Value)),.*?^\s*texture\s*=\s*WorldItems/AuxAmmoComponentAtlas,.*?^\s*scale\s*=\s*0\.01,.*?^\s*\}"
+    if ($modelsText -notmatch $modelPattern) {
+        throw "Dedicated component model definition is incomplete: $($assignment.Value)"
+    }
+    $fbxPath = Join-Path $versionRoot "media\models_X\WorldItems\$($assignment.Value).fbx"
+    if ((Get-Item -LiteralPath $fbxPath).Length -lt 20000) {
+        throw "Component FBX is unexpectedly small: $fbxPath"
+    }
+}
+foreach ($forbiddenComponentModel in @('Base.9mmRounds','Base.38SpecialBullets','Base.RifleAmmo','Base.ShotGunShells')) {
+    if ($itemsText -match "(?ms)^\s*item\s+(?:SmallPistolProjectile|HeavyPistolProjectile|RifleProjectile|ShotCharge|ShotgunHull)\s*\{.*?WorldStaticModel\s*=\s*$([regex]::Escape($forbiddenComponentModel)),") {
+        throw "Component item may not reuse a complete-ammunition model: $forbiddenComponentModel"
+    }
+}
+
+$componentAtlasPath = Join-Path $versionRoot 'media\textures\WorldItems\AuxAmmoComponentAtlas.png'
+$componentAtlasSize = Get-PngSize $componentAtlasPath
+if ($componentAtlasSize.Width -ne 128 -or $componentAtlasSize.Height -ne 128) {
+    throw "Component model atlas must be 128x128: $componentAtlasPath"
+}
+$generatorText = Get-Content -LiteralPath (Join-Path $repoRoot 'source-assets\blender\generate_components.py') -Raw
+foreach ($pipelineCheck in @('ASSET_NAMES','build_single_projectile_model','build_shot_charge','build_single_shotgun_hull','finalize_collection','collapse_game_materials','validate_exports','fbx_round_trip_dimensions')) {
+    if ($generatorText -notmatch [regex]::Escape($pipelineCheck)) {
+        throw "Component model pipeline check is missing: $pipelineCheck"
+    }
+}
 
 $itemIds = @([regex]::Matches($itemsText, '(?m)^\s*item\s+([A-Za-z0-9_]+)\s*$') | ForEach-Object { $_.Groups[1].Value })
 $recipeIds = @([regex]::Matches($recipesText, '(?m)^\s*craftRecipe\s+([A-Za-z0-9_]+)\s*$') | ForEach-Object { $_.Groups[1].Value })
@@ -233,4 +278,4 @@ if (@($hashes | Select-Object -Unique).Count -ne 1) { throw 'Workshop preview an
 $coverSize = Get-PngSize (Join-Path $repoRoot 'source-assets\workshop\AuxiliasAmmunition-cover-source.png')
 if ($coverSize.Width -ne $coverSize.Height -or $coverSize.Width -lt 1254) { throw 'Workshop cover source must be square and at least 1254px.' }
 
-Write-Host "Auxilia's Ammunition validation passed: 19 items, 24 recipes, 9 vanilla calibers, EN/KO parity."
+Write-Host "Auxilia's Ammunition validation passed: 19 items, 24 recipes, 9 vanilla calibers, 5 dedicated component models, EN/KO parity."

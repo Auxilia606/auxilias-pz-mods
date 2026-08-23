@@ -6,4 +6,39 @@ module Base
         texture = WorldItems/BulletMold,
         scale = 0.4,
     }
+
+    model AuxAmmoSmallPistolProjectile_Ground
+    {
+        mesh = WorldItems/AuxAmmoSmallPistolProjectile_Ground,
+        texture = WorldItems/AuxAmmoComponentAtlas,
+        scale = 0.01,
+    }
+
+    model AuxAmmoHeavyPistolProjectile_Ground
+    {
+        mesh = WorldItems/AuxAmmoHeavyPistolProjectile_Ground,
+        texture = WorldItems/AuxAmmoComponentAtlas,
+        scale = 0.01,
+    }
+
+    model AuxAmmoRifleProjectile_Ground
+    {
+        mesh = WorldItems/AuxAmmoRifleProjectile_Ground,
+        texture = WorldItems/AuxAmmoComponentAtlas,
+        scale = 0.01,
+    }
+
+    model AuxAmmoShotCharge_Ground
+    {
+        mesh = WorldItems/AuxAmmoShotCharge_Ground,
+        texture = WorldItems/AuxAmmoComponentAtlas,
+        scale = 0.01,
+    }
+
+    model AuxAmmoShotgunHull_Ground
+    {
+        mesh = WorldItems/AuxAmmoShotgunHull_Ground,
+        texture = WorldItems/AuxAmmoComponentAtlas,
+        scale = 0.01,
+    }
 }

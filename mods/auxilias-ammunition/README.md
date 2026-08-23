@@ -25,6 +25,11 @@ icons so components that frequently share an inventory remain distinguishable at
 Run the repository-level `tools/sync-icons.ps1 -Mod auxilias-ammunition` after changing a
 128×128 master in `source-assets/icons`.
 
+Small and heavy pistol projectiles, rifle projectiles, shot charge, and empty shotgun hulls
+also use dedicated ground models instead of vanilla complete-ammunition meshes. Their
+reproducible Blender source, shared texture atlas, FBX round-trip checks, and regeneration
+command are documented in [the component model pipeline](docs/MODELING.md).
+
 ## Installation
 
 Copy the contents of `workshop` into a Project Zomboid Workshop staging directory, or
@@ -47,6 +52,7 @@ loading a world. Servers and every connecting client must use the same version.
 - [System design](docs/DESIGN.md)
 - [Balance tables](docs/BALANCE.md)
 - [Testing and known limits](docs/TESTING.md)
+- [Component model pipeline](docs/MODELING.md)
 - [1.0.0 release validation report](docs/reports/RELEASE-VALIDATION-1.0.0.md)
 - [Changelog](CHANGELOG.md)
 

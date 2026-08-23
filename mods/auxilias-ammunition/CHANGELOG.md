@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Replaced complete-ammunition placeholder world models with dedicated meshes for small and
+  heavy pistol projectiles, rifle projectiles, shot charge, and empty shotgun hulls.
+- Matched world-model quantity semantics to crafting counts: projectile and hull models now
+  show one counted component, while a shot charge remains a multi-pellet one-shell charge.
+- Added a reproducible Blender component-model pipeline, shared atlas, validation renders,
+  FBX round-trip checks, and static guards against restoring the placeholder mappings.
 - Installed the Workshop poster and mod-list icon beside the Build 42.20 metadata so the game
   no longer renders white placeholders when it selects the versioned `mod.info`.
 - Fixed fired bullet and shotgun molds becoming broken during projectile casting despite being

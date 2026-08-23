@@ -5,8 +5,10 @@
 `tools/validate.ps1` verifies metadata/version alignment, required files, balanced scripts,
 unique item/recipe IDs, all 19 translated items, all 24 translated recipes, EN/KO key parity,
 allowed station tags and internal skill IDs, exact ten-round outputs for all nine vanilla
-calibers, custom icon presence, Workshop image dimensions/hashes, manual coverage, loot guards,
-and the absence of firearm hooks, `modData`, commands, and vanilla item overrides.
+calibers, custom icon presence, dedicated component-model mappings and files, the shared model
+atlas, Workshop image dimensions/hashes, manual coverage, loot guards, and the absence of
+firearm hooks, `modData`, commands, and vanilla item overrides. It explicitly rejects assigning
+projectiles, shot charge, or empty shotgun hulls back to vanilla complete-ammunition models.
 
 `tools/package.ps1` runs validation, creates the ZIP, reopens it, compares every entry length
 and SHA-256 with the source Workshop tree, and writes a `.sha256` sidecar.
@@ -51,5 +53,8 @@ and a two-player dedicated server if that build is available:
 5. Have two players share a station/container, craft sequentially, reconnect, and confirm counts.
 6. Generate new gun-store, police, SWAT, and military containers and sample manual/primer rarity.
 7. Confirm that firing creates no mod casing item and that no firearm stats are changed.
+8. Place all three projectile types, shot charge, and shotgun hulls on the ground. Confirm that
+   they show only their named components, rest above the floor at a readable scale, and do not
+   resemble complete cartridges or loaded shotgun shells.
 
 This matrix is an honest publication gate; it is not claimed as automated UI coverage.
