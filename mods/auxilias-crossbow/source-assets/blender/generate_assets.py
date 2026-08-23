@@ -46,6 +46,16 @@ ICON_NAMES = (
     "AuxiliaStoneBoltHead",
 )
 
+# The loose item and every loaded state use one canonical bolt size.  The
+# original loose mesh was authored at an exaggerated inspection scale and the
+# equipped models then applied a second, weapon-specific 0.58 multiplier.  A
+# single compact scale keeps the quarrel proportional to the intentionally
+# compact PZ weapon envelope without changing size when it is loaded.
+BOLT_GEOMETRY_SCALE = 0.45
+BOLT_NOCK_CENTER_Y = -0.115 * BOLT_GEOMETRY_SCALE
+BOLT_NOCK_HALF_LENGTH = 0.007 * BOLT_GEOMETRY_SCALE
+TARGET_LOADED_POINT_OVERHANG = 0.030
+
 
 SWATCHES = {
     "Aged Oak": (0.02, 0.52, 0.52, 0.98),
@@ -518,24 +528,26 @@ def build_crossbow(name, tier, spec, mats, cocked=False, loaded_bolt_kind="metal
     )
 
     if cocked:
-        # Seat the intact bolt's rear nock at the solved string catch and let
-        # the shaft rest in the rail groove. The geometry is shared with the
-        # corresponding dropped bolt so loaded and loose ammunition match.
-        loaded_bolt_scale = 0.58
-        loaded_nock_half_length = 0.007 * loaded_bolt_scale
-        loaded_nock_center_y = catch_y + string_radius + loaded_nock_half_length
+        # Seat the canonical intact bolt's rear nock at the solved string catch.
+        # Loaded and loose states call the same helper at the same dimensions;
+        # only this translation changes.
+        loaded_bolt_scale = 1.0
+        loaded_nock_center_y = catch_y + string_radius + BOLT_NOCK_HALF_LENGTH
         loaded_bolt_axis_offset = abs(power_axis_z - string_plane_z)
         string_nock_contact_gap = abs(
-            (loaded_nock_center_y - loaded_nock_half_length) - (catch_y + string_radius)
+            (loaded_nock_center_y - BOLT_NOCK_HALF_LENGTH) - (catch_y + string_radius)
         )
-        add_intact_bolt_geometry(
+        loaded_bolt_metrics = add_intact_bolt_geometry(
             coll,
             f"{model_name}_LoadedBolt",
             mats,
             loaded_bolt_kind,
-            offset=(0.0, loaded_nock_center_y + 0.115, power_axis_z),
-            scale=loaded_bolt_scale,
+            offset=(0.0, loaded_nock_center_y - BOLT_NOCK_CENTER_Y, power_axis_z),
         )
+        loaded_point_overhang = loaded_bolt_metrics["maximum"][1] - bow_y
+        coll["loaded_bolt_dimensions"] = loaded_bolt_metrics["dimensions"]
+        coll["loaded_bolt_scale"] = loaded_bolt_scale
+        coll["loaded_point_overhang"] = loaded_point_overhang
 
     measured_string_length = polyline_length(string_points)
     if abs(measured_string_length - fixed_string_length) > 0.00001:
@@ -621,10 +633,29 @@ def build_crossbow(name, tier, spec, mats, cocked=False, loaded_bolt_kind="metal
     return coll
 
 
-def add_intact_bolt_geometry(coll, name, mats, material_kind="metal", offset=(0.0, 0.0, 0.0), scale=1.0):
+def transform_bolt_parts(parts, offset=(0.0, 0.0, 0.0)):
+    """Apply the one canonical bolt scale, then return measured mesh bounds."""
+    offset = Vector(offset)
+    coordinates = []
+    for obj in parts:
+        apply_modifiers_and_transforms(obj)
+        for vertex in obj.data.vertices:
+            vertex.co = vertex.co * BOLT_GEOMETRY_SCALE + offset
+            coordinates.append(vertex.co.copy())
+        obj.data.update()
+    minimum = Vector(tuple(min(co[axis] for co in coordinates) for axis in range(3)))
+    maximum = Vector(tuple(max(co[axis] for co in coordinates) for axis in range(3)))
+    dimensions = maximum - minimum
+    return {
+        "minimum": tuple(minimum),
+        "maximum": tuple(maximum),
+        "dimensions": tuple(dimensions),
+    }
+
+
+def add_intact_bolt_geometry(coll, name, mats, material_kind="metal", offset=(0.0, 0.0, 0.0)):
     wood, dark_wood, metal, cord, leather, stone, feather = mats
     is_stone = material_kind == "stone"
-    offset = Vector(offset)
     parts = []
 
     def place(obj):
@@ -643,7 +674,7 @@ def add_intact_bolt_geometry(coll, name, mats, material_kind="metal", offset=(0.
         stone_profile = (
             (0.098, -0.018),
             (0.136, -0.013),
-            (0.158, -0.004),
+            (0.1555, -0.004),
             (0.149, 0.006),
             (0.116, 0.019),
             (0.096, 0.012),
@@ -671,15 +702,7 @@ def add_intact_bolt_geometry(coll, name, mats, material_kind="metal", offset=(0.
     place(cylinder_part(coll, f"{name}_FletchingWrapRear", (0, -0.104, 0), 0.0068, 0.007, cord, vertices=10))
     place(cylinder_part(coll, f"{name}_FletchingWrapFront", (0, -0.048, 0), 0.0068, 0.008, cord, vertices=10))
 
-    # Loaded crossbows use a compact visual proxy because their equipped model
-    # is deliberately fitted to the sawn-off firearm hand envelope. Scale every
-    # part around the rear nock so it remains locked to the solved string catch.
-    anchor = Vector((0.0, -0.115, 0.0))
-    for obj in parts:
-        apply_modifiers_and_transforms(obj)
-        for vertex in obj.data.vertices:
-            vertex.co = anchor + (vertex.co - anchor) * scale + offset
-        obj.data.update()
+    return transform_bolt_parts(parts, offset)
 
 
 def build_bolt(name, broken, mats, material_kind="metal"):
@@ -687,7 +710,7 @@ def build_bolt(name, broken, mats, material_kind="metal"):
     is_stone = material_kind == "stone"
     coll = new_collection(name)
     if not broken:
-        add_intact_bolt_geometry(coll, name, mats, material_kind)
+        bolt_metrics = add_intact_bolt_geometry(coll, name, mats, material_kind)
     else:
         # Keep the recoverable head-side fragment visibly shorter than an intact
         # bolt. Two compact rear splinters form a readable V-shaped break without
@@ -721,6 +744,8 @@ def build_bolt(name, broken, mats, material_kind="metal"):
         else:
             cylinder_part(coll, f"{name}_HeadSocket", (0, 0.058, 0), 0.009, 0.018, metal, vertices=8)
             cone_part(coll, f"{name}_BodkinFragment", (0, 0.086, 0), 0.013, 0.040, metal, vertices=4)
+        bolt_metrics = transform_bolt_parts(list(coll.objects))
+    coll["bolt_dimensions"] = bolt_metrics["dimensions"]
     return coll
 
 
@@ -1072,14 +1097,14 @@ def validate_exports(asset_objects, icon_names, physics_report):
         "AuxiliaImprovisedCrossbow": ((0.24, 0.27), (0.31, 0.34), (0.06, 0.10)),
         "AuxiliaReinforcedCrossbow": ((0.27, 0.30), (0.31, 0.34), (0.06, 0.10)),
         "AuxiliaHeavyArbalest": ((0.30, 0.34), (0.31, 0.34), (0.06, 0.10)),
-        "AuxiliaImprovisedCrossbowCocked": ((0.22, 0.25), (0.39, 0.41), (0.06, 0.10)),
-        "AuxiliaReinforcedCrossbowCocked": ((0.25, 0.28), (0.375, 0.40), (0.06, 0.10)),
-        "AuxiliaHeavyArbalestCocked": ((0.28, 0.31), (0.35, 0.38), (0.06, 0.10)),
-        "AuxiliaImprovisedCrossbowCockedStoneBolt": ((0.22, 0.25), (0.39, 0.41), (0.06, 0.10)),
-        "AuxiliaReinforcedCrossbowCockedStoneBolt": ((0.25, 0.28), (0.375, 0.40), (0.06, 0.10)),
-        "AuxiliaHeavyArbalestCockedStoneBolt": ((0.28, 0.31), (0.35, 0.38), (0.06, 0.10)),
-        "AuxiliaCrossbowBolt": ((0.02, 0.04), (0.27, 0.29), (0.025, 0.045)),
-        "AuxiliaStoneCrossbowBolt": ((0.02, 0.05), (0.27, 0.30), (0.025, 0.045)),
+        "AuxiliaImprovisedCrossbowCocked": ((0.22, 0.25), (0.335, 0.355), (0.06, 0.10)),
+        "AuxiliaReinforcedCrossbowCocked": ((0.25, 0.28), (0.335, 0.355), (0.06, 0.10)),
+        "AuxiliaHeavyArbalestCocked": ((0.28, 0.31), (0.335, 0.355), (0.06, 0.10)),
+        "AuxiliaImprovisedCrossbowCockedStoneBolt": ((0.22, 0.25), (0.335, 0.355), (0.06, 0.10)),
+        "AuxiliaReinforcedCrossbowCockedStoneBolt": ((0.25, 0.28), (0.335, 0.355), (0.06, 0.10)),
+        "AuxiliaHeavyArbalestCockedStoneBolt": ((0.28, 0.31), (0.335, 0.355), (0.06, 0.10)),
+        "AuxiliaCrossbowBolt": ((0.012, 0.018), (0.12, 0.13), (0.012, 0.018)),
+        "AuxiliaStoneCrossbowBolt": ((0.012, 0.018), (0.12, 0.13), (0.014, 0.019)),
     }
     for filename, original in asset_objects.items():
         source_min, source_max = object_bounds(original)
@@ -1170,9 +1195,9 @@ FEATHER = material("Pale Feather", (0.66, 0.62, 0.50), roughness=0.96)
 MATERIALS = (WOOD, DARK_WOOD, METAL, CORD, LEATHER, STONE, FEATHER)
 
 SPECS = {
-    "AuxiliaImprovisedCrossbow": {"rear": 0.052, "nose": 0.269, "bow_y": 0.262, "width": 0.250, "relaxed_bend": 0.12, "cocked_bend": 0.58, "stock_width": 0.024, "body_width": 0.016, "lock_width": 0.020, "rail_width": 0.014, "limb_chord": 0.009, "limb_height": 0.014, "string_thickness": 0.0024, "prod_root_z": 0.018, "power_axis_z": 0.034},
-    "AuxiliaReinforcedCrossbow": {"rear": 0.052, "nose": 0.269, "bow_y": 0.262, "width": 0.280, "relaxed_bend": 0.12, "cocked_bend": 0.62, "stock_width": 0.026, "body_width": 0.018, "lock_width": 0.022, "rail_width": 0.016, "limb_chord": 0.010, "limb_height": 0.017, "string_thickness": 0.0027, "prod_root_z": 0.018, "power_axis_z": 0.034},
-    "AuxiliaHeavyArbalest": {"rear": 0.052, "nose": 0.270, "bow_y": 0.262, "width": 0.315, "relaxed_bend": 0.12, "cocked_bend": 0.66, "stock_width": 0.028, "body_width": 0.020, "lock_width": 0.024, "rail_width": 0.018, "limb_chord": 0.012, "limb_height": 0.022, "string_thickness": 0.0032, "prod_root_z": 0.018, "power_axis_z": 0.034},
+    "AuxiliaImprovisedCrossbow": {"rear": 0.052, "nose": 0.269, "bow_y": 0.262, "width": 0.250, "relaxed_bend": 0.12, "cocked_bend": 0.754238, "stock_width": 0.024, "body_width": 0.016, "lock_width": 0.020, "rail_width": 0.014, "limb_chord": 0.009, "limb_height": 0.014, "string_thickness": 0.0024, "prod_root_z": 0.018, "power_axis_z": 0.034},
+    "AuxiliaReinforcedCrossbow": {"rear": 0.052, "nose": 0.269, "bow_y": 0.262, "width": 0.280, "relaxed_bend": 0.12, "cocked_bend": 0.668513, "stock_width": 0.026, "body_width": 0.018, "lock_width": 0.022, "rail_width": 0.016, "limb_chord": 0.010, "limb_height": 0.017, "string_thickness": 0.0027, "prod_root_z": 0.018, "power_axis_z": 0.034},
+    "AuxiliaHeavyArbalest": {"rear": 0.052, "nose": 0.270, "bow_y": 0.262, "width": 0.315, "relaxed_bend": 0.12, "cocked_bend": 0.592145, "stock_width": 0.028, "body_width": 0.020, "lock_width": 0.024, "rail_width": 0.018, "limb_chord": 0.012, "limb_height": 0.022, "string_thickness": 0.0032, "prod_root_z": 0.018, "power_axis_z": 0.034},
 }
 
 improvised = build_crossbow("AuxiliaImprovisedCrossbow", 1, SPECS["AuxiliaImprovisedCrossbow"], MATERIALS)
@@ -1202,10 +1227,10 @@ crossbows = [
 assets = crossbows + [bolt, stone_bolt, broken_bolt, broken_stone_bolt]
 
 physics_report = {}
-for relaxed, cocked in (
-    (improvised, improvised_cocked),
-    (reinforced, reinforced_cocked),
-    (heavy, heavy_cocked),
+for relaxed, cocked, cocked_stone in (
+    (improvised, improvised_cocked, improvised_cocked_stone),
+    (reinforced, reinforced_cocked, reinforced_cocked_stone),
+    (heavy, heavy_cocked, heavy_cocked_stone),
 ):
     string_delta = abs(relaxed["measured_string_length"] - cocked["measured_string_length"])
     limb_delta = abs(relaxed["measured_limb_length"] - cocked["measured_limb_length"])
@@ -1225,6 +1250,26 @@ for relaxed, cocked in (
         raise RuntimeError(f"{cocked.name}: loaded bolt leaves the prod/string power axis")
     if cocked["string_nock_contact_gap"] > 0.000001:
         raise RuntimeError(f"{cocked.name}: string does not meet the rear face of the loaded nock")
+    if cocked_stone["string_nock_contact_gap"] > 0.000001:
+        raise RuntimeError(f"{cocked_stone.name}: string does not meet the rear face of the loaded nock")
+    canonical_dimensions = tuple(bolt["bolt_dimensions"])
+    canonical_stone_dimensions = tuple(stone_bolt["bolt_dimensions"])
+    metal_dimension_delta = max(
+        abs(loaded - loose)
+        for loaded, loose in zip(cocked["loaded_bolt_dimensions"], canonical_dimensions)
+    )
+    stone_dimension_delta = max(
+        abs(loaded - loose)
+        for loaded, loose in zip(cocked_stone["loaded_bolt_dimensions"], canonical_stone_dimensions)
+    )
+    if cocked["loaded_bolt_scale"] != 1.0 or metal_dimension_delta > 0.000001:
+        raise RuntimeError(f"{cocked.name}: loaded Metal Bolt differs from its loose world model")
+    if cocked_stone["loaded_bolt_scale"] != 1.0 or stone_dimension_delta > 0.000001:
+        raise RuntimeError(f"{cocked_stone.name}: loaded Stone Bolt differs from its loose world model")
+    if not TARGET_LOADED_POINT_OVERHANG - 0.003 <= cocked["loaded_point_overhang"] <= TARGET_LOADED_POINT_OVERHANG + 0.003:
+        raise RuntimeError(f"{cocked.name}: Metal Bolt point projects too far beyond the prod")
+    if not TARGET_LOADED_POINT_OVERHANG - 0.003 <= cocked_stone["loaded_point_overhang"] <= TARGET_LOADED_POINT_OVERHANG + 0.003:
+        raise RuntimeError(f"{cocked_stone.name}: Stone Bolt point projects too far beyond the prod")
     if not 0.010 <= cocked["prod_tip_rise"] <= 0.020:
         raise RuntimeError(f"{cocked.name}: prod nocks do not rise gently from the embedded root")
     if not 0.004 <= cocked["fore_end_overhang"] <= 0.010:
@@ -1253,6 +1298,12 @@ for relaxed, cocked in (
         "power_axis_above_fore_end": round(cocked["power_axis_above_fore_end"], 6),
         "loaded_bolt_axis_offset": round(cocked["loaded_bolt_axis_offset"], 8),
         "string_nock_contact_gap": round(cocked["string_nock_contact_gap"], 8),
+        "metal_loaded_bolt_scale": round(cocked["loaded_bolt_scale"], 6),
+        "stone_loaded_bolt_scale": round(cocked_stone["loaded_bolt_scale"], 6),
+        "metal_world_loaded_dimension_delta": round(metal_dimension_delta, 8),
+        "stone_world_loaded_dimension_delta": round(stone_dimension_delta, 8),
+        "metal_loaded_point_overhang": round(cocked["loaded_point_overhang"], 6),
+        "stone_loaded_point_overhang": round(cocked_stone["loaded_point_overhang"], 6),
     }
 
 asset_objects = {}

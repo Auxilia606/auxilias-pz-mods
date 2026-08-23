@@ -19,13 +19,13 @@ The game-export copy receives a baked 180-degree X-axis correction. Blender's ow
 
 | Asset | Width X | Length Y | Height Z |
 |---|---:|---:|---:|
-| Light Crossbow (relaxed / Metal loaded / Stone loaded) | 0.247 / 0.235 / 0.235 | 0.321 / 0.401 / 0.403 | 0.061 / 0.068 / 0.069 |
-| Crossbow (relaxed / Metal loaded / Stone loaded) | 0.278 / 0.262 / 0.262 | 0.321 / 0.387 / 0.388 | 0.062 / 0.068 / 0.069 |
-| Heavy Crossbow (relaxed / Metal loaded / Stone loaded) | 0.313 / 0.292 / 0.292 | 0.322 / 0.369 / 0.371 | 0.063 / 0.068 / 0.069 |
-| Metal Bolt | 0.032 | 0.277 | 0.032 |
-| Stone Bolt | 0.032 | 0.279 | 0.037 |
-| Broken Metal Bolt | 0.030 | 0.204 | 0.023 |
-| Broken Stone Bolt | 0.030 | 0.221 | 0.033 |
+| Light Crossbow (relaxed / Metal loaded / Stone loaded) | 0.247 / 0.226 / 0.226 | 0.321 / 0.344 / 0.344 | 0.061 / 0.066 / 0.066 |
+| Crossbow (relaxed / Metal loaded / Stone loaded) | 0.278 / 0.259 / 0.259 | 0.321 / 0.344 / 0.344 | 0.062 / 0.066 / 0.066 |
+| Heavy Crossbow (relaxed / Metal loaded / Stone loaded) | 0.313 / 0.296 / 0.296 | 0.322 / 0.344 / 0.344 | 0.063 / 0.066 / 0.066 |
+| Metal Bolt | 0.014 | 0.125 | 0.014 |
+| Stone Bolt | 0.014 | 0.125 | 0.016 |
+| Broken Metal Bolt | 0.014 | 0.092 | 0.010 |
+| Broken Stone Bolt | 0.014 | 0.100 | 0.015 |
 
 All three equipped models use the vanilla sawn-off double-barrel shotgun hand envelope (approximately `0.357` long and `0.076` high) as their common size reference. Their limbs remain wider than a firearm by design, while length, rear overhang, and vertical bulk stay compact to reduce arm and torso clipping.
 
@@ -37,7 +37,7 @@ This layout follows surviving fifteenth-century construction rather than a moder
 
 The relaxed string runs straight from tip to tip through the limb-tip centerline rather than above the prod. Each endpoint is embedded in the terminal cross-section so the cord visibly exits the rear/inner face like a string seated in a shallow nock, with at least `0.0011` units of vertical material remaining around it. The tier values describe cord diameter and are halved for Blender's radius-based curve bevel. The cocked string uses the exact same total length and forms two visible segments from the bent tips to the central catch. The catch position is solved from the fixed string length rather than chosen artistically. Generated measurements permit at most `0.00001` units of string-length drift and `0.0002` units of sampled limb-length drift, and generation fails if the string leaves the tip centerline or lacks `0.0005` units of surrounding vertical tip material.
 
-Each cocked model includes a compact bolt seated in the groove. The limb centres, drawn string, bolt axis, and longitudinal tiller groove share one `Z = 0.034` power axis instead of using independent visual offsets. The bolt is positioned from its rear face rather than its centre: the front surface of the string tube is tangent to the back of the nock, so neither mesh penetrates the other. Its shaft rests on the two shallow groove lips and only its head projects beyond the prod. The loaded geometry is built by the same helper as the matching loose bolt, then uniformly reduced to 58% around the anchored nock to fit the deliberately compact equipped-weapon envelope. This preserves the metal bodkin/leather-fletched and chipped-stone/pale-feather distinctions without letting the loose-item dimensions double the apparent weapon length.
+Each cocked model includes the same canonical bolt used by the loose world item. The limb centres, drawn string, bolt axis, and longitudinal tiller groove share one `Z = 0.034` power axis instead of using independent visual offsets. The bolt is positioned from its rear face rather than its centre: the front surface of the string tube is tangent to the back of the nock, so neither mesh penetrates the other. The complete Metal and Stone Bolts are both about `0.125 m` long in the compact game envelope. Loading applies translation only with a scale of exactly `1.0`; measured loaded-versus-world dimension delta is zero for every tier. The three cocked prod curvatures place the common string catch at nearly the same longitudinal station, leaving about `0.030 m` of point beyond the prod while preserving the metal bodkin/leather-fletched and chipped-stone/pale-feather distinctions.
 
 At runtime `AuxiliaCrossbow_ModelState.lua` selects the Metal- or Stone-Bolt cocked model whenever the equipped weapon contains its one bolt, selects the relaxed model when empty, and forces the relaxed model at both the weapon-swing hit point and attack-finished events so both string and bolt disappear on the firing frame. A fired-weapon latch keeps the relaxed model authoritative until the client observes the empty weapon, preventing delayed ammo synchronization from briefly redrawing the loaded state. The implementation follows the same Build 42 `setWeaponSprite` plus `resetEquippedHandsModels` mechanism used by vanilla fishing rods.
 
@@ -86,6 +86,7 @@ All four intact and broken bolts receive dedicated `_placed.png` validation rend
 - The tiller terminates at the prod joint, the root remains inside the fore-end, and both nocks rise to the power axis just above the wood instead of placing the whole bow on a raised block.
 - Standard horn reinforcement and Heavy iron side plates remain flush with the wooden tiller, and the long tickler visibly joins the underside of the lock area.
 - In each cocked model, the loaded bolt lies centered in the groove, its rear nock face touches the drawn string, and the correct metal or stone head/fletching combination remains visible.
+- The loaded Metal or Stone Bolt retains exactly the same dimensions as its corresponding loose world model on all three crossbows; only translation changes, and the point projects about 30 mm beyond the prod.
 - The limb centres, string centreline, and loaded bolt centreline share the declared power axis; the string touches only the rear nock face and never penetrates the bolt mesh.
 - Light, standard, and Heavy models have distinct material treatment and progressively wider, thicker limbs while sharing one compact length.
 - No model is mirrored, rotated onto its side, or centered on the butt after FBX re-import.

@@ -43,6 +43,7 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - From above, the loaded bolt remains visibly continuous through the centre of the prod; the hemp/leather bridle stays outside the bolt groove.
 - With no bolt loaded, the string runs straight between the relaxed limb tips and remains visible above the rail on all three crossbows.
 - Loading one bolt bends the limbs rearward/inward, draws the unchanged-length string to the central catch, and places the selected Metal or Stone Bolt on the same power axis with the string touching only the rear face of its nock; no string segment penetrates the bolt or hides inside the tiller.
+- Compare each loaded Metal and Stone Bolt with its dropped counterpart: shaft, nock, fletching, and point must keep the same proportions and dimensions on all three tiers, with only about 30 mm of the point projecting beyond the prod.
 - Firing immediately removes the visible bolt and restores the relaxed limb and string model on the shot, rather than leaving the crossbow visibly cocked while empty.
 - Unloading a bolt also restores the relaxed model, and re-equipping a loaded crossbow restores the cocked model.
 - Switch the Heavy Crossbow to Stone Bolts, load, and fire at both a target and empty ground. Neither shot may produce an `IsoBulletTracerEffects` error or return to the main menu.

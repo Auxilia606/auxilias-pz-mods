@@ -138,7 +138,7 @@ if ($modelOpenBraces -ne $modelCloseBraces) {
 
 $generatorPath = Join-Path $repoRoot 'source-assets\blender\generate_assets.py'
 $generatorText = Get-Content -LiteralPath $generatorPath -Raw
-foreach ($pipelineCheck in @('MODEL_TEXTURE_NAME', 'finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'circular_limb_points', 'fixed_string_length', 'string_tip_center_offset', 'string_tip_vertical_clearance', 'power_axis_z', 'prod_root_z', 'prod_tip_rise', 'fore_end_overhang', 'power_axis_above_fore_end', 'loaded_nock_center_y', 'loaded_bolt_axis_offset', 'string_nock_contact_gap', 'stock_mat = dark_wood if tier == 3 else wood', 'BoltGroove', 'StringNut', 'LockPlate', 'TriggerLink', 'TriggerLever', 'HempBridle', 'LeatherBridle', 'BridlePass', 'ForeEndRivet', 'add_intact_bolt_geometry', 'loaded_bolt_kind', 'loaded_bolt_scale = 0.58', 'crossbow_physics', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
+foreach ($pipelineCheck in @('MODEL_TEXTURE_NAME', 'finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'circular_limb_points', 'fixed_string_length', 'string_tip_center_offset', 'string_tip_vertical_clearance', 'power_axis_z', 'prod_root_z', 'prod_tip_rise', 'fore_end_overhang', 'power_axis_above_fore_end', 'loaded_nock_center_y', 'loaded_bolt_axis_offset', 'string_nock_contact_gap', 'stock_mat = dark_wood if tier == 3 else wood', 'BoltGroove', 'StringNut', 'LockPlate', 'TriggerLink', 'TriggerLever', 'HempBridle', 'LeatherBridle', 'BridlePass', 'ForeEndRivet', 'add_intact_bolt_geometry', 'transform_bolt_parts', 'BOLT_GEOMETRY_SCALE', 'TARGET_LOADED_POINT_OVERHANG', 'loaded_bolt_kind', 'loaded_bolt_scale = 1.0', 'metal_world_loaded_dimension_delta', 'stone_world_loaded_dimension_delta', 'loaded_point_overhang', 'crossbow_physics', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
     if ($generatorText -notmatch [regex]::Escape($pipelineCheck)) {
         throw "Blender model pipeline check is missing: $pipelineCheck"
     }
@@ -175,6 +175,15 @@ if (Test-Path -LiteralPath $physicsReportPath) {
         }
         if ([math]::Abs([double]$physics.string_nock_contact_gap) -gt 0.000001) {
             throw "Drawn string does not meet the rear nock face for $crossbowName"
+        }
+        if ([math]::Abs([double]$physics.metal_loaded_bolt_scale - 1.0) -gt 0.000001 -or [math]::Abs([double]$physics.stone_loaded_bolt_scale - 1.0) -gt 0.000001) {
+            throw "Loaded bolts must retain the canonical loose-world scale for $crossbowName"
+        }
+        if ([math]::Abs([double]$physics.metal_world_loaded_dimension_delta) -gt 0.000001 -or [math]::Abs([double]$physics.stone_world_loaded_dimension_delta) -gt 0.000001) {
+            throw "Loaded and loose-world bolt dimensions differ for $crossbowName"
+        }
+        if ([double]$physics.metal_loaded_point_overhang -lt 0.027 -or [double]$physics.metal_loaded_point_overhang -gt 0.033 -or [double]$physics.stone_loaded_point_overhang -lt 0.027 -or [double]$physics.stone_loaded_point_overhang -gt 0.033) {
+            throw "Loaded bolt point overhang is outside the 27-33 mm target for $crossbowName"
         }
         if ([double]$physics.prod_tip_rise -lt 0.010 -or [double]$physics.prod_tip_rise -gt 0.020) {
             throw "Prod nocks do not rise gently from the embedded fore-end root for $crossbowName"
