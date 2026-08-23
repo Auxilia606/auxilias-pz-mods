@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Corrected every relaxed and loaded crossbow's dropped-world transform so the broad prod rests top-side-up above the floor instead of standing on edge with one limb embedded in the ground.
 - Redesigned both broken-bolt icons as shortened recoverable head-side fragments with compact V-shaped fractures, and replaced the world models' long lateral branch with two short break splinters so damage no longer resembles brown fletching.
 - Unified the prod, string, bolt, and tiller groove on one power axis and moved loaded bolts forward so the string tube contacts the rear nock face instead of penetrating the bolt mesh.
 - Rebuilt all three fore-ends against fifteenth-century museum construction: the tiller now terminates at an embedded prod root, both limbs rise gently to the shared string/bolt axis, and a transverse bridle pass, exposed hemp/leather ties, and a full-height front rivet replace the modern-looking top-mounted seat.

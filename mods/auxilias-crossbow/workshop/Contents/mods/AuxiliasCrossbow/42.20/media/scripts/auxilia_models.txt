@@ -12,8 +12,8 @@ module Base
         }
         attachment world
         {
-            offset = 0.012 0.10 0.0,
-            rotate = 180.0 0.0 180.0,
+            offset = 0.026 0.10 0.0,
+            rotate = 0.0 -90.0 0.0,
         }
     }
 
@@ -29,8 +29,8 @@ module Base
         }
         attachment world
         {
-            offset = 0.012 0.10 0.0,
-            rotate = 180.0 0.0 180.0,
+            offset = 0.026 0.10 0.0,
+            rotate = 0.0 -90.0 0.0,
         }
     }
 
@@ -46,8 +46,8 @@ module Base
         }
         attachment world
         {
-            offset = 0.012 0.10 0.0,
-            rotate = 180.0 0.0 180.0,
+            offset = 0.026 0.10 0.0,
+            rotate = 0.0 -90.0 0.0,
         }
     }
 
@@ -63,8 +63,8 @@ module Base
         }
         attachment world
         {
-            offset = 0.012 0.10 0.0,
-            rotate = 180.0 0.0 180.0,
+            offset = 0.026 0.10 0.0,
+            rotate = 0.0 -90.0 0.0,
         }
     }
 
@@ -80,8 +80,8 @@ module Base
         }
         attachment world
         {
-            offset = 0.012 0.10 0.0,
-            rotate = 180.0 0.0 180.0,
+            offset = 0.026 0.10 0.0,
+            rotate = 0.0 -90.0 0.0,
         }
     }
 
@@ -97,8 +97,8 @@ module Base
         }
         attachment world
         {
-            offset = 0.012 0.10 0.0,
-            rotate = 180.0 0.0 180.0,
+            offset = 0.026 0.10 0.0,
+            rotate = 0.0 -90.0 0.0,
         }
     }
 
@@ -114,8 +114,8 @@ module Base
         }
         attachment world
         {
-            offset = 0.012 0.10 0.0,
-            rotate = 180.0 0.0 180.0,
+            offset = 0.026 0.10 0.0,
+            rotate = 0.0 -90.0 0.0,
         }
     }
 
@@ -131,8 +131,8 @@ module Base
         }
         attachment world
         {
-            offset = 0.012 0.10 0.0,
-            rotate = 180.0 0.0 180.0,
+            offset = 0.026 0.10 0.0,
+            rotate = 0.0 -90.0 0.0,
         }
     }
 
@@ -148,8 +148,8 @@ module Base
         }
         attachment world
         {
-            offset = 0.012 0.10 0.0,
-            rotate = 180.0 0.0 180.0,
+            offset = 0.026 0.10 0.0,
+            rotate = 0.0 -90.0 0.0,
         }
     }
 

@@ -17,6 +17,8 @@ Blender exports with `-Y` forward and `Z` up. The FBX files carry centimeter uni
 
 The game-export copy receives a baked 180-degree X-axis correction. Blender's own FBX importer restores the authored axes from metadata, while Project Zomboid otherwise reads both the longitudinal and height axes reversed. Every asset is also collapsed to one FBX material, matching the vanilla firearm meshes; per-part colors remain encoded in the single shared `AuxiliaCrossbowAtlas.png` UV texture. Multiple material slots caused Build 42 to omit non-primary weapon parts in game.
 
+Dropped crossbows do not reuse the vanilla long-gun side-resting transform. That transform makes model X vertical, which is harmless for a narrow firearm but stands a 25–31 cm crossbow prod on edge and sends one limb below the floor. Every relaxed and loaded crossbow model instead uses `world` rotation `0 -90 0`, placing the authored X/Y top plane parallel to the floor with positive Z facing up. A `0.026` first-axis offset clears the lowest tiller and tickler geometry while retaining the existing longitudinal centering.
+
 | Asset | Width X | Length Y | Height Z |
 |---|---:|---:|---:|
 | Light Crossbow (relaxed / Metal loaded / Stone loaded) | 0.247 / 0.226 / 0.226 | 0.321 / 0.344 / 0.344 | 0.061 / 0.066 / 0.066 |

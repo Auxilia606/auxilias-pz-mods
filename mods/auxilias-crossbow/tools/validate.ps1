@@ -121,6 +121,25 @@ foreach ($modelName in $modelNames) {
     }
 }
 
+$crossbowModelNames = @(
+    'AuxiliaImprovisedCrossbow',
+    'AuxiliaImprovisedCrossbowCocked',
+    'AuxiliaImprovisedCrossbowCockedStoneBolt',
+    'AuxiliaReinforcedCrossbow',
+    'AuxiliaReinforcedCrossbowCocked',
+    'AuxiliaReinforcedCrossbowCockedStoneBolt',
+    'AuxiliaHeavyArbalest',
+    'AuxiliaHeavyArbalestCocked',
+    'AuxiliaHeavyArbalestCockedStoneBolt'
+)
+foreach ($crossbowModelName in $crossbowModelNames) {
+    $crossbowModelBlockPattern = "(?s)model\s+$([regex]::Escape($crossbowModelName))\s*\{.*?(?=\s*model\s+\w+\s*\{|\s*\}\s*\z)"
+    $crossbowModelBlock = [regex]::Match($modelsText, $crossbowModelBlockPattern).Value
+    if (-not $crossbowModelBlock -or $crossbowModelBlock -notmatch '(?s)attachment\s+world\s*\{.*?offset\s*=\s*0\.026\s+0\.10\s+0\.0,.*?rotate\s*=\s*0\.0\s+-90\.0\s+0\.0,') {
+        throw "$crossbowModelName must lie top-side-up with enough world height to keep its prod above the ground."
+    }
+}
+
 $modelTextureRoot = Join-Path $versionRoot 'media\textures\weapons\2handed'
 $modelTextures = @(Get-ChildItem -LiteralPath $modelTextureRoot -Filter '*.png' -File)
 if ($modelTextures.Count -ne 1 -or $modelTextures[0].Name -ne 'AuxiliaCrossbowAtlas.png') {

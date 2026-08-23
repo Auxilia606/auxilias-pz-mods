@@ -48,7 +48,7 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - Unloading a bolt also restores the relaxed model, and re-equipping a loaded crossbow restores the cocked model.
 - Switch the Heavy Crossbow to Stone Bolts, load, and fire at both a target and empty ground. Neither shot may produce an `IsoBulletTracerEffects` error or return to the main menu.
 - At night and inside an unlit room, fire every crossbow tier with both bolt materials. The shot must not create a firearm-like flash or briefly illuminate the shooter and nearby tiles.
-- Dropped/world models rest near the ground and keep the same orientation family as vanilla long guns.
+- Drop each unloaded crossbow and repeat after loading both Metal and Stone Bolts: the tiller and both prod limbs rest top-side-up above the floor, with neither limb standing vertically or disappearing into the tile.
 - A normally dropped Metal Bolt rests with its long axis across the ground, receives a non-central square offset, and gets randomized world rotation comparable to vanilla Twigs and Sapling; Place Item remains manually positioned by the player.
 - Wood, metal, cord, and leather texture regions appear on the intended parts instead of an untextured white model.
 - Each crossbow loads exactly one bolt and fires once before another reload.
