@@ -1,7 +1,7 @@
 # Auxilia's Ammunition
 
 Current version: **1.0.0**
-Target: **Project Zomboid Build 42.20** (audited against 42.20.2)
+Target: **Project Zomboid Build 42.20** (balance audited against 42.20.2; runtime tested on 42.20.3)
 
 Auxilia's Ammunition turns Build 42's existing pottery, kiln, furnace, charcoal,
 foraging, farming, metalworking, and Hand Press systems into a late-game ammunition

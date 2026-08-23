@@ -5,6 +5,16 @@
 These findings come from the installed Project Zomboid 42.20.2 scripts and
 `projectzomboid.jar` bytecode inspected on 2026-08-23.
 
+Project Zomboid 42.20.3 revision `70207f62e0` was rechecked on 2026-08-23. The
+official hotfix scope was multiplayer connection/player-limit handling, memory and
+world-streaming optimization, and lighting-update fixes; it did not announce a
+ranged-weapon, ammunition-registry, crafting, or Lua-event contract change. Both
+Auxilia mods loaded cleanly on an isolated 42.20.3 dedicated server, and the project
+owner completed the 42.20.3 client and multiplayer acceptance checks. The aimed-firearm
+path, Metal/Stone ammunition switching and recovery, crossbow muzzle-light suppression,
+vanilla firearm muzzle light, and remote shot synchronization all passed without an
+Auxilia-related error. The 42.20.2 findings below therefore remain valid for 42.20.3.
+
 ## `IsAimedFirearm` is a behavior gate
 
 `IsAimedFirearm` does not control only firearm presentation. Build 42 checks it in

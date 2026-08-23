@@ -2,6 +2,6 @@
   "schemaVersion": 1,
   "target": {
     "releaseLine": "42.20",
-    "testedBuild": "42.20.2"
+    "testedBuild": "42.20.3"
   }
 }

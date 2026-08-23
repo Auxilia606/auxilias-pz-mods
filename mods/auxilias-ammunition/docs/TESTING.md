@@ -26,8 +26,9 @@ and the internal Foraging perk name is `PlantScavenging`. Both were corrected. T
 - emitted no warning/error mentioning the mod, its IDs, or its model.
 
 Steam updated the local installation during development; the corrected final smoke log reports
-Build 42.20.3. The target configuration remains release line 42.20 and audited/tested build
-42.20.2. Vanilla-wide warnings in that log are not attributed to this mod.
+Build 42.20.3 revision `70207f62e0`. The target configuration remains release line 42.20,
+the balance audit remains tied to the exact 42.20.2 vanilla data it inspected, and the shared
+tested build is now 42.20.3. Vanilla-wide warnings in that log are not attributed to this mod.
 
 ## Multiplayer and save review
 
@@ -42,8 +43,9 @@ stored in a save is not supported.
 
 ## Manual in-game acceptance matrix
 
-Before Workshop publication, repeat these interactive checks on the exact public 42.20.2 client
-and a two-player dedicated server if that build is available:
+The project owner completed this matrix on the exact public 42.20.3 client and a two-player
+dedicated server on 2026-08-23. Repeat it before a future release when the runtime contract or
+implementation changes:
 
 1. Inspect all EN and KO names/tooltips and the Ammunition crafting category.
 2. Read each manual and verify its recipe tier; verify high-skill fallback on an old save.
@@ -57,4 +59,5 @@ and a two-player dedicated server if that build is available:
    they show only their named components, rest above the floor at a readable scale, and do not
    resemble complete cartridges or loaded shotgun shells.
 
-This matrix is an honest publication gate; it is not claimed as automated UI coverage.
+All eight checks passed on 42.20.3. This remains manually reported acceptance coverage rather
+than automated UI coverage.

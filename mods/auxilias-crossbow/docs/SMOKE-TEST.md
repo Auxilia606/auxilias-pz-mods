@@ -1,4 +1,4 @@
-# 42.20.2 smoke-test report
+# Build 42.20 compatibility and smoke-test report
 
 Date: 2026-08-16
 
@@ -188,4 +188,22 @@ A player report exposed a regression introduced by the firearm-effect workaround
 
 The redesign restores `IsAimedFirearm = true` on every crossbow. A shot hook snapshots existing cell lights before `CombatManager` creates its hard-coded radius-18 muzzle light; the subsequent `OnTick`, which runs after combat update and before rendering, expires only a newly added matching light at that shooter's tile. The item scripts continue to omit `MuzzleFlashModelKey`, so the engine has no flash model to render.
 
-The first implementation also called `IsoBulletTracerEffects.getInstance()` to set the dedicated Metal and Stone Bolt tracer alpha values to zero. A client test on 2026-08-23 produced `attempted index: getInstance of non-table: null` at game start and again on firing. Inspection of `LuaManager.Exposer` confirmed that Build 42.20.2 exposes the separate `FBORenderTracerEffects` class but not the `IsoBulletTracerEffects` class actually used by `CombatManager`. The invalid call and all tracer mutation were removed. The bright engine tracer remains an accepted limitation so the firearm aiming and hit path can stay intact. Static validation now rejects any direct `IsoBulletTracerEffects` reference as well as the former per-frame `setAngleFromAim()` / `updateBallistics()` workaround. Interactive client verification is still required for the new acceptance checks in `docs/TESTING.md`.
+The first implementation also called `IsoBulletTracerEffects.getInstance()` to set the dedicated Metal and Stone Bolt tracer alpha values to zero. A client test on 2026-08-23 produced `attempted index: getInstance of non-table: null` at game start and again on firing. Inspection of `LuaManager.Exposer` confirmed that Build 42.20.2 exposes the separate `FBORenderTracerEffects` class but not the `IsoBulletTracerEffects` class actually used by `CombatManager`. The invalid call and all tracer mutation were removed. The bright engine tracer remains an accepted limitation so the firearm aiming and hit path can stay intact. Static validation now rejects any direct `IsoBulletTracerEffects` reference as well as the former per-frame `setAngleFromAim()` / `updateBallistics()` workaround. The resulting interactive client checks are recorded in the 42.20.3 acceptance section below.
+
+## 2026-08-23 — Build 42.20.3 compatibility acceptance
+
+An isolated dedicated-server run on Project Zomboid 42.20.3 revision `70207f62e0`
+loaded `AuxiliasCrossbow`, reached `*** SERVER STARTED ****`, shut down normally, and
+reported no Auxilia-related warning or error.
+
+The project owner then completed the outstanding 42.20.3 client and multiplayer checks
+in `docs/TESTING.md`. All three crossbows retained the aimed-firearm targeting and hit
+path; firing, Metal/Stone ammunition switching, unloading, and material-matched bolt
+recovery passed. Night and unlit-room shots produced neither a muzzle-flash model nor
+the radius-18 muzzle light, while a vanilla firearm fired immediately afterward retained
+its normal muzzle light. Stone Bolt shots produced no `IsoBulletTracerEffects` error,
+and remote firing preserved target selection, ammunition consumption, hit resolution,
+and shot synchronization. The existing-save compatibility check also passed.
+
+This completes the 42.20.3 compatibility gate. No runtime code, item/recipe ID, mod
+version, or `42.20` distribution-directory change is required for the hotfix.
