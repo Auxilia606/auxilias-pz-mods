@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Restored Build 42's aimed-firearm path for the crosshair, ranged target selection, hit resolution, and multiplayer shot synchronization. Same-tick muzzle-light removal hides the firearm flash without disabling ballistics; the engine's bright tracer remains because its per-ammunition controller is not exposed to ordinary mod Lua.
 - Corrected every relaxed and loaded crossbow's dropped-world transform so the broad prod rests top-side-up above the floor instead of standing on edge with one limb embedded in the ground.
 - Redesigned both broken-bolt icons as shortened recoverable head-side fragments with compact V-shaped fractures, and replaced the world models' long lateral branch with two short break splinters so damage no longer resembles brown fletching.
 - Unified the prod, string, bolt, and tiller groove on one power axis and moved loaded bolts forward so the string tube contacts the rear nock face instead of penetrating the bolt mesh.

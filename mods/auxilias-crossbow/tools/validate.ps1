@@ -27,7 +27,7 @@ $requiredFiles = @(
     (Join-Path $versionRoot 'media\scripts\auxilia_models.txt'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_AmmoSelection.lua'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_ModelState.lua'),
-    (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_MuzzleFlash.lua'),
+    (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_FirearmEffects.lua'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_TestKit.lua'),
     (Join-Path $versionRoot 'media\lua\server\AuxiliaCrossbow_Loot.lua'),
     (Join-Path $versionRoot 'media\lua\server\AuxiliaCrossbow_Recovery.lua'),
@@ -72,6 +72,11 @@ foreach ($modelName in $modelNames) {
 $missing = @($requiredFiles | Where-Object { -not (Test-Path -LiteralPath $_ -PathType Leaf) })
 if ($missing.Count -gt 0) {
     throw "Missing required mod files:`n$($missing -join "`n")"
+}
+
+$obsoleteMuzzleFlashScript = Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_MuzzleFlash.lua'
+if (Test-Path -LiteralPath $obsoleteMuzzleFlashScript) {
+    throw "Obsolete aimed-hand ballistics workaround must be removed: $obsoleteMuzzleFlashScript"
 }
 
 $translationRoot = Join-Path $versionRoot 'media\lua\shared\Translate'
@@ -243,13 +248,16 @@ $weaponModelChecks = @(
     @{ Item = 'HeavyArbalest'; Model = 'AuxiliaHeavyArbalest' }
 )
 foreach ($weaponCheck in $weaponModelChecks) {
-    $itemBlockPattern = "(?s)item\s+$($weaponCheck.Item)\s*\{.*?AttachmentType\s*=\s*Shovel,.*?IsAimedFirearm\s*=\s*false,.*?IsAimedHandWeapon\s*=\s*true,.*?Ranged\s*=\s*true,.*?WeaponSprite\s*=\s*$($weaponCheck.Model),"
+    $itemBlockPattern = "(?s)item\s+$($weaponCheck.Item)\s*\{.*?AttachmentType\s*=\s*Shovel,.*?IsAimedFirearm\s*=\s*true,.*?IsAimedHandWeapon\s*=\s*true,.*?Ranged\s*=\s*true,.*?WeaponSprite\s*=\s*$($weaponCheck.Model),"
     if ($itemsText -notmatch $itemBlockPattern) {
         throw "Equipped model integration is incomplete: $($weaponCheck.Item)"
     }
 }
 if ($itemsText -match 'WeaponSprite\s*=\s*AuxiliasCrossbow\.') {
     throw 'WeaponSprite model names must be unqualified; model scripts are resolved from module Base.'
+}
+if ($itemsText -match 'MuzzleFlashModelKey') {
+    throw 'Crossbows must not define a firearm muzzle-flash model.'
 }
 foreach ($iconCheck in @(
     @{ Item = 'ImprovisedCrossbow'; Icon = 'AuxiliaImprovisedCrossbow' },
@@ -531,22 +539,24 @@ foreach ($modelStateCheck in @(
     }
 }
 
-$muzzleFlashText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_MuzzleFlash.lua') -Raw
-foreach ($muzzleFlashCheck in @(
+$firearmEffectsText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_FirearmEffects.lua') -Raw
+foreach ($firearmEffectsCheck in @(
     'AuxiliasCrossbow.ImprovisedCrossbow',
     'AuxiliasCrossbow.ReinforcedCrossbow',
     'AuxiliasCrossbow.HeavyArbalest',
-    'player:isDead()',
-    'player:isAiming()',
-    'player:getPrimaryHandItem()',
-    'player:setAngleFromAim()',
-    'player:updateBallistics()',
-    'Events.OnEquipPrimary.Add',
-    'Events.OnGameStart.Add',
-    'Events.OnPlayerUpdate.Add'
+    'getLamppostPositions',
+    'light:getRadius() == 18',
+    'removeLamppost',
+    'Events.OnWeaponSwingHitPoint.Add',
+    'Events.OnTick.Add'
 )) {
-    if ($muzzleFlashText -notmatch [regex]::Escape($muzzleFlashCheck)) {
-        throw "Crossbow muzzle-flash suppression is missing: $muzzleFlashCheck"
+    if ($firearmEffectsText -notmatch [regex]::Escape($firearmEffectsCheck)) {
+        throw "Crossbow firearm-effect suppression is missing: $firearmEffectsCheck"
+    }
+}
+foreach ($removedBallisticsWorkaround in @('IsoBulletTracerEffects', 'setMuzzleFlashModelKey', 'player:updateBallistics()', 'player:setAngleFromAim()', 'Events.OnPlayerUpdate.Add')) {
+    if ($firearmEffectsText -match [regex]::Escape($removedBallisticsWorkaround)) {
+        throw "Obsolete aimed-hand ballistics workaround must not return: $removedBallisticsWorkaround"
     }
 }
 
