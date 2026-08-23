@@ -52,10 +52,13 @@ $requiredFiles = @(
 $modelNames = @(
     'AuxiliaImprovisedCrossbow',
     'AuxiliaImprovisedCrossbowCocked',
+    'AuxiliaImprovisedCrossbowCockedStoneBolt',
     'AuxiliaReinforcedCrossbow',
     'AuxiliaReinforcedCrossbowCocked',
+    'AuxiliaReinforcedCrossbowCockedStoneBolt',
     'AuxiliaHeavyArbalest',
     'AuxiliaHeavyArbalestCocked',
+    'AuxiliaHeavyArbalestCockedStoneBolt',
     'AuxiliaCrossbowBolt',
     'AuxiliaStoneCrossbowBolt',
     'AuxiliaBrokenBolt',
@@ -135,10 +138,13 @@ if ($modelOpenBraces -ne $modelCloseBraces) {
 
 $generatorPath = Join-Path $repoRoot 'source-assets\blender\generate_assets.py'
 $generatorText = Get-Content -LiteralPath $generatorPath -Raw
-foreach ($pipelineCheck in @('MODEL_TEXTURE_NAME', 'finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'circular_limb_points', 'fixed_string_length', 'string_tip_center_offset', 'string_tip_vertical_clearance', 'crossbow_physics', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
+foreach ($pipelineCheck in @('MODEL_TEXTURE_NAME', 'finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'circular_limb_points', 'fixed_string_length', 'string_tip_center_offset', 'string_tip_vertical_clearance', 'power_axis_z', 'prod_root_z', 'prod_tip_rise', 'fore_end_overhang', 'power_axis_above_fore_end', 'loaded_nock_center_y', 'loaded_bolt_axis_offset', 'string_nock_contact_gap', 'stock_mat = dark_wood if tier == 3 else wood', 'BoltGroove', 'StringNut', 'LockPlate', 'TriggerLink', 'TriggerLever', 'HempBridle', 'LeatherBridle', 'BridlePass', 'ForeEndRivet', 'add_intact_bolt_geometry', 'loaded_bolt_kind', 'loaded_bolt_scale = 0.58', 'crossbow_physics', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
     if ($generatorText -notmatch [regex]::Escape($pipelineCheck)) {
         throw "Blender model pipeline check is missing: $pipelineCheck"
     }
+}
+if ($generatorText -match 'f"\{model_name\}_(ProdSocket|ProdSeat|ProdBand|BoltRail|StringCatch|SearLink)"') {
+    throw 'Obsolete raised crossbow blocks must not return to the model pipeline.'
 }
 
 $physicsReportPath = Join-Path $repoRoot 'work\model-validation\report.json'
@@ -163,6 +169,21 @@ if (Test-Path -LiteralPath $physicsReportPath) {
         }
         if ([math]::Abs([double]$physics.maximum_string_tip_center_offset) -gt 0.000001 -or [double]$physics.minimum_string_tip_vertical_clearance -lt 0.0005) {
             throw "String does not pass through the limb-tip nocks for $crossbowName"
+        }
+        if ([math]::Abs([double]$physics.loaded_bolt_axis_offset) -gt 0.000001) {
+            throw "Loaded bolt leaves the prod/string power axis for $crossbowName"
+        }
+        if ([math]::Abs([double]$physics.string_nock_contact_gap) -gt 0.000001) {
+            throw "Drawn string does not meet the rear nock face for $crossbowName"
+        }
+        if ([double]$physics.prod_tip_rise -lt 0.010 -or [double]$physics.prod_tip_rise -gt 0.020) {
+            throw "Prod nocks do not rise gently from the embedded fore-end root for $crossbowName"
+        }
+        if ([double]$physics.fore_end_overhang -lt 0.004 -or [double]$physics.fore_end_overhang -gt 0.010) {
+            throw "Tiller continues too far past the prod root for $crossbowName"
+        }
+        if ([double]$physics.power_axis_above_fore_end -lt 0.002 -or [double]$physics.power_axis_above_fore_end -gt 0.008) {
+            throw "Bolt/string power axis is not just above the tiller fore-end for $crossbowName"
         }
     }
 }
@@ -461,8 +482,14 @@ foreach ($reloadCheck in @('ISReloadWeaponAction.setReloadSpeed', 'AuxiliasCross
 $modelStateText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_ModelState.lua') -Raw
 foreach ($modelStateCheck in @(
     'AuxiliaImprovisedCrossbowCocked',
+    'AuxiliaImprovisedCrossbowCockedStoneBolt',
     'AuxiliaReinforcedCrossbowCocked',
+    'AuxiliaReinforcedCrossbowCockedStoneBolt',
     'AuxiliaHeavyArbalestCocked',
+    'AuxiliaHeavyArbalestCockedStoneBolt',
+    'local STONE_AMMO_TYPE = "auxiliascrossbow:stonebolt"',
+    'weapon:getAmmoType()',
+    'return profile.cockedStone',
     'local ammoCount = weapon:getCurrentAmmoCount()',
     'setWeaponSprite',
     'resetEquippedHandsModels',

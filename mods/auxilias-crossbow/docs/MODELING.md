@@ -1,6 +1,6 @@
 # Crossbow model pipeline
 
-The ten 3D assets are generated from `source-assets/blender/generate_assets.py` with Blender 5.2 LTS: relaxed and cocked variants of all three crossbows plus four intact/broken bolt models. The script is the source of truth for generated FBX files, the shared model texture, validation renders, and the `.blend` file. Inventory artwork has a separate source of truth under `source-assets/icons`. The Workshop cover source lives under `source-assets/workshop` and is synchronized independently with `tools/sync-workshop-art.ps1`; Blender's promotional render is retained only as a geometry and material reference under `work/model-validation`.
+The thirteen 3D assets are generated from `source-assets/blender/generate_assets.py` with Blender 5.2 LTS: a relaxed model plus Metal- and Stone-Bolt cocked models for all three crossbows, together with four intact/broken loose bolt models. The script is the source of truth for generated FBX files, the shared model texture, validation renders, and the `.blend` file. Inventory artwork has a separate source of truth under `source-assets/icons`. The Workshop cover source lives under `source-assets/workshop` and is synchronized independently with `tools/sync-workshop-art.ps1`; Blender's promotional render is retained only as a geometry and material reference under `work/model-validation`.
 
 ## Coordinate frame
 
@@ -19,21 +19,27 @@ The game-export copy receives a baked 180-degree X-axis correction. Blender's ow
 
 | Asset | Width X | Length Y | Height Z |
 |---|---:|---:|---:|
-| Light Crossbow (relaxed / cocked) | 0.249 / 0.238 | 0.363 | 0.087 |
-| Crossbow (relaxed / cocked) | 0.279 / 0.264 | 0.363 | 0.087 |
-| Heavy Crossbow (relaxed / cocked) | 0.314 / 0.295 | 0.363 | 0.088 |
+| Light Crossbow (relaxed / Metal loaded / Stone loaded) | 0.247 / 0.235 / 0.235 | 0.321 / 0.401 / 0.403 | 0.061 / 0.068 / 0.069 |
+| Crossbow (relaxed / Metal loaded / Stone loaded) | 0.278 / 0.262 / 0.262 | 0.321 / 0.387 / 0.388 | 0.062 / 0.068 / 0.069 |
+| Heavy Crossbow (relaxed / Metal loaded / Stone loaded) | 0.313 / 0.292 / 0.292 | 0.322 / 0.369 / 0.371 | 0.063 / 0.068 / 0.069 |
 | Metal Bolt | 0.032 | 0.277 | 0.032 |
 | Stone Bolt | 0.032 | 0.279 | 0.037 |
-| Broken Metal Bolt | 0.051 | 0.200 | 0.023 |
-| Broken Stone Bolt | 0.048 | 0.217 | 0.033 |
+| Broken Metal Bolt | 0.030 | 0.204 | 0.023 |
+| Broken Stone Bolt | 0.030 | 0.221 | 0.033 |
 
 All three equipped models use the vanilla sawn-off double-barrel shotgun hand envelope (approximately `0.357` long and `0.076` high) as their common size reference. Their limbs remain wider than a firearm by design, while length, rear overhang, and vertical bulk stay compact to reduce arm and torso clipping.
 
-The tier silhouettes intentionally avoid pulleys, windlasses, pistol grips, foregrips, cheek pads, and decorative braces. Every model is built around a low tiller, bolt rail, lock, prod, string, and compact trigger. Each prod is sampled from a circular arc with a fixed arc length: the relaxed and cocked versions change curvature and tip position without stretching or shortening either limb. Its top-view chord stays narrow (`0.009`, `0.010`, and `0.012`) independently of span, bend, and vertical thickness, producing a slim curved-band silhouette instead of a broad crescent. Light Crossbow uses a wooden prod and cord binding, Crossbow adds a steel prod and metal fittings, and Heavy Crossbow uses an iron tiller with the thickest steel prod.
+The tier silhouettes intentionally avoid pulleys, permanently attached windlasses, pistol grips, foregrips, cheek pads, attached bolt racks, and decorative braces. Every model is built around a continuous wooden tiller, a shallow two-lip bolt groove, an antler-like transverse string nut, a long under-tiller tickler, the prod, and the string. The standard model uses flush dark-horn reinforcement around the nut; only the late Heavy model retains compact blackened-iron side plates and a cross pin. The Heavy model uses dark hardwood rather than an implausible solid-iron tiller.
+
+Each prod is sampled from a fixed three-dimensional limb length: the relaxed and cocked versions change rearward curvature and tip position without stretching or shortening either limb. Its top-view chord stays narrow (`0.009`, `0.010`, and `0.012`) independently of span, bend, and vertical thickness, producing a slim curved-band silhouette instead of a broad crescent. The root is centred at `Z = 0.018` inside the full-height rectangular wooden fore-end; the tiller stops only `0.007`, `0.007`, or `0.008` beyond that joint instead of continuing beneath the bow. Both limbs then rise `0.016` toward their nocks, placing the string and bolt power axis `0.004` above the fore-end top.
+
+This layout follows surviving fifteenth-century construction rather than a modern top-mounted limb pocket. The Count Ulrich V crossbow has a horizontal fore-end cutout for the bow, a transverse bridle hole, and a full-height vertical rivet against splitting; period composite bows were tied through that hole with looped hemp binding. The generated models represent the same load path with an embedded root, a visible transverse cord pass, paired exposed bridle strands, and a front rivet while leaving the central bolt gutter clear. Light uses a wooden prod and plain hemp, standard uses a dark bark-wrapped composite silhouette with hemp and leather, and Heavy uses a late-medieval steel prod with heavier hemp/leather binding. See [The Crossbow of Count Ulrich V](https://resources.metmuseum.org/resources/metpublications/pdf/The_Crossbow_of_Count_Ulrich_V_of_Wurttemberg_The_Metropolitan_Museum_Journal_v_44_2009.pdf) and [A Deadly Art: European Crossbows, 1250–1850](https://resources.metmuseum.org/resources/metpublications/pdf/A_Deadly_Art_European_Crossbows_1250_1850.pdf).
 
 The relaxed string runs straight from tip to tip through the limb-tip centerline rather than above the prod. Each endpoint is embedded in the terminal cross-section so the cord visibly exits the rear/inner face like a string seated in a shallow nock, with at least `0.0011` units of vertical material remaining around it. The tier values describe cord diameter and are halved for Blender's radius-based curve bevel. The cocked string uses the exact same total length and forms two visible segments from the bent tips to the central catch. The catch position is solved from the fixed string length rather than chosen artistically. Generated measurements permit at most `0.00001` units of string-length drift and `0.0002` units of sampled limb-length drift, and generation fails if the string leaves the tip centerline or lacks `0.0005` units of surrounding vertical tip material.
 
-At runtime `AuxiliaCrossbow_ModelState.lua` selects the cocked model whenever the equipped weapon contains its one bolt, selects the relaxed model when empty, and forces the relaxed model at both the weapon-swing hit point and attack-finished events so the string releases on the firing frame. A fired-weapon latch keeps the relaxed model authoritative until the client observes the empty weapon, preventing delayed ammo synchronization from briefly redrawing the string. The implementation follows the same Build 42 `setWeaponSprite` plus `resetEquippedHandsModels` mechanism used by vanilla fishing rods.
+Each cocked model includes a compact bolt seated in the groove. The limb centres, drawn string, bolt axis, and longitudinal tiller groove share one `Z = 0.034` power axis instead of using independent visual offsets. The bolt is positioned from its rear face rather than its centre: the front surface of the string tube is tangent to the back of the nock, so neither mesh penetrates the other. Its shaft rests on the two shallow groove lips and only its head projects beyond the prod. The loaded geometry is built by the same helper as the matching loose bolt, then uniformly reduced to 58% around the anchored nock to fit the deliberately compact equipped-weapon envelope. This preserves the metal bodkin/leather-fletched and chipped-stone/pale-feather distinctions without letting the loose-item dimensions double the apparent weapon length.
+
+At runtime `AuxiliaCrossbow_ModelState.lua` selects the Metal- or Stone-Bolt cocked model whenever the equipped weapon contains its one bolt, selects the relaxed model when empty, and forces the relaxed model at both the weapon-swing hit point and attack-finished events so both string and bolt disappear on the firing frame. A fired-weapon latch keeps the relaxed model authoritative until the client observes the empty weapon, preventing delayed ammo synchronization from briefly redrawing the loaded state. The implementation follows the same Build 42 `setWeaponSprite` plus `resetEquippedHandsModels` mechanism used by vanilla fishing rods.
 
 ## Vanilla firearm hand and color references
 
@@ -54,7 +60,7 @@ The headless generator disables the `.blend` file preview before saving. This pr
 Generation fails if a crossbow leaves its expected size range, if an FBX imports as more than one mesh or one material, if UV data is lost, or if an FBX round trip changes its dimensions. The ignored `work/model-validation` directory receives:
 
 - `report.json` with topology, bounds, UV, material, and FBX round-trip results.
-- Isometric, top, and side PNG renders for all six relaxed/cocked crossbow states.
+- Isometric, top, side, and front PNG renders for all nine relaxed/Metal-loaded/Stone-loaded crossbow states.
 
 The renders use the same generated texture atlas and UV coordinates referenced by the game model scripts. They are not diffuse-color-only previews.
 
@@ -62,20 +68,28 @@ The renders use the same generated texture atlas and UV coordinates referenced b
 
 Ten transparent 128×128 hand-painted masters live under `source-assets/icons`: three crossbows, material-specific intact and broken bolts, Bolt Shaft, Metal Bolt Head, and Stone Bolt Head. They use consistent framing, muted earth colors, high small-size contrast, and a dark painted silhouette line, but are not renders of the 3D meshes. The Stone Bolt Head is a compact purpose-knapped projectile point rather than the vanilla Sharp Flint Flake artwork. Build 42's hotbar draws item textures at native size, so the installed copies are downsampled to its expected 32×32 canvas and remain inside a single slot.
 
+Broken-bolt artwork shows the recoverable head-side fragment rather than a full-length bolt. A compact V-shaped fracture and one detached chip carry the damage cue at 32×32; long radiating wood fibres are excluded because they merge into a feather- or broom-like tail at runtime. The generated broken world models use the same compact two-splinter fracture language without a detached chip.
+
 The Blender pipeline downsamples these authored sources into the mod instead of rendering inventory art from scene geometry. Generation then rejects missing, fully transparent, clipped, incorrectly sized, or implausibly covered masters, verifies every runtime copy is 32×32, and records the result in `work/model-validation/report.json`. Static validation also verifies that all ten runtime icons retain alpha and remain mutually distinct.
 
-Both intact bolts receive dedicated `_placed.png` validation renders. The pipeline rolls each authored model slightly onto its lower vanes and renders it against a ground plane, providing a repeatable proxy for the in-game Place Item view. Because the FBX files use the weapon coordinate frame, their model definitions use `world` attachments with a 90° X-axis correction and ground-contact pivots. This lays each bolt's long axis across the ground without suppressing Project Zomboid's randomized within-tile offsets or Z rotation. **Place Item** remains intentionally controlled by the player's cursor and rotation keys.
+All four intact and broken bolts receive dedicated `_placed.png` validation renders. The pipeline rolls each authored model slightly onto its lower geometry and renders it against a ground plane, providing a repeatable proxy for the in-game Place Item view. Because the FBX files use the weapon coordinate frame, their model definitions use `world` attachments with a 90° X-axis correction and ground-contact pivots. This lays each bolt's long axis across the ground without suppressing Project Zomboid's randomized within-tile offsets or Z rotation. **Place Item** remains intentionally controlled by the player's cursor and rotation keys.
 
 ## Visual acceptance
 
 - Each limb is one continuous tapered mesh from socket to tip, with no floating segments.
 - The relaxed string is straight between the tips; the cocked string touches both tips and the central catch without changing total length.
 - The string tube seats directly into both limb-tip surfaces with no spacer, air gap, or visible deep intersection from top, side, or isometric views.
-- The cocked limbs bend rearward and slightly inward while retaining the relaxed limb arc length.
-- The tiller, rail, lock, prod socket, limbs, and string visibly connect.
+- The cocked limbs bend rearward and inward while retaining the relaxed three-dimensional limb length and the same shallow rise toward both nocks.
+- The tiller, shallow bolt groove, string nut, long two-part tickler, embedded prod root, bridle, limbs, and string visibly connect.
+- No tall rectangular rail, block-shaped string catch, exposed sear bar, solid-iron tiller, or attached bolt rack remains in the silhouette.
+- The groove and loaded bolt remain visually continuous across the prod centre; paired bridle strands remain outside the central channel.
+- The tiller terminates at the prod joint, the root remains inside the fore-end, and both nocks rise to the power axis just above the wood instead of placing the whole bow on a raised block.
+- Standard horn reinforcement and Heavy iron side plates remain flush with the wooden tiller, and the long tickler visibly joins the underside of the lock area.
+- In each cocked model, the loaded bolt lies centered in the groove, its rear nock face touches the drawn string, and the correct metal or stone head/fletching combination remains visible.
+- The limb centres, string centreline, and loaded bolt centreline share the declared power axis; the string touches only the rear nock face and never penetrates the bolt mesh.
 - Light, standard, and Heavy models have distinct material treatment and progressively wider, thicker limbs while sharing one compact length.
 - No model is mirrored, rotated onto its side, or centered on the butt after FBX re-import.
 - In the back hotbar slot, the broad prod lies close and approximately parallel to the character's back instead of projecting rearward like a rifle-mounted crossbar.
-- Equipped and aimed views in both left- and right-facing directions must be checked interactively in Project Zomboid after changing dimensions or the origin. Reloading must visibly change to the cocked model, firing must visibly return to the relaxed model, and unloading must also return to relaxed. Dropped-item checks are part of the later practical test.
+- Equipped and aimed views in both left- and right-facing directions must be checked interactively in Project Zomboid after changing dimensions or the origin. Reloading must visibly add the selected Metal or Stone Bolt and change to the cocked model, firing must visibly remove the bolt and return to the relaxed model, and unloading must also return to relaxed. Dropped-item checks are part of the later practical test.
 
 The Build 42.20.2 client check loads and aims all three weapons in an isolated debug scenario. Direct-window screenshots in both aim directions are used to confirm complete single-material rendering, compact torso clearance, forward-facing limbs, correct top/bottom orientation, and two-handed alignment for Light, standard, and Heavy models.

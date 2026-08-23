@@ -34,13 +34,16 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 
 ## Acceptance checks
 
-- In standing, aiming, firing, and reloading poses, both hands remain near the tiller and rail rather than the butt or prod.
+- In standing, aiming, firing, and reloading poses, both hands remain near the tiller and shallow bolt groove rather than the butt or prod.
 - No crossbow is sideways, mirrored, oversized, or centered through the character.
 - In the back hotbar slot, inspect the character from behind and both sides: the prod lies close to the back instead of pointing outward; repeat with a backpack equipped.
-- Limb halves, string ends, rail, lock, tiller, and prod socket remain visibly connected from every camera direction.
+- Limb halves, string ends, shallow bolt groove, string nut, long tickler, tiller, embedded prod root, bridle strands, and fore-end rivet remain visibly connected from every camera direction.
+- From the side, the wooden tiller ends at the prod joint rather than continuing beneath it; from the front, the prod root sits inside the fore-end and both nocks rise gently to the string/bolt axis just above the wood.
+- The Standard dark-horn reinforcement and Heavy iron lock plates sit flush against the wooden tiller without a second plate edge appearing as a floating part below it.
+- From above, the loaded bolt remains visibly continuous through the centre of the prod; the hemp/leather bridle stays outside the bolt groove.
 - With no bolt loaded, the string runs straight between the relaxed limb tips and remains visible above the rail on all three crossbows.
-- Loading one bolt bends the limbs rearward/inward and draws the unchanged-length string to the central catch; no string segment is hidden inside the tiller.
-- Firing immediately restores the relaxed limb and string model on the shot, rather than leaving the crossbow visibly cocked while empty.
+- Loading one bolt bends the limbs rearward/inward, draws the unchanged-length string to the central catch, and places the selected Metal or Stone Bolt on the same power axis with the string touching only the rear face of its nock; no string segment penetrates the bolt or hides inside the tiller.
+- Firing immediately removes the visible bolt and restores the relaxed limb and string model on the shot, rather than leaving the crossbow visibly cocked while empty.
 - Unloading a bolt also restores the relaxed model, and re-equipping a loaded crossbow restores the cocked model.
 - Switch the Heavy Crossbow to Stone Bolts, load, and fire at both a target and empty ground. Neither shot may produce an `IsoBulletTracerEffects` error or return to the main menu.
 - At night and inside an unlit room, fire every crossbow tier with both bolt materials. The shot must not create a firearm-like flash or briefly illuminate the shooter and nearby tiles.

@@ -1,17 +1,22 @@
 AuxiliaCrossbow = AuxiliaCrossbow or {}
 
+local STONE_AMMO_TYPE = "auxiliascrossbow:stonebolt"
+
 local modelProfiles = {
     ["AuxiliasCrossbow.ImprovisedCrossbow"] = {
         relaxed = "AuxiliaImprovisedCrossbow",
         cocked = "AuxiliaImprovisedCrossbowCocked",
+        cockedStone = "AuxiliaImprovisedCrossbowCockedStoneBolt",
     },
     ["AuxiliasCrossbow.ReinforcedCrossbow"] = {
         relaxed = "AuxiliaReinforcedCrossbow",
         cocked = "AuxiliaReinforcedCrossbowCocked",
+        cockedStone = "AuxiliaReinforcedCrossbowCockedStoneBolt",
     },
     ["AuxiliasCrossbow.HeavyArbalest"] = {
         relaxed = "AuxiliaHeavyArbalest",
         cocked = "AuxiliaHeavyArbalestCocked",
+        cockedStone = "AuxiliaHeavyArbalestCockedStoneBolt",
     },
 }
 
@@ -28,6 +33,15 @@ local function setModelState(player, weapon, modelName)
     if player then
         player:resetEquippedHandsModels()
     end
+end
+
+local function getLoadedModel(profile, weapon)
+    local ammoType = weapon:getAmmoType()
+    local ammoTypeName = ammoType and ammoType:toString() or nil
+    if ammoTypeName == STONE_AMMO_TYPE then
+        return profile.cockedStone
+    end
+    return profile.cocked
 end
 
 local function synchronizeEquippedCrossbow(player)
@@ -53,7 +67,7 @@ local function synchronizeEquippedCrossbow(player)
         end
         return
     end
-    local desiredModel = ammoCount > 0 and profile.cocked or profile.relaxed
+    local desiredModel = ammoCount > 0 and getLoadedModel(profile, weapon) or profile.relaxed
     setModelState(player, weapon, desiredModel)
 end
 

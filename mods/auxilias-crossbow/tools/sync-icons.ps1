@@ -15,6 +15,7 @@ if ($gameReleaseLine -notmatch '^\d+\.\d+$') {
 }
 $sourceRoot = Join-Path $repoRoot 'source-assets\icons'
 $runtimeRoot = Join-Path $repoRoot "workshop\Contents\mods\AuxiliasCrossbow\$gameReleaseLine\media\textures"
+$validationRoot = Join-Path $monorepoRoot 'work\icon-validation'
 
 if ($RuntimeSize -ne 32) {
     throw "Project Zomboid hotbar icons must remain 32x32; requested $RuntimeSize."
@@ -70,4 +71,66 @@ foreach ($icon in $icons) {
     }
 }
 
+$sheetOrder = @(
+    'AuxiliaCrossbowBolt',
+    'AuxiliaBrokenBolt',
+    'AuxiliaStoneCrossbowBolt',
+    'AuxiliaBrokenStoneBolt',
+    'AuxiliaBoltShaft',
+    'AuxiliaBoltHead',
+    'AuxiliaStoneBoltHead',
+    'AuxiliaImprovisedCrossbow',
+    'AuxiliaReinforcedCrossbow',
+    'AuxiliaHeavyArbalest'
+)
+$cellWidth = 180
+$cellHeight = 210
+$columns = 5
+$rows = 2
+$sheet = [System.Drawing.Bitmap]::new(
+    $cellWidth * $columns,
+    $cellHeight * $rows,
+    [System.Drawing.Imaging.PixelFormat]::Format32bppArgb
+)
+try {
+    $graphics = [System.Drawing.Graphics]::FromImage($sheet)
+    $font = [System.Drawing.Font]::new('Segoe UI', 10)
+    $labelBrush = [System.Drawing.SolidBrush]::new([System.Drawing.Color]::FromArgb(235, 240, 240, 240))
+    try {
+        $graphics.Clear([System.Drawing.Color]::FromArgb(255, 38, 43, 46))
+        $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::NearestNeighbor
+        $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::Half
+        for ($index = 0; $index -lt $sheetOrder.Count; $index++) {
+            $name = $sheetOrder[$index]
+            $runtimePath = Join-Path $runtimeRoot "Item_$name.png"
+            $runtime = [System.Drawing.Bitmap]::new($runtimePath)
+            try {
+                $column = $index % $columns
+                $row = [math]::Floor($index / $columns)
+                $left = $column * $cellWidth
+                $top = $row * $cellHeight
+                $graphics.DrawImage($runtime, $left + 26, $top + 8, 128, 128)
+                $graphics.DrawImageUnscaled($runtime, $left + 8, $top + 144)
+                $graphics.DrawString($name, $font, $labelBrush, $left + 8, $top + 181)
+            }
+            finally {
+                $runtime.Dispose()
+            }
+        }
+    }
+    finally {
+        $labelBrush.Dispose()
+        $font.Dispose()
+        $graphics.Dispose()
+    }
+
+    New-Item -ItemType Directory -Force -Path $validationRoot | Out-Null
+    $sheetPath = Join-Path $validationRoot 'icons-32px-contact-sheet.png'
+    $sheet.Save($sheetPath, [System.Drawing.Imaging.ImageFormat]::Png)
+}
+finally {
+    $sheet.Dispose()
+}
+
 Write-Host "Synchronized $($icons.Count) dedicated 128x128 icon masters as 32x32 runtime textures."
+Write-Host "Wrote native and nearest-neighbor 4x icon comparison sheet: $sheetPath"

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Redesigned both broken-bolt icons as shortened recoverable head-side fragments with compact V-shaped fractures, and replaced the world models' long lateral branch with two short break splinters so damage no longer resembles brown fletching.
+- Unified the prod, string, bolt, and tiller groove on one power axis and moved loaded bolts forward so the string tube contacts the rear nock face instead of penetrating the bolt mesh.
+- Rebuilt all three fore-ends against fifteenth-century museum construction: the tiller now terminates at an embedded prod root, both limbs rise gently to the shared string/bolt axis, and a transverse bridle pass, exposed hemp/leather ties, and a full-height front rivet replace the modern-looking top-mounted seat.
+- Refined all three crossbows against real medieval references: removed the raised block rail and exposed sear bar, replaced the cube catch with an antler-like transverse string nut, lengthened the under-tiller trigger into a two-part tickler, changed the standard prod to a dark composite silhouette, limited broad iron lock plates to the Heavy model, and kept Heavy on a dark hardwood tiller instead of solid iron.
+- Added a compact visible bolt to every cocked crossbow model, seated its nock at the drawn string catch, and added material-specific Metal and Stone loaded variants that follow the selected ammunition type without extending the equipped model to the loose bolt's oversized world length.
 - Installed the Workshop poster and mod-list icon beside the Build 42.20 metadata so the game
   no longer renders white placeholders when it selects the versioned `mod.info`.
 - Routed the relaxed and cocked strings through the limb-tip centerlines so they visibly exit the terminal nocks instead of resting on top of the prods, and corrected the cord specification for Blender's radius-based curve bevel; also changed back-slot attachment to the broad-head orientation so the prod lies flat against the character instead of protruding rearward.

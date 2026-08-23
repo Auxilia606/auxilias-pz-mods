@@ -256,18 +256,29 @@ def string_part(coll, name, points, mat, thickness=0.0035):
     return bpy.context.object
 
 
-def circular_limb_points(half_span, bow_y, z, bend_angle):
-    """Return a constant-arc-length limb bent rearward from the prod socket."""
+def circular_limb_points(half_span, bow_y, root_z, tip_z, bend_angle):
+    """Return a fixed-length limb that bends rearward and rises toward its nock.
+
+    Historical prods were received by a cutout in the tiller's fore-end rather
+    than perched on a block above it.  The root therefore sits inside the
+    fore-end, while a shallow dihedral brings both nocks up to the bolt/string
+    power axis.  Reducing the horizontal arc length by the vertical run keeps
+    the authored three-dimensional limb length stable.
+    """
     if bend_angle <= 0:
         raise ValueError("Crossbow limb bend angle must be positive")
-    radius = half_span / bend_angle
+    vertical_run = tip_z - root_z
+    if abs(vertical_run) >= half_span:
+        raise ValueError("Crossbow limb rise must be shorter than the limb")
+    horizontal_arc_length = math.sqrt(half_span * half_span - vertical_run * vertical_run)
+    radius = horizontal_arc_length / bend_angle
     points = []
     for fraction in (0.00, 0.18, 0.38, 0.58, 0.77, 0.91, 1.00):
         angle = bend_angle * fraction
         points.append((
             radius * math.sin(angle),
             bow_y - radius * (1.0 - math.cos(angle)),
-            z,
+            root_z + vertical_run * fraction,
         ))
     return tuple(points)
 
@@ -279,57 +290,104 @@ def polyline_length(points):
     )
 
 
-def add_wrapping(coll, prefix, center_y, z, width, radius, mat, turns=4):
+def add_wrapping(coll, prefix, center_y, z, width, radius, mat, turns=4, center_x=0.0, minor_radius=0.0012):
+    """Tie the prod to the fore-end with strands led from the bridle hole.
+
+    Only the exposed runs are modelled: two diagonal strands leave the
+    transverse hole and meet a short front wrap around the prod.  This avoids
+    the free-standing circular or rectangular ring silhouette produced by a
+    complete geometric loop while retaining the historically characteristic
+    cord bridle.
+    """
+    section = minor_radius * 1.7
+    anchor_y = center_y - radius * 0.55
+    anchor_z = z - radius * 0.22
+    front_y = center_y + radius * 0.34
+    upper_z = z + radius * 0.78
+    lower_z = z - radius * 0.72
     for index in range(turns):
-        x = (index - (turns - 1) * 0.5) * width / max(turns - 1, 1)
-        bpy.ops.mesh.primitive_torus_add(major_radius=radius, minor_radius=0.003, major_segments=10, minor_segments=4, location=(x, center_y, z), rotation=(0.0, math.pi / 2, 0.0))
-        obj = bpy.context.object
-        obj.name = f"{prefix}_Lashing_{index}"
-        obj.data.materials.append(mat)
-        move_to_collection(obj, coll)
+        x = center_x + (index - (turns - 1) * 0.5) * width / max(turns - 1, 1)
+        anchor = (x, anchor_y, anchor_z)
+        upper = (x, front_y, upper_z)
+        lower = (x, front_y, lower_z)
+        beam_between(coll, f"{prefix}_Lashing_{index}_Upper", anchor, upper, section, section, mat, edge=section * 0.30)
+        beam_between(coll, f"{prefix}_Lashing_{index}_Lower", anchor, lower, section, section, mat, edge=section * 0.30)
+        beam_between(coll, f"{prefix}_Lashing_{index}_Front", upper, lower, section, section, mat, edge=section * 0.30)
 
 
-def build_crossbow(name, tier, spec, mats, cocked=False):
-    model_name = f"{name}Cocked" if cocked else name
+def build_crossbow(name, tier, spec, mats, cocked=False, loaded_bolt_kind="metal"):
+    if loaded_bolt_kind not in {"metal", "stone"}:
+        raise ValueError(f"Unsupported loaded bolt material: {loaded_bolt_kind}")
+    if cocked and loaded_bolt_kind == "stone":
+        model_name = f"{name}CockedStoneBolt"
+    else:
+        model_name = f"{name}Cocked" if cocked else name
     coll = new_collection(model_name)
     wood, dark_wood, metal, cord, _leather = mats[:5]
     rear = spec["rear"]
     nose = spec["nose"]
     bow_y = spec["bow_y"]
     half_width = spec["width"] * 0.5
+    power_axis_z = spec.get("power_axis_z", 0.034)
+    prod_root_z = spec.get("prod_root_z", 0.018)
+    prod_tip_rise = power_axis_z - prod_root_z
+    fore_end_bottom = 0.004
+    fore_end_top = 0.030
+    fore_end_overhang = nose - bow_y
+    if fore_end_overhang < spec["limb_chord"] * 0.5 or fore_end_overhang > 0.010:
+        raise RuntimeError(f"{model_name}: fore-end must terminate around the embedded prod root")
+    if not fore_end_bottom < prod_root_z < fore_end_top:
+        raise RuntimeError(f"{model_name}: prod root is not embedded inside the tiller fore-end")
 
     # A low, continuous tiller avoids the large pistol grip/action mass that
     # visually merged with the character torso in the rifle aiming animation.
-    stock_mat = metal if tier == 3 else wood
-    trim_mat = dark_wood if tier == 1 else metal
-    # Vanilla JS_2000_Sawn support-hand geometry is only about 0.016 m wide
-    # and occupies Z 0.001..0.034. Keep the shoulder/action end full, then
-    # lift and narrow the continuous tiller before it reaches the support hand.
+    # Even heavy historical crossbows were normally built around a wooden
+    # tiller with iron lockwork rather than a solid iron stock.
+    stock_mat = dark_wood if tier == 3 else wood
+    # Vanilla JS_2000_Sawn support-hand geometry is only about 0.016 m wide.
+    # Keep the action compact, then widen the last short section into the
+    # rectangular medieval fore-end that receives the prod.  The tiller stops
+    # at that joint instead of continuing underneath the bow.
+    fore_end_width = max(spec["stock_width"], spec["body_width"] + 0.006)
     tiller_sections = (
-        (-rear, spec["stock_width"], -0.030, 0.020),
-        (-0.018, spec["stock_width"], -0.027, 0.027),
+        (-rear, spec["stock_width"], -0.024, 0.020),
+        (-0.018, spec["stock_width"], -0.022, 0.027),
         (0.045, spec["stock_width"] - 0.002, -0.017, 0.029),
         (0.072, spec["body_width"], 0.002, 0.030),
         (0.150, spec["body_width"], 0.004, 0.028),
-        (nose, spec["body_width"], 0.006, 0.021),
+        (bow_y - 0.026, fore_end_width, fore_end_bottom, fore_end_top),
+        (nose, fore_end_width, fore_end_bottom, fore_end_top),
     )
     tapered_tiller(coll, f"{model_name}_Tiller", tiller_sections, stock_mat, edge=0.003)
-    cube_part(coll, f"{model_name}_ButtCap", (0, -rear + 0.006, -0.003), (spec["stock_width"] + 0.004, 0.012, 0.046), dark_wood, edge=0.0025)
+    butt_cap_mat = dark_wood if tier == 1 else metal
+    cube_part(coll, f"{model_name}_ButtCap", (0, -rear + 0.003, -0.001), (spec["stock_width"] + 0.002, 0.006, 0.036), butt_cap_mat, edge=0.0015)
 
-    rail_start = 0.020
-    rail_end = nose + 0.006
-    cube_part(coll, f"{model_name}_BoltRail", (0, (rail_start + rail_end) * 0.5, 0.035), (spec["rail_width"], rail_end - rail_start, 0.010), trim_mat, edge=0.0015)
-    cube_part(coll, f"{model_name}_Trigger", (0, 0.006, -0.030), (0.006, 0.014, 0.014), metal, rotation=(math.radians(-12), 0, 0), edge=0.001)
-    # Keep the prod collar subordinate to the limbs. The previous deep block
-    # interrupted the bow silhouette and made the center resemble a clamp.
-    cube_part(coll, f"{model_name}_ProdSocket", (0, bow_y + 0.002, 0.029), (spec["stock_width"] + 0.018, 0.038, 0.034), trim_mat, edge=0.003)
-
-    limb_mat = wood if tier == 1 else metal
+    # A real tiller carries a shallow central bolt groove. Two narrow lips read
+    # as that channel without the unrealistic raised rectangular rail used by
+    # the previous models.
+    rail_start = 0.012
+    rail_end = nose
+    groove_half_width = 0.0042
+    rail_bar_width = 0.0024
+    rail_mat = metal if tier == 3 else dark_wood
+    for side, x in (("L", -groove_half_width - rail_bar_width * 0.5), ("R", groove_half_width + rail_bar_width * 0.5)):
+        cube_part(
+            coll,
+            f"{model_name}_BoltGroove_{side}",
+            (x, (rail_start + rail_end) * 0.5, 0.02975),
+            (rail_bar_width, rail_end - rail_start, 0.0015),
+            rail_mat,
+            edge=0.0006,
+        )
+    # Material progression follows surviving medieval forms: a plain wooden
+    # light prod, a bark-wrapped horn/sinew composite silhouette, and only the
+    # late heavy arbalest using a steel prod.
+    limb_mat = wood if tier == 1 else dark_wood if tier == 2 else metal
     bend_angle = spec["cocked_bend"] if cocked else spec["relaxed_bend"]
     # The prod is a pair of constant-length circular arcs. Cocking changes the
     # bend angle, not the authored limb length, so the tips move inward and
     # rearward as a real crossbow stores energy in its prod.
-    positive = circular_limb_points(half_width, bow_y, 0.034, bend_angle)
+    positive = circular_limb_points(half_width, bow_y, prod_root_z, power_axis_z, bend_angle)
     negative = tuple((-x, y, z) for x, y, z in positive)
     chord = spec["limb_chord"]
     height = spec["limb_height"]
@@ -355,8 +413,12 @@ def build_crossbow(name, tier, spec, mats, cocked=False):
     if string_tip_center_offset > 0.000001 or string_tip_vertical_clearance < 0.0005:
         raise RuntimeError(f"{model_name}: string does not pass through the limb-tip nock")
 
-    relaxed_tip = circular_limb_points(half_width, bow_y, 0.034, spec["relaxed_bend"])[-1]
+    relaxed_tip = circular_limb_points(
+        half_width, bow_y, prod_root_z, power_axis_z, spec["relaxed_bend"]
+    )[-1]
     fixed_string_length = relaxed_tip[0] * 2.0
+    loaded_bolt_axis_offset = -1.0
+    string_nock_contact_gap = -1.0
     if cocked:
         half_string = fixed_string_length * 0.5
         lateral_run = abs(right_tip[0])
@@ -377,16 +439,103 @@ def build_crossbow(name, tier, spec, mats, cocked=False):
     string_part(coll, f"{model_name}_String", string_points, cord, string_radius)
 
     # The catch is positioned from the same fixed-string calculation used by
-    # the cocked model. Its slim sear link explains the forward catch without
-    # hiding the string inside the stock or moving the firing hand envelope.
-    cocked_tip = circular_limb_points(half_width, bow_y, 0.034, spec["cocked_bend"])[-1]
+    # the cocked model, keeping the nut on the shared prod/string/bolt power axis.
+    cocked_tip = circular_limb_points(
+        half_width, bow_y, prod_root_z, power_axis_z, spec["cocked_bend"]
+    )[-1]
     cocked_half_string = fixed_string_length * 0.5
     cocked_draw = math.sqrt(cocked_half_string * cocked_half_string - cocked_tip[0] * cocked_tip[0])
     catch_y = cocked_tip[1] - cocked_draw
-    cube_part(coll, f"{model_name}_StringCatch", (0, catch_y, 0.041), (spec["lock_width"], 0.020, 0.016), trim_mat, edge=0.002)
-    link_start = 0.016
-    link_end = catch_y - 0.010
-    cube_part(coll, f"{model_name}_SearLink", (0, (link_start + link_end) * 0.5, 0.012), (0.004, link_end - link_start, 0.005), metal, edge=0.001)
+    # The string is retained by a compact transverse nut, not a block standing
+    # on top of the tiller. Metal side plates contain the sear on stronger tiers.
+    nut_mat = dark_wood
+    nut_radius = (0.0055, 0.0065, 0.0075)[tier - 1]
+    nut_center_z = power_axis_z - nut_radius - string_radius
+    cylinder_part(
+        coll,
+        f"{model_name}_StringNut",
+        (0, catch_y, nut_center_z),
+        nut_radius,
+        spec["lock_width"],
+        nut_mat,
+        rotation=(0.0, math.pi / 2, 0.0),
+        vertices=12,
+    )
+
+    if tier >= 2:
+        # Keep reinforcement flush and modest.  The standard tier reads as
+        # dark horn around the stressed nut area; only the late heavy arbalest
+        # receives blackened iron side plates.
+        plate_length = 0.050 if tier == 2 else 0.064
+        plate_height = 0.015 if tier == 2 else 0.018
+        plate_x = spec["body_width"] * 0.5 + 0.0015
+        plate_y = catch_y - plate_length * 0.35
+        plate_mat = dark_wood if tier == 2 else metal
+        for side, x in (("L", -plate_x), ("R", plate_x)):
+            cube_part(
+                coll,
+                f"{model_name}_LockPlate_{side}",
+                (x, plate_y, 0.014),
+                (0.0025, plate_length, plate_height),
+                plate_mat,
+                edge=0.001,
+            )
+        if tier == 3:
+            cylinder_part(
+                coll,
+                f"{model_name}_LockPin",
+                (0, catch_y - 0.018, 0.014),
+                0.0026,
+                spec["body_width"] + 0.006,
+                metal,
+                rotation=(0.0, math.pi / 2, 0.0),
+                vertices=10,
+            )
+
+    # A medieval tickler first drops from the nut, then runs rearward almost
+    # parallel to the tiller's underside.  This long lever replaces the short
+    # rifle-like trigger silhouette.
+    trigger_knee = (0.0, catch_y - 0.050, -0.017)
+    beam_between(
+        coll,
+        f"{model_name}_TriggerLink",
+        (0.0, catch_y - 0.022, 0.001),
+        trigger_knee,
+        0.0042,
+        0.0038,
+        metal,
+        edge=0.0007,
+    )
+    beam_between(
+        coll,
+        f"{model_name}_TriggerLever",
+        trigger_knee,
+        (0.0, -0.010, -0.020),
+        0.0048,
+        0.0038,
+        metal,
+        edge=0.0007,
+    )
+
+    if cocked:
+        # Seat the intact bolt's rear nock at the solved string catch and let
+        # the shaft rest in the rail groove. The geometry is shared with the
+        # corresponding dropped bolt so loaded and loose ammunition match.
+        loaded_bolt_scale = 0.58
+        loaded_nock_half_length = 0.007 * loaded_bolt_scale
+        loaded_nock_center_y = catch_y + string_radius + loaded_nock_half_length
+        loaded_bolt_axis_offset = abs(power_axis_z - string_plane_z)
+        string_nock_contact_gap = abs(
+            (loaded_nock_center_y - loaded_nock_half_length) - (catch_y + string_radius)
+        )
+        add_intact_bolt_geometry(
+            coll,
+            f"{model_name}_LoadedBolt",
+            mats,
+            loaded_bolt_kind,
+            offset=(0.0, loaded_nock_center_y + 0.115, power_axis_z),
+            scale=loaded_bolt_scale,
+        )
 
     measured_string_length = polyline_length(string_points)
     if abs(measured_string_length - fixed_string_length) > 0.00001:
@@ -394,6 +543,7 @@ def build_crossbow(name, tier, spec, mats, cocked=False):
             f"{model_name}: string length changed by {measured_string_length - fixed_string_length:.6f} m"
         )
     coll["state"] = "cocked" if cocked else "relaxed"
+    coll["loaded_bolt_kind"] = loaded_bolt_kind if cocked else "none"
     coll["string_length"] = fixed_string_length
     coll["measured_string_length"] = measured_string_length
     coll["limb_arc_length"] = half_width
@@ -402,71 +552,162 @@ def build_crossbow(name, tier, spec, mats, cocked=False):
     coll["tip_y"] = right_tip[1]
     coll["catch_y"] = catch_y
     coll["string_radius"] = string_radius
+    coll["power_axis_z"] = power_axis_z
+    coll["prod_root_z"] = prod_root_z
+    coll["prod_tip_rise"] = prod_tip_rise
+    coll["fore_end_overhang"] = fore_end_overhang
+    coll["power_axis_above_fore_end"] = power_axis_z - fore_end_top
+    coll["loaded_bolt_axis_offset"] = loaded_bolt_axis_offset
+    coll["string_nock_contact_gap"] = string_nock_contact_gap
     coll["string_tip_center_offset"] = string_tip_center_offset
     coll["string_tip_vertical_clearance"] = string_tip_vertical_clearance
 
-    if tier == 1:
-        cube_part(coll, f"{model_name}_ProdBinding", (0, bow_y - 0.004, 0.029), (spec["stock_width"] + 0.022, 0.010, 0.038), cord, edge=0.002)
-    elif tier == 2:
-        cube_part(coll, f"{model_name}_ProdBand", (0, bow_y - 0.004, 0.029), (spec["stock_width"] + 0.022, 0.010, 0.038), metal, edge=0.002)
-    # The top tier is intentionally mechanism-free. Its heavier silhouette
-    # comes from the iron tiller and thicker steel prod alone.
+    # The bow is tied into the fore-end through a transverse bridle hole.
+    # Paired wraps stay outside the bolt gutter, preserving a clear central
+    # path while visibly transferring load into the full-height wooden nose.
+    bridle_x = spec["rail_width"] * 0.5 + 0.0045
+    bridle_center_z = (fore_end_bottom + fore_end_top) * 0.5
+    bridle_radius = (fore_end_top - fore_end_bottom) * 0.5 + 0.0015
+    binding_turns = 3 if tier == 1 else 4
+    for side, x in (("L", -bridle_x), ("R", bridle_x)):
+        add_wrapping(
+            coll,
+            f"{model_name}_HempBridle_{side}",
+            bow_y,
+            bridle_center_z,
+            0.0045,
+            bridle_radius,
+            cord,
+            turns=binding_turns,
+            center_x=x,
+            minor_radius=0.0011 if tier == 1 else 0.00125,
+        )
+        if tier >= 2:
+            add_wrapping(
+                coll,
+                f"{model_name}_LeatherBridle_{side}",
+                bow_y,
+                bridle_center_z,
+                0.0025,
+                bridle_radius + 0.0010,
+                _leather,
+                turns=2,
+                center_x=x,
+                minor_radius=0.0010,
+            )
+
+    cylinder_part(
+        coll,
+        f"{model_name}_BridlePass",
+        (0.0, bow_y - 0.009, 0.0135),
+        0.0022,
+        fore_end_width + 0.008,
+        cord,
+        rotation=(0.0, math.pi / 2, 0.0),
+        vertices=10,
+    )
+    rivet_mat = dark_wood if tier == 1 else metal
+    cylinder_part(
+        coll,
+        f"{model_name}_ForeEndRivet",
+        (0.0, nose - 0.003, bridle_center_z),
+        0.0022 if tier == 1 else 0.0025,
+        fore_end_top - fore_end_bottom - 0.001,
+        rivet_mat,
+        rotation=(0.0, 0.0, 0.0),
+        vertices=10,
+    )
 
     return coll
 
 
-def build_bolt(name, broken, mats, material_kind="metal"):
+def add_intact_bolt_geometry(coll, name, mats, material_kind="metal", offset=(0.0, 0.0, 0.0), scale=1.0):
     wood, dark_wood, metal, cord, leather, stone, feather = mats
+    is_stone = material_kind == "stone"
+    offset = Vector(offset)
+    parts = []
+
+    def place(obj):
+        parts.append(obj)
+        return obj
+
+    # A short, heavy quarrel silhouette matches the compact crossbows and
+    # stays legible both as a loose item and when seated on a weapon rail.
+    place(cylinder_part(coll, f"{name}_Shaft", (0, -0.010, 0), 0.006, 0.210, wood, vertices=10))
+
+    # The metal bolt uses a narrow forged bodkin. The stone variant uses a
+    # broader asymmetric chipped profile so both silhouette and palette remain
+    # recognisable in the loaded model.
+    if is_stone:
+        place(cylinder_part(coll, f"{name}_HeadBinding", (0, 0.088, 0), 0.009, 0.024, cord, vertices=8))
+        stone_profile = (
+            (0.098, -0.018),
+            (0.136, -0.013),
+            (0.158, -0.004),
+            (0.149, 0.006),
+            (0.116, 0.019),
+            (0.096, 0.012),
+        )
+        place(profile_prism(coll, f"{name}_ChippedPoint", stone_profile, 0.010, stone, edge=0.0012))
+    else:
+        place(cylinder_part(coll, f"{name}_HeadSocket", (0, 0.088, 0), 0.009, 0.028, metal, vertices=8))
+        place(cone_part(coll, f"{name}_BodkinPoint", (0, 0.130, 0), 0.015, 0.070, metal, vertices=4))
+
+    # Three slim radial vanes keep the bolt readable from aimed, side, and top
+    # views without making it wider than the crossbow rail.
+    vane_profile = (
+        (-0.110, 0.005),
+        (-0.102, 0.018),
+        (-0.066, 0.014),
+        (-0.050, 0.005),
+    )
+    vane_material = feather if is_stone else leather
+    for index, angle in enumerate((0.0, 120.0, 240.0), start=1):
+        vane = profile_prism(coll, f"{name}_Fletching_{index}", vane_profile, 0.003, vane_material, edge=0.0007)
+        vane.rotation_euler.y = math.radians(angle)
+        place(vane)
+
+    place(cylinder_part(coll, f"{name}_Nock", (0, -0.115, 0), 0.0075, 0.014, dark_wood, vertices=10))
+    place(cylinder_part(coll, f"{name}_FletchingWrapRear", (0, -0.104, 0), 0.0068, 0.007, cord, vertices=10))
+    place(cylinder_part(coll, f"{name}_FletchingWrapFront", (0, -0.048, 0), 0.0068, 0.008, cord, vertices=10))
+
+    # Loaded crossbows use a compact visual proxy because their equipped model
+    # is deliberately fitted to the sawn-off firearm hand envelope. Scale every
+    # part around the rear nock so it remains locked to the solved string catch.
+    anchor = Vector((0.0, -0.115, 0.0))
+    for obj in parts:
+        apply_modifiers_and_transforms(obj)
+        for vertex in obj.data.vertices:
+            vertex.co = anchor + (vertex.co - anchor) * scale + offset
+        obj.data.update()
+
+
+def build_bolt(name, broken, mats, material_kind="metal"):
+    wood, _dark_wood, metal, cord, _leather, stone, _feather = mats
     is_stone = material_kind == "stone"
     coll = new_collection(name)
     if not broken:
-        # A short, heavy quarrel silhouette matches the compact crossbows and
-        # stays legible both as a 128 px icon and as a single placed world item.
-        # The old square-prism "head" read as a blunt cap, while its two broad
-        # overlapping fletchings merged into one rectangular block.
-        cylinder_part(coll, f"{name}_Shaft", (0, -0.010, 0), 0.006, 0.210, wood, vertices=10)
-
-        # The metal bolt uses a narrow forged bodkin. The stone variant uses a
-        # broader asymmetric chipped profile so both its silhouette and palette
-        # remain recognisable at inventory scale.
-        if is_stone:
-            cylinder_part(coll, f"{name}_HeadBinding", (0, 0.088, 0), 0.009, 0.024, cord, vertices=8)
-            stone_profile = (
-                (0.098, -0.018),
-                (0.136, -0.013),
-                (0.158, -0.004),
-                (0.149, 0.006),
-                (0.116, 0.019),
-                (0.096, 0.012),
-            )
-            profile_prism(coll, f"{name}_ChippedPoint", stone_profile, 0.010, stone, edge=0.0012)
-        else:
-            cylinder_part(coll, f"{name}_HeadSocket", (0, 0.088, 0), 0.009, 0.028, metal, vertices=8)
-            cone_part(coll, f"{name}_BodkinPoint", (0, 0.130, 0), 0.015, 0.070, metal, vertices=4)
-
-        # Three slim radial vanes form a recognisable feather silhouette without
-        # making the bolt wider than the crossbow rail.  One vane sits uppermost;
-        # the other two give the placed model stable, visible ground contact.
-        vane_profile = (
-            (-0.110, 0.005),
-            (-0.102, 0.018),
-            (-0.066, 0.014),
-            (-0.050, 0.005),
-        )
-        vane_material = feather if is_stone else leather
-        for index, angle in enumerate((0.0, 120.0, 240.0), start=1):
-            vane = profile_prism(coll, f"{name}_Fletching_{index}", vane_profile, 0.003, vane_material, edge=0.0007)
-            vane.rotation_euler.y = math.radians(angle)
-
-        # Dark rear nock and two cord whippings visually separate the tail from
-        # the shaft when the asset is reduced to inventory scale.
-        cylinder_part(coll, f"{name}_Nock", (0, -0.115, 0), 0.0075, 0.014, dark_wood, vertices=10)
-        cylinder_part(coll, f"{name}_FletchingWrapRear", (0, -0.104, 0), 0.0068, 0.007, cord, vertices=10)
-        cylinder_part(coll, f"{name}_FletchingWrapFront", (0, -0.048, 0), 0.0068, 0.008, cord, vertices=10)
+        add_intact_bolt_geometry(coll, name, mats, material_kind)
     else:
-        length = 0.16
-        cylinder_part(coll, f"{name}_Shaft", (0, -0.020, 0), 0.008, length, wood, vertices=10)
-        beam_between(coll, f"{name}_Splinter", (0.010, -0.035, 0), (0.035, -0.095, 0.005), 0.009, 0.009, wood, edge=0.001)
+        # Keep the recoverable head-side fragment visibly shorter than an intact
+        # bolt. Two compact rear splinters form a readable V-shaped break without
+        # the long lateral branch that previously resembled extra fletching.
+        length = 0.15
+        cylinder_part(coll, f"{name}_Shaft", (0, -0.015, 0), 0.008, length, wood, vertices=10)
+        for index, (end_x, end_y, end_z) in enumerate((
+            (-0.012, -0.103, -0.002),
+            (0.012, -0.100, 0.003),
+        ), start=1):
+            beam_between(
+                coll,
+                f"{name}_BreakSplinter_{index}",
+                (end_x * 0.32, -0.077, end_z * 0.32),
+                (end_x, end_y, end_z),
+                0.006,
+                0.006,
+                wood,
+                edge=0.0008,
+            )
         if is_stone:
             broken_stone_profile = (
                 (0.060, -0.016),
@@ -737,13 +978,18 @@ def render_validation(coll, asset_collections, filename, camera):
     scene.world.color = (0.012, 0.016, 0.014)
     scene.render.resolution_x = 640
     scene.render.resolution_y = 480
-    base_filename = filename.removesuffix("Cocked")
+    base_filename = filename.removesuffix("CockedStoneBolt").removesuffix("Cocked")
     scales = {
-        "AuxiliaImprovisedCrossbow": (0.50, 0.42, 0.42),
-        "AuxiliaReinforcedCrossbow": (0.52, 0.44, 0.42),
-        "AuxiliaHeavyArbalest": (0.56, 0.48, 0.44),
+        "AuxiliaImprovisedCrossbow": (0.50, 0.42, 0.42, 0.34),
+        "AuxiliaReinforcedCrossbow": (0.52, 0.44, 0.42, 0.38),
+        "AuxiliaHeavyArbalest": (0.56, 0.48, 0.44, 0.42),
     }[base_filename]
-    views = {"iso": ((0.82, -0.84, 0.68), (0, 0.10, 0.015), scales[0]), "top": ((0.0, 0.10, 1.35), (0, 0.10, 0.0), scales[1]), "side": ((1.30, 0.10, 0.06), (0, 0.10, 0.0), scales[2])}
+    views = {
+        "iso": ((0.82, -0.84, 0.68), (0, 0.10, 0.015), scales[0]),
+        "top": ((0.0, 0.10, 1.35), (0, 0.10, 0.0), scales[1]),
+        "side": ((1.30, 0.10, 0.06), (0, 0.10, 0.0), scales[2]),
+        "front": ((0.0, 1.35, 0.055), (0, 0.10, 0.015), scales[3]),
+    }
     for view_name, (location, target, scale) in views.items():
         camera.location = location
         camera.data.ortho_scale = scale
@@ -753,7 +999,7 @@ def render_validation(coll, asset_collections, filename, camera):
 
 
 def render_bolt_placement(coll, asset_collections, camera):
-    """Render the intact bolt resting on a ground plane like Place Item."""
+    """Render a loose bolt or fragment resting on a ground plane like Place Item."""
     scene = bpy.context.scene
     set_visible(coll, asset_collections)
     scene.render.film_transparent = False
@@ -823,12 +1069,15 @@ def validate_exports(asset_objects, icon_names, physics_report):
         "crossbow_physics": physics_report,
     }
     expected_ranges = {
-        "AuxiliaImprovisedCrossbow": ((0.24, 0.27), (0.35, 0.38), (0.07, 0.10)),
-        "AuxiliaReinforcedCrossbow": ((0.27, 0.30), (0.35, 0.38), (0.07, 0.10)),
-        "AuxiliaHeavyArbalest": ((0.30, 0.34), (0.35, 0.38), (0.08, 0.11)),
-        "AuxiliaImprovisedCrossbowCocked": ((0.22, 0.25), (0.35, 0.38), (0.07, 0.10)),
-        "AuxiliaReinforcedCrossbowCocked": ((0.25, 0.28), (0.35, 0.38), (0.07, 0.10)),
-        "AuxiliaHeavyArbalestCocked": ((0.28, 0.31), (0.35, 0.38), (0.08, 0.11)),
+        "AuxiliaImprovisedCrossbow": ((0.24, 0.27), (0.31, 0.34), (0.06, 0.10)),
+        "AuxiliaReinforcedCrossbow": ((0.27, 0.30), (0.31, 0.34), (0.06, 0.10)),
+        "AuxiliaHeavyArbalest": ((0.30, 0.34), (0.31, 0.34), (0.06, 0.10)),
+        "AuxiliaImprovisedCrossbowCocked": ((0.22, 0.25), (0.39, 0.41), (0.06, 0.10)),
+        "AuxiliaReinforcedCrossbowCocked": ((0.25, 0.28), (0.375, 0.40), (0.06, 0.10)),
+        "AuxiliaHeavyArbalestCocked": ((0.28, 0.31), (0.35, 0.38), (0.06, 0.10)),
+        "AuxiliaImprovisedCrossbowCockedStoneBolt": ((0.22, 0.25), (0.39, 0.41), (0.06, 0.10)),
+        "AuxiliaReinforcedCrossbowCockedStoneBolt": ((0.25, 0.28), (0.375, 0.40), (0.06, 0.10)),
+        "AuxiliaHeavyArbalestCockedStoneBolt": ((0.28, 0.31), (0.35, 0.38), (0.06, 0.10)),
         "AuxiliaCrossbowBolt": ((0.02, 0.04), (0.27, 0.29), (0.025, 0.045)),
         "AuxiliaStoneCrossbowBolt": ((0.02, 0.05), (0.27, 0.30), (0.025, 0.045)),
     }
@@ -921,9 +1170,9 @@ FEATHER = material("Pale Feather", (0.66, 0.62, 0.50), roughness=0.96)
 MATERIALS = (WOOD, DARK_WOOD, METAL, CORD, LEATHER, STONE, FEATHER)
 
 SPECS = {
-    "AuxiliaImprovisedCrossbow": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.250, "relaxed_bend": 0.12, "cocked_bend": 0.58, "stock_width": 0.024, "body_width": 0.016, "lock_width": 0.020, "rail_width": 0.014, "limb_chord": 0.009, "limb_height": 0.014, "string_thickness": 0.0024},
-    "AuxiliaReinforcedCrossbow": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.280, "relaxed_bend": 0.12, "cocked_bend": 0.62, "stock_width": 0.026, "body_width": 0.018, "lock_width": 0.022, "rail_width": 0.016, "limb_chord": 0.010, "limb_height": 0.017, "string_thickness": 0.0027},
-    "AuxiliaHeavyArbalest": {"rear": 0.052, "nose": 0.305, "bow_y": 0.262, "width": 0.315, "relaxed_bend": 0.12, "cocked_bend": 0.66, "stock_width": 0.028, "body_width": 0.020, "lock_width": 0.024, "rail_width": 0.018, "limb_chord": 0.012, "limb_height": 0.022, "string_thickness": 0.0032},
+    "AuxiliaImprovisedCrossbow": {"rear": 0.052, "nose": 0.269, "bow_y": 0.262, "width": 0.250, "relaxed_bend": 0.12, "cocked_bend": 0.58, "stock_width": 0.024, "body_width": 0.016, "lock_width": 0.020, "rail_width": 0.014, "limb_chord": 0.009, "limb_height": 0.014, "string_thickness": 0.0024, "prod_root_z": 0.018, "power_axis_z": 0.034},
+    "AuxiliaReinforcedCrossbow": {"rear": 0.052, "nose": 0.269, "bow_y": 0.262, "width": 0.280, "relaxed_bend": 0.12, "cocked_bend": 0.62, "stock_width": 0.026, "body_width": 0.018, "lock_width": 0.022, "rail_width": 0.016, "limb_chord": 0.010, "limb_height": 0.017, "string_thickness": 0.0027, "prod_root_z": 0.018, "power_axis_z": 0.034},
+    "AuxiliaHeavyArbalest": {"rear": 0.052, "nose": 0.270, "bow_y": 0.262, "width": 0.315, "relaxed_bend": 0.12, "cocked_bend": 0.66, "stock_width": 0.028, "body_width": 0.020, "lock_width": 0.024, "rail_width": 0.018, "limb_chord": 0.012, "limb_height": 0.022, "string_thickness": 0.0032, "prod_root_z": 0.018, "power_axis_z": 0.034},
 }
 
 improvised = build_crossbow("AuxiliaImprovisedCrossbow", 1, SPECS["AuxiliaImprovisedCrossbow"], MATERIALS)
@@ -932,11 +1181,24 @@ heavy = build_crossbow("AuxiliaHeavyArbalest", 3, SPECS["AuxiliaHeavyArbalest"],
 improvised_cocked = build_crossbow("AuxiliaImprovisedCrossbow", 1, SPECS["AuxiliaImprovisedCrossbow"], MATERIALS, cocked=True)
 reinforced_cocked = build_crossbow("AuxiliaReinforcedCrossbow", 2, SPECS["AuxiliaReinforcedCrossbow"], MATERIALS, cocked=True)
 heavy_cocked = build_crossbow("AuxiliaHeavyArbalest", 3, SPECS["AuxiliaHeavyArbalest"], MATERIALS, cocked=True)
+improvised_cocked_stone = build_crossbow("AuxiliaImprovisedCrossbow", 1, SPECS["AuxiliaImprovisedCrossbow"], MATERIALS, cocked=True, loaded_bolt_kind="stone")
+reinforced_cocked_stone = build_crossbow("AuxiliaReinforcedCrossbow", 2, SPECS["AuxiliaReinforcedCrossbow"], MATERIALS, cocked=True, loaded_bolt_kind="stone")
+heavy_cocked_stone = build_crossbow("AuxiliaHeavyArbalest", 3, SPECS["AuxiliaHeavyArbalest"], MATERIALS, cocked=True, loaded_bolt_kind="stone")
 bolt = build_bolt("AuxiliaCrossbowBolt", False, MATERIALS, "metal")
 stone_bolt = build_bolt("AuxiliaStoneCrossbowBolt", False, MATERIALS, "stone")
 broken_bolt = build_bolt("AuxiliaBrokenBolt", True, MATERIALS, "metal")
 broken_stone_bolt = build_bolt("AuxiliaBrokenStoneBolt", True, MATERIALS, "stone")
-crossbows = [improvised, reinforced, heavy, improvised_cocked, reinforced_cocked, heavy_cocked]
+crossbows = [
+    improvised,
+    reinforced,
+    heavy,
+    improvised_cocked,
+    reinforced_cocked,
+    heavy_cocked,
+    improvised_cocked_stone,
+    reinforced_cocked_stone,
+    heavy_cocked_stone,
+]
 assets = crossbows + [bolt, stone_bolt, broken_bolt, broken_stone_bolt]
 
 physics_report = {}
@@ -959,6 +1221,16 @@ for relaxed, cocked in (
     )
     if maximum_string_tip_center_offset > 0.000001 or minimum_string_tip_vertical_clearance < 0.0005:
         raise RuntimeError(f"{relaxed.name}: string has invalid limb-tip nock seating")
+    if cocked["loaded_bolt_axis_offset"] > 0.000001:
+        raise RuntimeError(f"{cocked.name}: loaded bolt leaves the prod/string power axis")
+    if cocked["string_nock_contact_gap"] > 0.000001:
+        raise RuntimeError(f"{cocked.name}: string does not meet the rear face of the loaded nock")
+    if not 0.010 <= cocked["prod_tip_rise"] <= 0.020:
+        raise RuntimeError(f"{cocked.name}: prod nocks do not rise gently from the embedded root")
+    if not 0.004 <= cocked["fore_end_overhang"] <= 0.010:
+        raise RuntimeError(f"{cocked.name}: tiller continues too far past the prod root")
+    if not 0.002 <= cocked["power_axis_above_fore_end"] <= 0.008:
+        raise RuntimeError(f"{cocked.name}: bolt/string axis is not just above the tiller fore-end")
     physics_report[relaxed.name] = {
         "relaxed_model": relaxed.name,
         "cocked_model": cocked.name,
@@ -974,6 +1246,13 @@ for relaxed, cocked in (
         "string_radius": round(relaxed["string_radius"], 6),
         "maximum_string_tip_center_offset": round(maximum_string_tip_center_offset, 8),
         "minimum_string_tip_vertical_clearance": round(minimum_string_tip_vertical_clearance, 6),
+        "power_axis_z": round(cocked["power_axis_z"], 6),
+        "prod_root_z": round(cocked["prod_root_z"], 6),
+        "prod_tip_rise": round(cocked["prod_tip_rise"], 6),
+        "fore_end_overhang": round(cocked["fore_end_overhang"], 6),
+        "power_axis_above_fore_end": round(cocked["power_axis_above_fore_end"], 6),
+        "loaded_bolt_axis_offset": round(cocked["loaded_bolt_axis_offset"], 8),
+        "string_nock_contact_gap": round(cocked["string_nock_contact_gap"], 8),
     }
 
 asset_objects = {}
@@ -993,6 +1272,8 @@ for collection in crossbows:
     render_validation(collection, assets, collection.name, camera)
 render_bolt_placement(bolt, assets, camera)
 render_bolt_placement(stone_bolt, assets, camera)
+render_bolt_placement(broken_bolt, assets, camera)
+render_bolt_placement(broken_stone_bolt, assets, camera)
 render_promo(heavy, assets, camera)
 
 # Headless Windows runs do not need an Explorer/File Browser thumbnail for the
