@@ -3,6 +3,7 @@
 *.blend2
 
 # Local test/deployment artifacts
+/.tmp/
 work/
 logs/
 dist/
