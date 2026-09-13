@@ -1,0 +1,12 @@
+module Base
+{
+    xuiSkin default
+    {
+        entity ES_AmmoPress
+        {
+            LuaWindowClass = ISEntityWindow,
+            DisplayName = Tabletop Ammunition Press,
+            Icon = Item_AuxAmmoPress,
+        }
+    }
+}

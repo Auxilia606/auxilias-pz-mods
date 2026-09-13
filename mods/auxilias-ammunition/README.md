@@ -3,18 +3,18 @@
 Current version: **1.1.0** (release candidate; redesigned crafting has not completed in-game acceptance)
 Target: **Project Zomboid Build 42.20** (vanilla balance audited against 42.20.2; v1.0.0 runtime tested on 42.20.3)
 
-Auxilia's Ammunition turns Build 42's existing pottery, kiln, furnace, charcoal,
-foraging, metalworking, and Hand Press systems into a late-game ammunition
-production loop. It adds no skill, workstation, firearm override, or runtime framework.
+Auxilia's Ammunition combines Build 42's charcoal, foraging, and metalworking systems
+with a small hand-operated tabletop ammunition press. It adds no skill, firearm
+override, or custom crafting runtime.
 
 ## Production loop
 
-1. Shape reusable molds at a Pottery Bench and fire them in a Kiln.
-2. Cast a caliber-family cartridge body from iron and copper at a Furnace. Each body
+1. Craft the movable tabletop ammunition press and place it on a suitable surface.
+2. Press a caliber-family cartridge body from iron and copper at the press. Each body
    represents its projectile and casing together; shotgun bodies also use ripped sheets.
 3. Crush ordinary stone or limestone into mineral powder, grind charcoal or coke into
    carbon powder, and combine the two on any surface into ammo-only field powder.
-4. Form primers at the vanilla Hand Press, then press batches of ten rounds using body +
+4. Form primers at the ammunition press, then press batches of ten rounds using body +
    field powder + primer.
 
 The final outputs are the nine vanilla ammunition items, so vanilla guns and mods that
@@ -22,14 +22,23 @@ consume vanilla ammo continue to work without patches. Factory primers remain a 
 shortcut. High skill levels automatically reveal recipes so existing saves are not locked
 out if their manuals were generated before the mod was added.
 
-Cartridge bodies, primers, and the fired shotgun mold use dedicated icons so components
-that frequently share an inventory remain distinguishable at 32×32. Legacy projectile,
-shot charge, casing, and hull items retain their IDs and icons for existing saves.
+The press, cartridge bodies, and primers use dedicated icons so frequently handled items
+remain distinguishable at 32×32. Legacy molds, projectile, shot charge, casing, and hull
+items retain their IDs and icons for existing saves.
 Run the repository-level `tools/sync-icons.ps1 -Mod auxilias-ammunition` after changing a
 128×128 master in `source-assets/icons`.
 
-The four old-part conversion recipes are grouped under **Saved Ammo Parts** so the normal
-ammunition crafting list stays focused on current production.
+To rebuild the tabletop press art, open the saved press `.blend` in Blender 5.2 and run
+`source-assets/blender/render_runtime_press.py`, then run `tools/build-press-art.py` and
+`tools/build-press-tiles.py` with Python and Pillow. The first script renders four views;
+the next fits the four 128×256 source tiles and icon; the last writes the game's binary
+texture pack and tile definitions. The `tiledef=auxammo_press_01 7713` registration in
+both `mod.info` files must remain stable once the station appears in saved worlds.
+
+The old-part conversion and retired ceramic-mold salvage recipes are grouped under
+**Saved Ammo Parts** so the normal ammunition crafting list stays focused on current
+production. Existing mold item IDs remain valid in older saves, but new body recipes no
+longer require pottery or a kiln.
 
 The legacy projectiles, shot charge, and empty shotgun hull retain dedicated ground models
 instead of vanilla complete-ammunition meshes. Their reproducible Blender source, shared

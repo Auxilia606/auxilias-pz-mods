@@ -1,5 +1,15 @@
 module AuxiliasAmmunition
 {
+    item Mov_AmmoPress
+    {
+        DisplayCategory = Furniture,
+        ItemType = base:moveable,
+        Weight = 8.0,
+        Icon = AuxAmmoPress,
+        WorldObjectSprite = auxammo_press_01_0,
+        Tooltip = Tooltip_item_AuxAmmo_Press,
+    }
+
     item BulletMoldUnfired
     {
         DisplayCategory = Material,
@@ -219,7 +229,7 @@ module AuxiliasAmmunition
         Icon = Magazine_Armory1,
         BoredomChange = -20,
         StressChange = -15,
-        LearnedRecipes = AuxAmmoShapeBulletMold;AuxAmmoFireBulletMold;AuxAmmoShapeShotgunMold;AuxAmmoFireShotgunMold;AuxAmmoCastSmallPistolProjectiles;AuxAmmoFormSmallPistolCasings,
+        LearnedRecipes = CraftAmmoPress;AuxAmmoShapeBulletMold;AuxAmmoFireBulletMold;AuxAmmoShapeShotgunMold;AuxAmmoFireShotgunMold;AuxAmmoCastSmallPistolProjectiles;AuxAmmoFormSmallPistolCasings,
         StaticModel = Base.Magazine,
         WorldStaticModel = Base.MagazineGround,
         Tags = base:magazine,

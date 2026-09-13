@@ -2,6 +2,11 @@
 
 ## 1.1.0 (release candidate)
 
+- Added a hand-operated tabletop ammunition press as the common station for body
+  pressing, primer forming, final assembly, and old-part conversion. Placement and
+  crafting behavior still require in-game acceptance.
+- Removed pottery molds, kiln firing, and charcoal fuel from current body production; saved molds
+  remain defined and can be salvaged through their published recipe IDs.
 - Combined projectile and casing manufacture into four cartridge-body recipes, with one
   body item per caliber family and preserved vanilla ten-round outputs.
 - Reused the former casing recipe IDs for one-to-one conversion of matching components
@@ -19,8 +24,6 @@
   FBX round-trip checks, and static guards against restoring the placeholder mappings.
 - Installed the Workshop poster and mod-list icon beside the Build 42.20 metadata so the game
   no longer renders white placeholders when it selects the versioned `mod.info`.
-- Fixed fired bullet and shotgun molds becoming broken during projectile casting despite being
-  documented as reusable.
 - Fixed all Build 42 crafting recipe translations so the crafting UI shows localized names
   instead of internal `AuxAmmo*` IDs.
 - Replaced reused vanilla component art with dedicated projectile, shot-charge, casing,

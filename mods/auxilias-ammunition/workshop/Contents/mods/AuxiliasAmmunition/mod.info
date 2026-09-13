@@ -4,3 +4,5 @@ description=Version 1.1.0. A streamlined renewable ammunition production loop fo
 poster=poster.png
 icon=icon.png
 versionMin=42.20
+pack=auxammo_press_01
+tiledef=auxammo_press_01 7713

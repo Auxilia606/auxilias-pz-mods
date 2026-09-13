@@ -1,0 +1,48 @@
+module AuxiliasAmmunition
+{
+    entity AmmoPress
+    {
+        component UiConfig
+        {
+            xuiSkin = default,
+            entityStyle = ES_AmmoPress,
+            uiEnabled = true,
+        }
+        component CraftBench
+        {
+            Recipes = AuxAmmoPress,
+        }
+        component SpriteConfig
+        {
+            isThumpable = false,
+            face S
+            {
+                layer
+                {
+                    row = auxammo_press_01_0,
+                }
+            }
+            face E
+            {
+                layer
+                {
+                    row = auxammo_press_01_1,
+                }
+            }
+            face N
+            {
+                layer
+                {
+                    row = auxammo_press_01_2,
+                }
+            }
+            face W
+            {
+                layer
+                {
+                    row = auxammo_press_01_3,
+                }
+            }
+        }
+    }
+}

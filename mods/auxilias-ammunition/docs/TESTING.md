@@ -3,28 +3,42 @@
 ## Automated release checks
 
 `tools/validate.ps1` verifies metadata/version alignment, required files, balanced scripts,
-unique item/recipe IDs, all 24 translated items, all 25 translated recipes, EN/KO key parity,
+unique item/recipe IDs, all 25 translated items, all 26 translated recipes, EN/KO key parity,
 allowed station tags and internal skill IDs, exact ten-round outputs for all nine vanilla
 calibers, custom icon presence, component-model mappings and files, the shared model atlas,
 Workshop image dimensions/hashes, coverage of the 24 published learned recipe IDs, loot
 guards, and the absence of firearm hooks, `modData`, commands, and vanilla item overrides.
-The new carbon-grinding recipe needs no manual so pre-update characters can use it. Recipe
-checks must also cover
-the four body yields, paired legacy-part conversions, and the three powder stages.
+The carbon-grinding and saved-mold salvage recipes need no manual so pre-update characters
+can use them. Recipe checks also cover the four body yields, paired legacy-part conversions,
+retired mold salvage, the new press station tag, and the three powder stages.
 
 `tools/package.ps1` runs validation, creates the ZIP, reopens it, compares every entry length
 and SHA-256 with the source Workshop tree, and writes a `.sha256` sidecar.
 
-## v1.1.0 server load smoke
+## Current tabletop-press server load smoke
+
+On 2026-09-13, an isolated Build 42.20.4 (`b0bbce05d5`) dedicated server loaded the current
+Workshop tree with only `AuxiliasAmmunition` enabled. It reached `*** SERVER STARTED ****`,
+exported all 26 mod craft recipes, registered `Mov_AmmoPress` in the world dictionary, and
+shut down normally. The second run corrected a misplaced XUI skin declaration found on the
+first load. Its log is `work/ammo-press-smoke-v2/Logs/2026-09-13_17-50_DebugLog-server.txt`.
+No mod-specific recipe, entity, texture-pack, or tile-definition load failure remained. Four
+missing `Item_AuxAmmoPress` icon warnings occurred during headless XUI loading despite the
+texture being present; vanilla XUI icons produced the same warning in that server run.
+Client rendering, tabletop placement/recovery, CraftBench interaction, actual crafting,
+old-save migration, and multiplayer behavior still require the acceptance checks below.
+
+## Earlier v1.1.0 server load smoke (before tabletop press)
 
 On 2026-09-13, an isolated dedicated-server cache loaded the redesigned Workshop tree on the
 installed Build 42.20.4 (`b0bbce05d5`). The server reached `*** SERVER STARTED ****` and
 shut down normally. `Crafting/AllRecipes.txt` exported exactly 25 distinct `AuxAmmo*` recipe
-IDs, matching the source script. No warning or error line directly named an AuxAmmo recipe or
+IDs, matching the source script at that time. No warning or error line directly named an AuxAmmo recipe or
 the mod. Four missing optional AnimSets/actiongroups directory traces under the mod path also
 occurred in the prior v1.0.0 smoke and did not prevent startup. The evidence is in
 `work/ammo-redesign-smoke/Logs/2026-09-13_16-38_DebugLog-server.txt` and its crafting export.
-This is a load check, not an in-game crafting, multiplayer, or save-migration acceptance test.
+This is a historical load check for the preceding mold-and-furnace candidate. It does not
+validate the new press, the revised recipes, in-game crafting, multiplayer, or save migration.
 
 ## Historical v1.0.0 runtime evidence
 
@@ -53,31 +67,39 @@ idempotence guard.
 
 Save review confirms that recipe auto-learning permits old characters to progress at high skill.
 Adding the mod does not retroactively refill explored containers. The redesign keeps published
-component IDs, converts matching old projectile+casing/hull pairs at the Hand Press, and
-reuses saved `MineralSalts` stacks as crushed mineral powder. Unmatched legacy parts require
+component IDs, converts matching old projectile+casing/hull pairs at the new press, reclaims
+saved unfired molds as clay and fired molds as mineral powder, and reuses saved `MineralSalts`
+stacks as crushed mineral powder. Unmatched legacy parts require
 separate review; the pair conversion cannot consume a part without its match. Removing the mod
 with custom items stored in a save is not supported.
 
 ## Redesign acceptance checks for the next release
 
-1. On the configured Build 42 target, load a clean client and dedicated server; verify 25
-   recipes, 24 items, nine vanilla output IDs, and EN/KO names and tooltips without script
-   errors.
-2. Craft each reusable mold, then cast all four body families. Verify each recipe consumes
-   one iron ingot, one copper scrap, its intended charcoal amount, and two ripped sheets only
-   for shotgun bodies; verify 30/20/15/15 output and retained molds.
-3. Crush both `Base.Stone2` and `Base.Limestone` with a retained hammer. Grind both
+1. On the configured Build 42 target, load a clean client and dedicated server; verify 26
+   recipes, 25 items, nine vanilla output IDs, and EN/KO names, tooltips, and movable label
+   without script errors.
+2. Craft the movable tabletop press, place it on a table in all supported orientations,
+   open its crafting UI, save/reload, recover it, and place it again. Confirm it cannot be
+   used as a workstation before placement and that no floor-sized footprint appears.
+3. Press all four body families at the new station. Verify each recipe consumes one iron
+   ingot and one copper scrap, plus two ripped sheets only for shotgun bodies, while keeping
+   pliers. Verify 30/20/15/15 output and that no mold, furnace, charcoal, or tongs are
+   required.
+4. Crush both `Base.Stone2` and `Base.Limestone` with a retained hammer. Grind both
    `Base.Charcoal` and `Base.Coke` with a retained mortar and pestle. Mix 40 units of each
    powder into 40 field powder on any surface. Confirm no vanilla `Base.GunPowder` is
    produced or accepted by these recipes.
-4. Make improvised primers with both powders and copper. Assemble and fire all nine vanilla
+5. Make improvised primers with both powders and copper at the new press. Assemble and fire all nine vanilla
    ammo outputs using bodies, field powder, and either primer type.
-5. Load a v1.0.0 save with each old projectile and casing/hull pair plus `MineralSalts` and
-   `SurvivalPropellant` stacks. Confirm every matching pair converts one-for-one, the saved
-   powder IDs remain usable, the conversions appear in the Saved Ammo Parts category,
-   carbon grinding is available without rereading Manual II,
-   and client/server inventories agree after reconnect.
-6. Confirm new body and carbon-powder inventory icons are distinguishable at 32 px and that
+6. Load a v1.0.0 save with each old projectile and casing/hull pair, fired and unfired clay
+   molds, plus `MineralSalts` and `SurvivalPropellant` stacks. Confirm every matching part
+   pair converts one-for-one at the new press, unfired molds yield clay, fired molds yield
+   mineral powder, saved powder IDs remain usable, and all conversions appear in Saved Ammo
+   Parts. Carbon grinding and mold salvage must be available without rereading a manual.
+   Check client/server inventory agreement after reconnect.
+7. Have two players use and recover the press sequentially, reconnect, and verify the
+   workstation and inventory state stay synchronized.
+8. Confirm new press, body, and carbon-powder inventory icons are distinguishable at 32 px and that
    legacy component models still render on an existing save. Current dropped-item visuals
    reuse brass scrap/empty hull and powder-jar models; decide whether those placeholders are
    acceptable before publication or replace them with dedicated world models.

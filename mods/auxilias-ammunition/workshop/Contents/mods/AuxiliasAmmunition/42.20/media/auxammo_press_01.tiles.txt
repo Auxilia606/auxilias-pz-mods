@@ -1,0 +1,79 @@
+version = 1
+tileset
+{
+    file = auxammo_press_01
+    size = 4,1
+    id = 1
+    // auxammo_press_01_0
+    tile
+    {
+        xy = 0,0
+        BlocksPlacement =
+        CustomItem = AuxiliasAmmunition.Mov_AmmoPress
+        CustomName = Press
+        Facing = S
+        GenericCraftingSurface = false
+        GroupName = Ammo
+        IsMoveAble =
+        IsSurfaceOffset =
+        IsTableTop =
+        Material = Mechanical
+        PickUpWeight = 200
+        ScrapSize = Small
+        Surface = 31
+    }
+    // auxammo_press_01_1
+    tile
+    {
+        xy = 1,0
+        BlocksPlacement =
+        CustomItem = AuxiliasAmmunition.Mov_AmmoPress
+        CustomName = Press
+        Facing = E
+        GenericCraftingSurface = false
+        GroupName = Ammo
+        IsMoveAble =
+        IsSurfaceOffset =
+        IsTableTop =
+        Material = Mechanical
+        PickUpWeight = 200
+        ScrapSize = Small
+        Surface = 31
+    }
+    // auxammo_press_01_2
+    tile
+    {
+        xy = 2,0
+        BlocksPlacement =
+        CustomItem = AuxiliasAmmunition.Mov_AmmoPress
+        CustomName = Press
+        Facing = N
+        GenericCraftingSurface = false
+        GroupName = Ammo
+        IsMoveAble =
+        IsSurfaceOffset =
+        IsTableTop =
+        Material = Mechanical
+        PickUpWeight = 200
+        ScrapSize = Small
+        Surface = 31
+    }
+    // auxammo_press_01_3
+    tile
+    {
+        xy = 3,0
+        BlocksPlacement =
+        CustomItem = AuxiliasAmmunition.Mov_AmmoPress
+        CustomName = Press
+        Facing = W
+        GenericCraftingSurface = false
+        GroupName = Ammo
+        IsMoveAble =
+        IsSurfaceOffset =
+        IsTableTop =
+        Material = Mechanical
+        PickUpWeight = 200
+        ScrapSize = Small
+        Surface = 31
+    }
+}

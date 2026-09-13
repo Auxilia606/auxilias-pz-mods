@@ -1,96 +1,104 @@
 module AuxiliasAmmunition
 {
-    craftRecipe AuxAmmoShapeBulletMold
+    craftRecipe CraftAmmoPress
     {
-        timedAction = Craft_PotteryBench,
-        time = 180,
-        Tags = PotteryBench,
-        category = Pottery,
-        SkillRequired = Pottery:4,
-        xpAward = Pottery:30,
+        timedAction = Making,
+        time = 300,
+        Tags = AnySurfaceCraft,
+        category = Ammunition,
+        SkillRequired = Woodwork:3;Blacksmith:4,
+        xpAward = Woodwork:25;Blacksmith:30,
         NeedToBeLearn = true,
-        AutoLearnAll = Pottery:7,
+        AutoLearnAll = Woodwork:5;Blacksmith:6,
         inputs
         {
-            item 3 [Base.Clay],
-            item 1 tags[base:claytool] mode:keep flags[MayDegradeLight],
+            item 3 [Base.Plank],
+            item 1 [Base.IronBar],
+            item 2 [Base.IronBand],
+            item 1 [Base.SmallSheetMetal],
+            item 6 [Base.Nails],
+            item 1 tags[base:hammer] mode:keep flags[MayDegradeVeryLight],
+            item 1 tags[base:saw;base:smallsaw] mode:keep flags[MayDegradeLight],
         }
         outputs
         {
-            item 1 AuxiliasAmmunition.BulletMoldUnfired,
+            item 1 AuxiliasAmmunition.Mov_AmmoPress,
+        }
+    }
+
+    craftRecipe AuxAmmoShapeBulletMold
+    {
+        time = 80,
+        Tags = AnySurfaceCraft,
+        category = LegacyAmmunition,
+        NeedToBeLearn = false,
+        inputs
+        {
+            item 1 [AuxiliasAmmunition.BulletMoldUnfired],
+        }
+        outputs
+        {
+            item 2 Base.Clay,
         }
     }
 
     craftRecipe AuxAmmoFireBulletMold
     {
-        timedAction = Making_With_Kiln,
-        time = 40,
-        Tags = KilnSmall;KilnLarge,
-        category = Pottery,
-        SkillRequired = Pottery:4,
-        xpAward = Pottery:20,
-        NeedToBeLearn = true,
-        AutoLearnAll = Pottery:7,
+        timedAction = HammerStoneStanding,
+        time = 120,
+        Tags = AnySurfaceCraft;CanBeDoneFromFloor,
+        category = LegacyAmmunition,
+        NeedToBeLearn = false,
         inputs
         {
-            item 1 [AuxiliasAmmunition.BulletMoldUnfired],
-            item 1 tags[base:startfire],
-            item 2 tags[base:log;base:charcoal],
+            item 1 [AuxiliasAmmunition.BulletMold],
+            item 1 tags[base:hammer;base:clubhammer;base:hammerstone] mode:keep flags[MayDegradeLight],
         }
         outputs
         {
-            item 1 AuxiliasAmmunition.BulletMold,
+            item 20 AuxiliasAmmunition.MineralSalts,
         }
     }
 
     craftRecipe AuxAmmoShapeShotgunMold
     {
-        timedAction = Craft_PotteryBench,
-        time = 180,
-        Tags = PotteryBench,
-        category = Pottery,
-        SkillRequired = Pottery:5,
-        xpAward = Pottery:35,
-        NeedToBeLearn = true,
-        AutoLearnAll = Pottery:8,
+        time = 80,
+        Tags = AnySurfaceCraft,
+        category = LegacyAmmunition,
+        NeedToBeLearn = false,
         inputs
         {
-            item 3 [Base.Clay],
-            item 1 tags[base:claytool] mode:keep flags[MayDegradeLight],
+            item 1 [AuxiliasAmmunition.ShotgunMoldUnfired],
         }
         outputs
         {
-            item 1 AuxiliasAmmunition.ShotgunMoldUnfired,
+            item 2 Base.Clay,
         }
     }
 
     craftRecipe AuxAmmoFireShotgunMold
     {
-        timedAction = Making_With_Kiln,
-        time = 40,
-        Tags = KilnSmall;KilnLarge,
-        category = Pottery,
-        SkillRequired = Pottery:5,
-        xpAward = Pottery:20,
-        NeedToBeLearn = true,
-        AutoLearnAll = Pottery:8,
+        timedAction = HammerStoneStanding,
+        time = 120,
+        Tags = AnySurfaceCraft;CanBeDoneFromFloor,
+        category = LegacyAmmunition,
+        NeedToBeLearn = false,
         inputs
         {
-            item 1 [AuxiliasAmmunition.ShotgunMoldUnfired],
-            item 1 tags[base:startfire],
-            item 2 tags[base:log;base:charcoal],
+            item 1 [AuxiliasAmmunition.ShotgunMold],
+            item 1 tags[base:hammer;base:clubhammer;base:hammerstone] mode:keep flags[MayDegradeLight],
         }
         outputs
         {
-            item 1 AuxiliasAmmunition.ShotgunMold,
+            item 20 AuxiliasAmmunition.MineralSalts,
         }
     }
 
     craftRecipe AuxAmmoCastSmallPistolProjectiles
     {
-        timedAction = Making_With_Kiln,
+        timedAction = UseHandPress,
         time = 360,
-        Tags = Furnace;AdvancedFurnace,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Blacksmith:5;MetalWelding:5,
         xpAward = Blacksmith:45;MetalWelding:35,
@@ -100,10 +108,7 @@ module AuxiliasAmmunition
         {
             item 1 [Base.IronIngot],
             item 1 [Base.CopperScrap],
-            item 1 [AuxiliasAmmunition.BulletMold] mode:keep,
-            item 1 tags[base:crudetongs;base:tongs] mode:keep flags[MayDegradeLight],
             item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
-            item 4 tags[base:charcoal],
         }
         outputs
         {
@@ -113,9 +118,9 @@ module AuxiliasAmmunition
 
     craftRecipe AuxAmmoCastHeavyPistolProjectiles
     {
-        timedAction = Making_With_Kiln,
+        timedAction = UseHandPress,
         time = 400,
-        Tags = Furnace;AdvancedFurnace,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Blacksmith:6;MetalWelding:6,
         xpAward = Blacksmith:50;MetalWelding:40,
@@ -125,10 +130,7 @@ module AuxiliasAmmunition
         {
             item 1 [Base.IronIngot],
             item 1 [Base.CopperScrap],
-            item 1 [AuxiliasAmmunition.BulletMold] mode:keep,
-            item 1 tags[base:crudetongs;base:tongs] mode:keep flags[MayDegradeLight],
             item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
-            item 5 tags[base:charcoal],
         }
         outputs
         {
@@ -138,9 +140,9 @@ module AuxiliasAmmunition
 
     craftRecipe AuxAmmoCastRifleProjectiles
     {
-        timedAction = Making_With_Kiln,
+        timedAction = UseHandPress,
         time = 450,
-        Tags = Furnace;AdvancedFurnace,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Blacksmith:7;MetalWelding:7,
         xpAward = Blacksmith:60;MetalWelding:50,
@@ -150,10 +152,7 @@ module AuxiliasAmmunition
         {
             item 1 [Base.IronIngot],
             item 1 [Base.CopperScrap],
-            item 1 [AuxiliasAmmunition.BulletMold] mode:keep,
-            item 1 tags[base:crudetongs;base:tongs] mode:keep flags[MayDegradeLight],
             item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
-            item 6 tags[base:charcoal],
         }
         outputs
         {
@@ -163,9 +162,9 @@ module AuxiliasAmmunition
 
     craftRecipe AuxAmmoCastShotCharges
     {
-        timedAction = Making_With_Kiln,
+        timedAction = UseHandPress,
         time = 450,
-        Tags = Furnace;AdvancedFurnace,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Blacksmith:6;MetalWelding:7,
         xpAward = Blacksmith:50;MetalWelding:50,
@@ -176,10 +175,7 @@ module AuxiliasAmmunition
             item 1 [Base.IronIngot],
             item 1 [Base.CopperScrap],
             item 2 [Base.RippedSheets],
-            item 1 [AuxiliasAmmunition.ShotgunMold] mode:keep,
-            item 1 tags[base:crudetongs;base:tongs] mode:keep flags[MayDegradeLight],
             item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
-            item 5 tags[base:charcoal],
         }
         outputs
         {
@@ -191,7 +187,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 45,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = LegacyAmmunition,
         SkillRequired = MetalWelding:5,
         xpAward = MetalWelding:1,
@@ -213,7 +209,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 45,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = LegacyAmmunition,
         SkillRequired = MetalWelding:6,
         xpAward = MetalWelding:1,
@@ -235,7 +231,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 45,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = LegacyAmmunition,
         SkillRequired = MetalWelding:7,
         xpAward = MetalWelding:1,
@@ -257,7 +253,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 45,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = LegacyAmmunition,
         SkillRequired = MetalWelding:7,
         xpAward = MetalWelding:1,
@@ -342,7 +338,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 450,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = MetalWelding:8;Reloading:6,
         xpAward = MetalWelding:55;Reloading:35,
@@ -365,7 +361,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 300,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Reloading:5,
         xpAward = Reloading:35,
@@ -387,7 +383,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 300,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Reloading:5,
         xpAward = Reloading:35,
@@ -409,7 +405,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 330,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Reloading:6,
         xpAward = Reloading:40,
@@ -431,7 +427,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 330,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Reloading:6,
         xpAward = Reloading:40,
@@ -453,7 +449,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 360,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Reloading:7,
         xpAward = Reloading:45,
@@ -475,7 +471,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 390,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Reloading:7,
         xpAward = Reloading:50,
@@ -497,7 +493,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 420,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Reloading:8,
         xpAward = Reloading:55,
@@ -519,7 +515,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 450,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Reloading:8,
         xpAward = Reloading:60,
@@ -541,7 +537,7 @@ module AuxiliasAmmunition
     {
         timedAction = UseHandPress,
         time = 420,
-        Tags = HandPress,
+        Tags = AuxAmmoPress,
         category = Ammunition,
         SkillRequired = Reloading:7,
         xpAward = Reloading:55,

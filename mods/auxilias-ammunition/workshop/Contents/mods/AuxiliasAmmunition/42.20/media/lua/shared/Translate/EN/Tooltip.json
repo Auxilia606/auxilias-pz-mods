@@ -1,5 +1,5 @@
 {
-    "Tooltip_item_AuxAmmo_BulletMold": "A reusable ceramic mold for pistol and rifle projectile batches.",
+    "Tooltip_item_AuxAmmo_BulletMold": "A saved ceramic mold from the older production chain. Break it down for mineral powder.",
     "Tooltip_item_AuxAmmo_CarbonPowder": "Ground charcoal or coke used as an abstract feedstock for field powder.",
     "Tooltip_item_AuxAmmo_FactoryPrimer": "A dependable factory component. Rarely found in ammunition storage.",
     "Tooltip_item_AuxAmmo_HeavyPistolBody": "A large pistol projectile and casing paired for field powder and a primer.",
@@ -7,6 +7,7 @@
     "Tooltip_item_AuxAmmo_HeavyProjectile": "A cast projectile for .45 Auto and .44 Magnum ammunition.",
     "Tooltip_item_AuxAmmo_ImprovisedPrimer": "A high-skill, renewable ignition component for field-made ammunition.",
     "Tooltip_item_AuxAmmo_MineralSalts": "Crushed mineral feedstock for field ammunition. This is a game abstraction, not a real chemical formula.",
+    "Tooltip_item_AuxAmmo_Press": "A hand-operated wood-and-iron press. Place it on a table to shape cartridge bodies and assemble ammunition.",
     "Tooltip_item_AuxAmmo_Propellant": "An ammunition-only field powder for assembling rounds. It does not replace vanilla gunpowder for explosives.",
     "Tooltip_item_AuxAmmo_RifleBody": "A rifle projectile and casing paired for field powder and a primer.",
     "Tooltip_item_AuxAmmo_RifleCasing": "A formed casing for vanilla rifle ammunition.",
@@ -14,9 +15,9 @@
     "Tooltip_item_AuxAmmo_ShotCharge": "A prepared shot charge for one shotgun shell.",
     "Tooltip_item_AuxAmmo_ShotgunBody": "A shot charge and hull paired for field powder and a primer.",
     "Tooltip_item_AuxAmmo_ShotgunHull": "A formed hull and metal base for one shotgun shell.",
-    "Tooltip_item_AuxAmmo_ShotgunMold": "A reusable ceramic mold based on an unused Build 42 shotgun-shell asset.",
+    "Tooltip_item_AuxAmmo_ShotgunMold": "A saved ceramic mold from the older production chain. Break it down for mineral powder.",
     "Tooltip_item_AuxAmmo_SmallPistolBody": "A small pistol projectile and casing paired for field powder and a primer.",
     "Tooltip_item_AuxAmmo_SmallCasing": "A formed casing for 9mm, .38 Special, and .357 Magnum ammunition.",
     "Tooltip_item_AuxAmmo_SmallProjectile": "A cast projectile for 9mm, .38 Special, and .357 Magnum ammunition.",
-    "Tooltip_item_AuxAmmo_UnfiredMold": "Fire this fragile clay mold in a Kiln before use."
+    "Tooltip_item_AuxAmmo_UnfiredMold": "A saved unfired mold from the older production chain. Reclaim its clay."
 }
