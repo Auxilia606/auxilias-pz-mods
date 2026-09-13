@@ -18,6 +18,7 @@
 현재 포함된 모드:
 
 - [Auxilia's Crossbow](mods/auxilias-crossbow/README.md)
+- [Auxilia's Ammunition](mods/auxilias-ammunition/README.md)
 
 ## 공통 명령
 
