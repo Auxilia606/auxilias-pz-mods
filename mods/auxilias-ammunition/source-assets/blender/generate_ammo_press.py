@@ -405,7 +405,7 @@ lever_pivot_z = (lever_outline[0][1] + lever_outline[3][1]) / 2
 lever_tip_x = (lever_outline[1][0] + lever_outline[2][0]) / 2
 lever_tip_z = (lever_outline[1][1] + lever_outline[2][1]) / 2
 lever_slope = (lever_tip_z - lever_pivot_z) / (lever_tip_x - lever_pivot_x)
-handle_start_x, handle_end_x = 0.040, 0.370
+handle_start_x, handle_end_x = 0.040, 0.290
 handle_start_z = lever_tip_z + (handle_start_x - lever_tip_x) * lever_slope
 handle_end_z = handle_start_z + (handle_end_x - handle_start_x) * lever_slope
 rod("Long dark oak lever", (handle_start_x, -0.146, handle_start_z),

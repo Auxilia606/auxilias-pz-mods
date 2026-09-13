@@ -31,7 +31,12 @@ old-save migration, and multiplayer behavior still require the acceptance checks
 An initial 42.20.4 client placement screenshot showed the press on a table but exposed an
 oversized sprite and a checkerboard fringe under its wooden base. The art was regenerated
 with a maximum 68×65-pixel footprint, a bottom anchor at y=181, and opaque/transparent
-alpha only. Reload the client and verify the corrected scale and edges before release.
+alpha only. A later four-orientation client screenshot revealed that the four cropped
+renders had then been resized independently, making the same machine change size and
+position on rotation. The current candidate regenerates each view through one orthographic
+camera and lighting setup and places its common bed anchor at the same tile coordinate;
+the wooden handle is shortened. Reload the client and verify the new four faces, scale,
+tabletop contact, and clean edges before release.
 
 ## Earlier v1.1.0 server load smoke (before tabletop press)
 

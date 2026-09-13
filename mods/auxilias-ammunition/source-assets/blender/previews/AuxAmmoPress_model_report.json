@@ -8,14 +8,14 @@
     0.0025
   ],
   "press_bounds_max": [
-    0.396,
+    0.316,
     0.125,
-    0.55489
+    0.53436
   ],
   "press_dimensions": [
-    0.615,
+    0.535,
     0.30467,
-    0.55239
+    0.53186
   ],
   "press_mesh_objects": 46,
   "preview_worktop_in_prop_collection": false,

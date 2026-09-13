@@ -31,8 +31,9 @@ Run the repository-level `tools/sync-icons.ps1 -Mod auxilias-ammunition` after c
 To rebuild the tabletop press art, open the saved press `.blend` in Blender 5.2 and run
 `source-assets/blender/render_runtime_press.py`, then run `tools/build-press-art.py` and
 `tools/build-press-tiles.py` with Python and Pillow. The first script renders four views;
-the next fits the four 128×256 source tiles and icon; the last writes the game's binary
-texture pack and tile definitions. The `tiledef=auxammo_press_01 7713` registration in
+the next applies one scale and bed anchor to four 128×256 source tiles, writes a
+four-face preview and icon; the last writes the game's binary texture pack and tile
+definitions. The `tiledef=auxammo_press_01 7713` registration in
 both `mod.info` files must remain stable once the station appears in saved worlds.
 
 The old-part conversion and retired ceramic-mold salvage recipes are grouped under

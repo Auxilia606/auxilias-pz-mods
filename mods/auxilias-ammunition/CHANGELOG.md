@@ -7,6 +7,9 @@
   crafting behavior still require in-game acceptance.
 - Reduced its placed sprite to the size of vanilla tabletop machinery and removed
   translucent edge pixels that appeared as a checkerboard along the wooden base.
+- Rebuilt all four press faces with one isometric camera, common scale and tabletop
+  anchor, even lighting, and a shorter lever after in-game rotation exposed mismatched
+  silhouettes and shifting placement.
 - Removed pottery molds, kiln firing, and charcoal fuel from current body production; saved molds
   remain defined and can be salvaged through their published recipe IDs.
 - Combined projectile and casing manufacture into four cartridge-body recipes, with one
