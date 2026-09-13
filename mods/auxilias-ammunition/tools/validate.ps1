@@ -135,8 +135,22 @@ if ((Get-Item -LiteralPath $pressTilePath).Length -lt 500 -or
     throw 'Press tile metadata or texture pack is unexpectedly small.'
 }
 $pressTileText = Get-Content -LiteralPath $pressTileTextPath -Raw
+$pressFaces = @('S', 'E', 'N', 'W')
 for ($direction = 0; $direction -lt 4; $direction++) {
-    if ($pressTileText -notmatch "// auxammo_press_01_$direction") { throw "Missing press tile metadata direction: $direction" }
+    $tileBlock = [regex]::Match($pressTileText, "(?ms)^\s*// auxammo_press_01_$direction\s*\r?\n\s*tile\s*\{(?<body>.*?)^\s*\}")
+    if (-not $tileBlock.Success) { throw "Missing press tile metadata direction: $direction" }
+    $tileBody = $tileBlock.Groups['body'].Value
+    if ($tileBody -notmatch "(?m)^\s*Facing\s*=\s*$($pressFaces[$direction])\s*$") {
+        throw "Incorrect press tile facing: $direction"
+    }
+    for ($target = 0; $target -lt 4; $target++) {
+        if ($target -eq $direction) { continue }
+        $offsetName = "$($pressFaces[$target])offset"
+        $offset = $target - $direction
+        if ($tileBody -notmatch "(?m)^\s*$offsetName\s*=\s*$offset\s*$") {
+            throw "Press tile $direction cannot rotate to $($pressFaces[$target]) ($offsetName = $offset)."
+        }
+    }
 }
 if (([regex]::Matches($pressTileText, 'CustomItem\s*=\s*AuxiliasAmmunition\.Mov_AmmoPress')).Count -ne 4 -or
     ([regex]::Matches($pressTileText, 'IsTableTop\s*=')).Count -ne 4) {

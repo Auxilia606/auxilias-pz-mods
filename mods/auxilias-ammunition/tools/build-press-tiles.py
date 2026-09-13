@@ -51,12 +51,19 @@ def line_string(value: str) -> bytes:
 
 
 def tile_properties(face: str) -> tuple[tuple[str, str], ...]:
-    """Mirror vanilla Key Duplicator's tabletop moveable properties."""
+    """Give every tabletop face explicit links for placed-object rotation."""
+    face_index = FACES.index(face)
+    face_offsets = tuple(
+        (f"{other_face}offset", str(other_index - face_index))
+        for other_index, other_face in enumerate(FACES)
+        if other_face != face
+    )
     return (
         ("BlocksPlacement", ""),
         ("CustomItem", "AuxiliasAmmunition.Mov_AmmoPress"),
         ("CustomName", "Press"),
         ("Facing", face),
+        *face_offsets,
         ("GenericCraftingSurface", "false"),
         ("GroupName", "Ammo"),
         ("IsMoveAble", ""),

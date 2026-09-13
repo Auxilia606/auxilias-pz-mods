@@ -12,6 +12,9 @@ tileset
         CustomItem = AuxiliasAmmunition.Mov_AmmoPress
         CustomName = Press
         Facing = S
+        Eoffset = 1
+        Noffset = 2
+        Woffset = 3
         GenericCraftingSurface = false
         GroupName = Ammo
         IsMoveAble =
@@ -30,6 +33,9 @@ tileset
         CustomItem = AuxiliasAmmunition.Mov_AmmoPress
         CustomName = Press
         Facing = E
+        Soffset = -1
+        Noffset = 1
+        Woffset = 2
         GenericCraftingSurface = false
         GroupName = Ammo
         IsMoveAble =
@@ -48,6 +54,9 @@ tileset
         CustomItem = AuxiliasAmmunition.Mov_AmmoPress
         CustomName = Press
         Facing = N
+        Soffset = -2
+        Eoffset = -1
+        Woffset = 1
         GenericCraftingSurface = false
         GroupName = Ammo
         IsMoveAble =
@@ -66,6 +75,9 @@ tileset
         CustomItem = AuxiliasAmmunition.Mov_AmmoPress
         CustomName = Press
         Facing = W
+        Soffset = -3
+        Eoffset = -2
+        Noffset = -1
         GenericCraftingSurface = false
         GroupName = Ammo
         IsMoveAble =

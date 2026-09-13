@@ -10,6 +10,8 @@
 - Rebuilt all four press faces with one isometric camera, common scale and tabletop
   anchor, even lighting, and a shorter lever after in-game rotation exposed mismatched
   silhouettes and shifting placement.
+- Connected the four tile faces with rotation offsets so a press already placed on a
+  table can be turned with the furniture Rotate mode.
 - Removed pottery molds, kiln firing, and charcoal fuel from current body production; saved molds
   remain defined and can be salvaged through their published recipe IDs.
 - Combined projectile and casing manufacture into four cartridge-body recipes, with one

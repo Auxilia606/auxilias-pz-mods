@@ -38,6 +38,12 @@ camera and lighting setup and places its common bed anchor at the same tile coor
 the wooden handle is shortened. Reload the client and verify the new four faces, scale,
 tabletop contact, and clean edges before release.
 
+The placed-object Rotate mode did not recognize the press because its tiles defined
+`Facing` without offsets to the other three faces. The current candidate supplies all
+three relative offsets on each face. Confirm an already placed press can be selected,
+cycled through four directions, rotated, saved, and reloaded on a client; static tile
+validation cannot substitute for that interaction check.
+
 ## Earlier v1.1.0 server load smoke (before tabletop press)
 
 On 2026-09-13, an isolated dedicated-server cache loaded the redesigned Workshop tree on the
@@ -88,9 +94,10 @@ with custom items stored in a save is not supported.
 1. On the configured Build 42 target, load a clean client and dedicated server; verify 26
    recipes, 25 items, nine vanilla output IDs, and EN/KO names, tooltips, and movable label
    without script errors.
-2. Craft the movable tabletop press, place it on a table in all supported orientations,
-   open its crafting UI, save/reload, recover it, and place it again. Confirm it cannot be
-   used as a workstation before placement and that no floor-sized footprint appears.
+2. Craft the movable tabletop press, place it on a table, rotate the installed press
+   through all four directions, open its crafting UI, save/reload, recover it, and place
+   it again. Confirm it cannot be used as a workstation before placement and that no
+   floor-sized footprint appears.
 3. Press all four body families at the new station. Verify each recipe consumes one iron
    ingot and one copper scrap, plus two ripped sheets only for shotgun bodies, while keeping
    pliers. Verify 30/20/15/15 output and that no mold, furnace, charcoal, or tongs are
