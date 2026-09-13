@@ -9,3 +9,10 @@ warm upper-left lighting, transparent backgrounds, centered silhouettes, and res
 rust-orange highlights. Each projectile, casing family, shot component, and primer must
 remain identifiable without text at 32×32. The fired shotgun mold retains its original
 high-resolution source as `AuxAmmoShotgunMold-source.png`.
+
+The five new body/carbon icons are generated reproducibly by
+`generate_body_icons.py` (Pillow). The ammunition bodies show a paired projectile
+and casing or shot and hull, with an open primer pocket. The carbon icon uses a
+dark fragment pile so it remains distinct from crushed mineral powder and the
+field-powder jar. Rerun the generator before `tools/sync-icons.ps1` if changing
+their artwork.

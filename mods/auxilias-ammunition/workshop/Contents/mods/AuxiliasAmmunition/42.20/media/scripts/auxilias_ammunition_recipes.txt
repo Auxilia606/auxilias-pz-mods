@@ -89,218 +89,248 @@ module AuxiliasAmmunition
     craftRecipe AuxAmmoCastSmallPistolProjectiles
     {
         timedAction = Making_With_Kiln,
-        time = 300,
+        time = 360,
         Tags = Furnace;AdvancedFurnace,
         category = Ammunition,
-        SkillRequired = Blacksmith:5,
-        xpAward = Blacksmith:45,
+        SkillRequired = Blacksmith:5;MetalWelding:5,
+        xpAward = Blacksmith:45;MetalWelding:35,
         NeedToBeLearn = true,
-        AutoLearnAll = Blacksmith:8,
+        AutoLearnAll = Blacksmith:8;MetalWelding:8,
         inputs
         {
             item 1 [Base.IronIngot],
+            item 1 [Base.CopperScrap],
             item 1 [AuxiliasAmmunition.BulletMold] mode:keep,
             item 1 tags[base:crudetongs;base:tongs] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
             item 4 tags[base:charcoal],
         }
         outputs
         {
-            item 30 AuxiliasAmmunition.SmallPistolProjectile,
+            item 30 AuxiliasAmmunition.SmallPistolBody,
         }
     }
 
     craftRecipe AuxAmmoCastHeavyPistolProjectiles
     {
         timedAction = Making_With_Kiln,
-        time = 330,
+        time = 400,
         Tags = Furnace;AdvancedFurnace,
         category = Ammunition,
-        SkillRequired = Blacksmith:6,
-        xpAward = Blacksmith:50,
+        SkillRequired = Blacksmith:6;MetalWelding:6,
+        xpAward = Blacksmith:50;MetalWelding:40,
         NeedToBeLearn = true,
-        AutoLearnAll = Blacksmith:8,
+        AutoLearnAll = Blacksmith:8;MetalWelding:8,
         inputs
         {
             item 1 [Base.IronIngot],
+            item 1 [Base.CopperScrap],
             item 1 [AuxiliasAmmunition.BulletMold] mode:keep,
             item 1 tags[base:crudetongs;base:tongs] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
             item 5 tags[base:charcoal],
         }
         outputs
         {
-            item 20 AuxiliasAmmunition.HeavyPistolProjectile,
+            item 20 AuxiliasAmmunition.HeavyPistolBody,
         }
     }
 
     craftRecipe AuxAmmoCastRifleProjectiles
     {
         timedAction = Making_With_Kiln,
-        time = 360,
+        time = 450,
         Tags = Furnace;AdvancedFurnace,
         category = Ammunition,
-        SkillRequired = Blacksmith:7,
-        xpAward = Blacksmith:60,
+        SkillRequired = Blacksmith:7;MetalWelding:7,
+        xpAward = Blacksmith:60;MetalWelding:50,
         NeedToBeLearn = true,
-        AutoLearnAll = Blacksmith:9,
+        AutoLearnAll = Blacksmith:9;MetalWelding:9,
         inputs
         {
             item 1 [Base.IronIngot],
+            item 1 [Base.CopperScrap],
             item 1 [AuxiliasAmmunition.BulletMold] mode:keep,
             item 1 tags[base:crudetongs;base:tongs] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
             item 6 tags[base:charcoal],
         }
         outputs
         {
-            item 15 AuxiliasAmmunition.RifleProjectile,
+            item 15 AuxiliasAmmunition.RifleBody,
         }
     }
 
     craftRecipe AuxAmmoCastShotCharges
     {
         timedAction = Making_With_Kiln,
-        time = 330,
+        time = 450,
         Tags = Furnace;AdvancedFurnace,
         category = Ammunition,
-        SkillRequired = Blacksmith:6,
-        xpAward = Blacksmith:50,
+        SkillRequired = Blacksmith:6;MetalWelding:7,
+        xpAward = Blacksmith:50;MetalWelding:50,
         NeedToBeLearn = true,
-        AutoLearnAll = Blacksmith:9,
+        AutoLearnAll = Blacksmith:9;MetalWelding:9,
         inputs
         {
             item 1 [Base.IronIngot],
+            item 1 [Base.CopperScrap],
+            item 2 [Base.RippedSheets],
             item 1 [AuxiliasAmmunition.ShotgunMold] mode:keep,
             item 1 tags[base:crudetongs;base:tongs] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
             item 5 tags[base:charcoal],
         }
         outputs
         {
-            item 20 AuxiliasAmmunition.ShotCharge,
+            item 15 AuxiliasAmmunition.ShotgunBody,
         }
     }
 
     craftRecipe AuxAmmoFormSmallPistolCasings
     {
         timedAction = UseHandPress,
-        time = 240,
+        time = 45,
         Tags = HandPress,
-        category = Ammunition,
+        category = LegacyAmmunition,
         SkillRequired = MetalWelding:5,
-        xpAward = MetalWelding:35,
+        xpAward = MetalWelding:1,
         NeedToBeLearn = true,
         AutoLearnAll = MetalWelding:8,
         inputs
         {
-            item 1 [Base.CopperScrap],
+            item 1 [AuxiliasAmmunition.SmallPistolProjectile],
+            item 1 [AuxiliasAmmunition.SmallPistolCasing],
             item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
         }
         outputs
         {
-            item 30 AuxiliasAmmunition.SmallPistolCasing,
+            item 1 AuxiliasAmmunition.SmallPistolBody,
         }
     }
 
     craftRecipe AuxAmmoFormHeavyPistolCasings
     {
         timedAction = UseHandPress,
-        time = 270,
+        time = 45,
         Tags = HandPress,
-        category = Ammunition,
+        category = LegacyAmmunition,
         SkillRequired = MetalWelding:6,
-        xpAward = MetalWelding:40,
+        xpAward = MetalWelding:1,
         NeedToBeLearn = true,
         AutoLearnAll = MetalWelding:8,
         inputs
         {
-            item 1 [Base.CopperScrap],
+            item 1 [AuxiliasAmmunition.HeavyPistolProjectile],
+            item 1 [AuxiliasAmmunition.HeavyPistolCasing],
             item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
         }
         outputs
         {
-            item 20 AuxiliasAmmunition.HeavyPistolCasing,
+            item 1 AuxiliasAmmunition.HeavyPistolBody,
         }
     }
 
     craftRecipe AuxAmmoFormRifleCasings
     {
         timedAction = UseHandPress,
-        time = 300,
+        time = 45,
         Tags = HandPress,
-        category = Ammunition,
+        category = LegacyAmmunition,
         SkillRequired = MetalWelding:7,
-        xpAward = MetalWelding:50,
+        xpAward = MetalWelding:1,
         NeedToBeLearn = true,
         AutoLearnAll = MetalWelding:9,
         inputs
         {
-            item 1 [Base.CopperScrap],
+            item 1 [AuxiliasAmmunition.RifleProjectile],
+            item 1 [AuxiliasAmmunition.RifleCasing],
             item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
         }
         outputs
         {
-            item 15 AuxiliasAmmunition.RifleCasing,
+            item 1 AuxiliasAmmunition.RifleBody,
         }
     }
 
     craftRecipe AuxAmmoFormShotgunHulls
     {
         timedAction = UseHandPress,
-        time = 300,
+        time = 45,
         Tags = HandPress,
-        category = Ammunition,
+        category = LegacyAmmunition,
         SkillRequired = MetalWelding:7,
-        xpAward = MetalWelding:50,
+        xpAward = MetalWelding:1,
         NeedToBeLearn = true,
         AutoLearnAll = MetalWelding:9,
         inputs
         {
-            item 1 [Base.CopperScrap],
-            item 2 [Base.RippedSheets],
+            item 1 [AuxiliasAmmunition.ShotCharge],
+            item 1 [AuxiliasAmmunition.ShotgunHull],
             item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
         }
         outputs
         {
-            item 15 AuxiliasAmmunition.ShotgunHull,
+            item 1 AuxiliasAmmunition.ShotgunBody,
         }
     }
 
     craftRecipe AuxAmmoRefineMineralSalts
     {
-        timedAction = Craft_PotteryBench,
-        time = 500,
-        Tags = PotteryBench,
+        timedAction = HammerStoneStanding,
+        time = 180,
+        Tags = AnySurfaceCraft;CanBeDoneFromFloor,
         category = Ammunition,
-        SkillRequired = Farming:6;PlantScavenging:5,
-        xpAward = Farming:45;PlantScavenging:25,
+        SkillRequired = PlantScavenging:3,
+        xpAward = PlantScavenging:15,
         NeedToBeLearn = true,
-        AutoLearnAll = Farming:8;PlantScavenging:8,
+        AutoLearnAll = PlantScavenging:6,
         inputs
         {
-            item 1 [Base.CompostBag] flags[HasOneUse],
-            item 1 [Base.Limestone],
-            item 2 tags[base:charcoal],
-            item 1 tags[base:claytool] mode:keep flags[MayDegradeLight],
+            item 2 [Base.Stone2;Base.Limestone],
+            item 1 tags[base:hammer;base:clubhammer;base:hammerstone] mode:keep flags[MayDegradeLight],
         }
         outputs
         {
-            item 20 AuxiliasAmmunition.MineralSalts,
+            item 40 AuxiliasAmmunition.MineralSalts,
+        }
+    }
+
+    craftRecipe AuxAmmoGrindCarbonPowder
+    {
+        timedAction = MixingMortarPestle,
+        time = 240,
+        Tags = AnySurfaceCraft,
+        category = Ammunition,
+        SkillRequired = Reloading:3,
+        xpAward = Reloading:15,
+        NeedToBeLearn = false,
+        inputs
+        {
+            item 8 tags[base:charcoal],
+            item 1 tags[base:mortarpestle] mode:keep flags[MayDegradeVeryLight],
+        }
+        outputs
+        {
+            item 40 AuxiliasAmmunition.CarbonPowder,
         }
     }
 
     craftRecipe AuxAmmoBlendSurvivalPropellant
     {
-        timedAction = Making_With_Kiln,
-        time = 500,
-        Tags = WoodCharcoal,
+        timedAction = MixingMortarPestle,
+        time = 300,
+        Tags = AnySurfaceCraft,
         category = Ammunition,
-        SkillRequired = Farming:7;Blacksmith:5,
-        xpAward = Farming:50;Blacksmith:30,
+        SkillRequired = Reloading:5;Blacksmith:5,
+        xpAward = Reloading:35;Blacksmith:30,
         NeedToBeLearn = true,
-        AutoLearnAll = Farming:9;Blacksmith:8,
+        AutoLearnAll = Reloading:8;Blacksmith:8,
         inputs
         {
-            item 20 [AuxiliasAmmunition.MineralSalts],
-            item 8 tags[base:charcoal],
-            item 1 tags[base:hammer] mode:keep flags[MayDegradeVeryLight],
+            item 40 [AuxiliasAmmunition.MineralSalts],
+            item 40 [AuxiliasAmmunition.CarbonPowder],
+            item 1 tags[base:mortarpestle] mode:keep flags[MayDegradeVeryLight],
         }
         outputs
         {
@@ -321,8 +351,8 @@ module AuxiliasAmmunition
         inputs
         {
             item 10 [AuxiliasAmmunition.MineralSalts],
+            item 10 [AuxiliasAmmunition.CarbonPowder],
             item 1 [Base.CopperScrap],
-            item 4 tags[base:charcoal],
             item 1 tags[base:pliers;base:visegrips] mode:keep flags[MayDegradeLight],
         }
         outputs
@@ -343,8 +373,7 @@ module AuxiliasAmmunition
         AutoLearnAll = Reloading:8,
         inputs
         {
-            item 10 [AuxiliasAmmunition.SmallPistolProjectile],
-            item 10 [AuxiliasAmmunition.SmallPistolCasing],
+            item 10 [AuxiliasAmmunition.SmallPistolBody],
             item 10 [AuxiliasAmmunition.SurvivalPropellant],
             item 10 [AuxiliasAmmunition.ImprovisedPrimer;AuxiliasAmmunition.FactoryPrimer],
         }
@@ -366,8 +395,7 @@ module AuxiliasAmmunition
         AutoLearnAll = Reloading:8,
         inputs
         {
-            item 10 [AuxiliasAmmunition.SmallPistolProjectile],
-            item 10 [AuxiliasAmmunition.SmallPistolCasing],
+            item 10 [AuxiliasAmmunition.SmallPistolBody],
             item 10 [AuxiliasAmmunition.SurvivalPropellant],
             item 10 [AuxiliasAmmunition.ImprovisedPrimer;AuxiliasAmmunition.FactoryPrimer],
         }
@@ -389,8 +417,7 @@ module AuxiliasAmmunition
         AutoLearnAll = Reloading:9,
         inputs
         {
-            item 10 [AuxiliasAmmunition.SmallPistolProjectile],
-            item 10 [AuxiliasAmmunition.SmallPistolCasing],
+            item 10 [AuxiliasAmmunition.SmallPistolBody],
             item 15 [AuxiliasAmmunition.SurvivalPropellant],
             item 10 [AuxiliasAmmunition.ImprovisedPrimer;AuxiliasAmmunition.FactoryPrimer],
         }
@@ -412,8 +439,7 @@ module AuxiliasAmmunition
         AutoLearnAll = Reloading:9,
         inputs
         {
-            item 10 [AuxiliasAmmunition.HeavyPistolProjectile],
-            item 10 [AuxiliasAmmunition.HeavyPistolCasing],
+            item 10 [AuxiliasAmmunition.HeavyPistolBody],
             item 12 [AuxiliasAmmunition.SurvivalPropellant],
             item 10 [AuxiliasAmmunition.ImprovisedPrimer;AuxiliasAmmunition.FactoryPrimer],
         }
@@ -435,8 +461,7 @@ module AuxiliasAmmunition
         AutoLearnAll = Reloading:10,
         inputs
         {
-            item 10 [AuxiliasAmmunition.HeavyPistolProjectile],
-            item 10 [AuxiliasAmmunition.HeavyPistolCasing],
+            item 10 [AuxiliasAmmunition.HeavyPistolBody],
             item 16 [AuxiliasAmmunition.SurvivalPropellant],
             item 10 [AuxiliasAmmunition.ImprovisedPrimer;AuxiliasAmmunition.FactoryPrimer],
         }
@@ -458,8 +483,7 @@ module AuxiliasAmmunition
         AutoLearnAll = Reloading:10,
         inputs
         {
-            item 10 [AuxiliasAmmunition.RifleProjectile],
-            item 10 [AuxiliasAmmunition.RifleCasing],
+            item 10 [AuxiliasAmmunition.RifleBody],
             item 16 [AuxiliasAmmunition.SurvivalPropellant],
             item 10 [AuxiliasAmmunition.ImprovisedPrimer;AuxiliasAmmunition.FactoryPrimer],
         }
@@ -481,8 +505,7 @@ module AuxiliasAmmunition
         AutoLearnAll = Reloading:10,
         inputs
         {
-            item 10 [AuxiliasAmmunition.RifleProjectile],
-            item 10 [AuxiliasAmmunition.RifleCasing],
+            item 10 [AuxiliasAmmunition.RifleBody],
             item 18 [AuxiliasAmmunition.SurvivalPropellant],
             item 10 [AuxiliasAmmunition.ImprovisedPrimer;AuxiliasAmmunition.FactoryPrimer],
         }
@@ -504,8 +527,7 @@ module AuxiliasAmmunition
         AutoLearnAll = Reloading:10,
         inputs
         {
-            item 10 [AuxiliasAmmunition.RifleProjectile],
-            item 10 [AuxiliasAmmunition.RifleCasing],
+            item 10 [AuxiliasAmmunition.RifleBody],
             item 20 [AuxiliasAmmunition.SurvivalPropellant],
             item 10 [AuxiliasAmmunition.ImprovisedPrimer;AuxiliasAmmunition.FactoryPrimer],
         }
@@ -527,8 +549,7 @@ module AuxiliasAmmunition
         AutoLearnAll = Reloading:10,
         inputs
         {
-            item 10 [AuxiliasAmmunition.ShotCharge],
-            item 10 [AuxiliasAmmunition.ShotgunHull],
+            item 10 [AuxiliasAmmunition.ShotgunBody],
             item 20 [AuxiliasAmmunition.SurvivalPropellant],
             item 10 [AuxiliasAmmunition.ImprovisedPrimer;AuxiliasAmmunition.FactoryPrimer],
         }

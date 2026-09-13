@@ -1,6 +1,15 @@
 # Changelog
 
-## Unreleased
+## 1.1.0 (release candidate)
+
+- Combined projectile and casing manufacture into four cartridge-body recipes, with one
+  body item per caliber family and preserved vanilla ten-round outputs.
+- Reused the former casing recipe IDs for one-to-one conversion of matching components
+  already held in saves; retained all published item and recipe IDs.
+- Replaced compost-based propellant processing with portable crushing of stone and grinding
+  of charcoal or coke into two abstract powders, then blending ammo-only field powder.
+- Updated improvised primers, English and Korean crafting text, documentation, and static
+  validation for the redesigned chain. Runtime acceptance remains pending.
 
 - Replaced complete-ammunition placeholder world models with dedicated meshes for small and
   heavy pistol projectiles, rifle projectiles, shot charge, and empty shotgun hulls.

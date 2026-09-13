@@ -120,6 +120,46 @@ module AuxiliasAmmunition
         Tooltip = Tooltip_item_AuxAmmo_ShotgunHull,
     }
 
+    item SmallPistolBody
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.018,
+        Icon = AuxAmmoSmallPistolBody,
+        WorldStaticModel = Base.BrassScrap,
+        Tooltip = Tooltip_item_AuxAmmo_SmallPistolBody,
+    }
+
+    item HeavyPistolBody
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.027,
+        Icon = AuxAmmoHeavyPistolBody,
+        WorldStaticModel = Base.BrassScrap,
+        Tooltip = Tooltip_item_AuxAmmo_HeavyPistolBody,
+    }
+
+    item RifleBody
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.04,
+        Icon = AuxAmmoRifleBody,
+        WorldStaticModel = Base.BrassScrap,
+        Tooltip = Tooltip_item_AuxAmmo_RifleBody,
+    }
+
+    item ShotgunBody
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.055,
+        Icon = AuxAmmoShotgunBody,
+        WorldStaticModel = Base.AuxAmmoShotgunHull_Ground,
+        Tooltip = Tooltip_item_AuxAmmo_ShotgunBody,
+    }
+
     item MineralSalts
     {
         DisplayCategory = Material,
@@ -128,6 +168,16 @@ module AuxiliasAmmunition
         Icon = Limestone,
         WorldStaticModel = Base.LimestoneCrushed,
         Tooltip = Tooltip_item_AuxAmmo_MineralSalts,
+    }
+
+    item CarbonPowder
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.01,
+        Icon = AuxAmmoCarbonPowder,
+        WorldStaticModel = Base.GunPowder,
+        Tooltip = Tooltip_item_AuxAmmo_CarbonPowder,
     }
 
     item SurvivalPropellant
