@@ -374,8 +374,8 @@ rod("Short centered iron lever", lever_pivot, (0, -0.076, 0.367),
 rod("Forged grip ferrule", (0, -0.072, 0.371), (0, -0.087, 0.360),
     0.020, edge_iron, press, 16)
 rod("Short centered dark-oak grip", (0, -0.084, 0.362),
-    (0, -0.132, 0.324), 0.019, oak_handle, press, 18)
-uv_sphere("Rounded central grip end", (0, -0.133, 0.323),
+    (0, -0.140, 0.318), 0.019, oak_handle, press, 18)
+uv_sphere("Rounded central grip end", (0, -0.141, 0.317),
           (0.019, 0.019, 0.019), oak_handle, press)
 
 # Worktop and floor exist only for the scale/hero image; transparent sprite previews exclude them.
