@@ -23,7 +23,7 @@ TEXTURES = ROOT / "workshop" / "Contents" / "mods" / "AuxiliasAmmunition" / RELE
 
 DIRECTIONS = ("south", "east", "north", "west")
 PIXEL_SCALE = 0.16  # One scale for every orientation; never fit each view separately.
-TILE_ANCHOR = (64, 171)  # The projected center of the wooden base on a tabletop tile.
+TILE_ANCHOR = (64, 173)  # Center the 30-degree projection on the tabletop tile.
 ALPHA_CUTOFF = 128  # Avoid the game's checkerboard dither on translucent render edges.
 
 
@@ -45,6 +45,14 @@ def main() -> None:
     TEXTURES.mkdir(parents=True, exist_ok=True)
     anchors = json.loads((RENDERS / "press_anchors.json").read_text(encoding="utf-8"))
     render_size = tuple(anchors["render_size"])
+    bed_boxes = [anchors["faces"][direction]["bed_bbox_px"] for direction in DIRECTIONS]
+    bed_widths = [(box[2] - box[0]) * PIXEL_SCALE for box in bed_boxes]
+    bed_heights = [(box[3] - box[1]) * PIXEL_SCALE for box in bed_boxes]
+    bed_bottoms = [box[3] * PIXEL_SCALE for box in bed_boxes]
+    if (max(bed_widths) - min(bed_widths) > 0.25 or
+            max(bed_heights) - min(bed_heights) > 0.25 or
+            max(bed_bottoms) - min(bed_bottoms) > 0.25):
+        raise ValueError("Press bed footprint or contact height differs between directions")
     source_images = []
     tiles = []
     for index, direction in enumerate(DIRECTIONS):
@@ -88,7 +96,10 @@ def main() -> None:
     master.alpha_composite(icon, ((128 - icon.width) // 2, (128 - icon.height) // 2))
     master.save(SOURCE / "icons" / "Item_AuxAmmoPress.png")
     master.resize((32, 32), Image.Resampling.LANCZOS).save(TEXTURES / "Item_AuxAmmoPress.png")
-    print("Built four tabletop tiles and the ammunition press icon")
+    print(
+        "Built four tabletop tiles and icon; projected bed "
+        f"{bed_widths[0]:.2f}x{bed_heights[0]:.2f}px across all faces"
+    )
 
 
 if __name__ == "__main__":

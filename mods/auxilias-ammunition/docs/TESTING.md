@@ -35,14 +35,19 @@ alpha only. A later four-orientation client screenshot revealed that the four cr
 renders had then been resized independently, making the same machine change size and
 position on rotation. The current candidate regenerates each view through one orthographic
 camera and lighting setup and places its common bed anchor at the same tile coordinate;
-the wooden handle is shortened. Reload the client and verify the new four faces, scale,
-tabletop contact, and clean edges before release.
+the wooden handle is shortened. A later 42.20.4 client check confirmed that all four
+faces can be placed and rotated on the dining table. That check also exposed a lighter
+wood tone and different apparent sizes across directions. The subsequent art revision
+matches the dark dining-table finish, renders at a 30-degree elevation to fit the
+game's 2:1 floor projection, and reduces the lever's length and upward angle. The
+builder verifies one projected bed footprint and contact height across all four faces.
+Reload the client and verify the revised wood, four faces, scale, tabletop contact,
+and clean edges before release.
 
 The placed-object Rotate mode did not recognize the press because its tiles defined
 `Facing` without offsets to the other three faces. The current candidate supplies all
-three relative offsets on each face. Confirm an already placed press can be selected,
-cycled through four directions, rotated, saved, and reloaded on a client; static tile
-validation cannot substitute for that interaction check.
+three relative offsets on each face. The client check confirmed placement and rotation
+on a table; saved-game reload still needs an acceptance check.
 
 The next client check still found that tabletop placement and rotation settled on one
 direction. Build 42 can replace a tabletop moveable's chosen sprite with the parent
@@ -51,8 +56,8 @@ All four faces now set `IgnoreSurfaceSnap`. An isolated 42.20.4 server probe con
 that every face loads as moveable, exposes its three face offsets, and reports
 `hasFaces()` and `canManuallyRotate()` true. Its log is
 `work/tiledef-runtime-probe/Logs/2026-09-13_18-52_DebugLog-server.txt`.
-This establishes tile-property loading, not the final client interaction; repeat the
-placement and rotation check on the table used for the screenshots.
+The later client check confirmed that installed furniture rotates in four directions
+on the table used for the screenshots.
 
 ## Earlier v1.1.0 server load smoke (before tabletop press)
 

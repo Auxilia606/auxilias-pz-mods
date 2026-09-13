@@ -14,6 +14,9 @@
   table can be turned with the furniture Rotate mode.
 - Kept the selected face during tabletop placement and rotation by disabling automatic
   surface-facing snap on all four press tiles.
+- Matched the press wood to dark dining furniture and reduced its grain contrast;
+  adjusted the orthographic view to the game's 2:1 floor projection and shortened and
+  flattened the lever so all four faces retain a consistent physical footprint.
 - Removed pottery molds, kiln firing, and charcoal fuel from current body production; saved molds
   remain defined and can be salvaged through their published recipe IDs.
 - Combined projectile and casing manufacture into four cartridge-body recipes, with one

@@ -4,18 +4,18 @@
   "units": "metres",
   "press_bounds_min": [
     -0.219,
-    -0.17967,
+    -0.17942,
     0.0025
   ],
   "press_bounds_max": [
-    0.316,
+    0.256,
     0.125,
-    0.53436
+    0.45666
   ],
   "press_dimensions": [
-    0.535,
-    0.30467,
-    0.53186
+    0.475,
+    0.30442,
+    0.45416
   ],
   "press_mesh_objects": 46,
   "preview_worktop_in_prop_collection": false,

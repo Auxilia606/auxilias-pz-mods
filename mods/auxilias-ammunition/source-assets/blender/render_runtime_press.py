@@ -23,6 +23,7 @@ OUTPUT.mkdir(parents=True, exist_ok=True)
 
 RENDER_SIZE = 768
 PRESS_COLLECTION = "AMMUNITION_PRESS__MODEL"
+BED_OBJECT_NAME = "Solid weathered oak press bed"
 BED_ANCHOR = Vector((-0.019, 0.002, 0.0025))
 CAMERA_TARGET = Vector((BED_ANCHOR.x, BED_ANCHOR.y, 0.28))
 # Rotate the model rather than orbiting the camera so each sprite shares its
@@ -78,8 +79,9 @@ add_area_light("Runtime neutral fill", CAMERA_TARGET + Vector((1.0, 0.75, 0.95))
 
 camera = bpy.data.objects.new("Runtime isometric camera", bpy.data.cameras.new("Runtime isometric camera"))
 scene.collection.objects.link(camera)
-# Equal X/Y/Z displacement yields 45-degree azimuth and 35.264-degree elevation.
-camera.location = CAMERA_TARGET + Vector((0.9, -0.9, 0.9))
+# A 30-degree elevation gives the ground plane Project Zomboid's 2:1 diamond.
+# For x/y offsets of 0.9, z = 0.9 * sqrt(2 / 3).
+camera.location = CAMERA_TARGET + Vector((0.9, -0.9, 0.9 * math.sqrt(2 / 3)))
 camera.rotation_euler = (CAMERA_TARGET - camera.location).to_track_quat("-Z", "Y").to_euler()
 camera.data.type = "ORTHO"
 camera.data.ortho_scale = 1.12
@@ -88,8 +90,18 @@ bpy.context.view_layer.update()
 
 press_objects = tuple(obj for obj in bpy.data.collections[PRESS_COLLECTION].objects if obj.type == "MESH")
 original_matrices = {obj: obj.matrix_world.copy() for obj in press_objects}
+bed_object = bpy.data.objects.get(BED_OBJECT_NAME)
+if bed_object is None or bed_object not in press_objects:
+    raise RuntimeError(f"Missing press bed mesh: {BED_OBJECT_NAME}")
 anchor_view = world_to_camera_view(scene, camera, BED_ANCHOR)
 anchor_px = [round(anchor_view.x * RENDER_SIZE, 4), round((1.0 - anchor_view.y) * RENDER_SIZE, 4)]
+
+
+def projected_bounds(obj):
+    points = [world_to_camera_view(scene, camera, obj.matrix_world @ Vector(corner)) for corner in obj.bound_box]
+    xs = [point.x * RENDER_SIZE for point in points]
+    ys = [(1.0 - point.y) * RENDER_SIZE for point in points]
+    return [round(min(xs), 4), round(min(ys), 4), round(max(xs), 4), round(max(ys), 4)]
 
 metadata = {"render_size": [RENDER_SIZE, RENDER_SIZE], "faces": {}}
 for direction, degrees in VIEWS:
@@ -104,7 +116,10 @@ for direction, degrees in VIEWS:
 
     scene.render.filepath = str(OUTPUT / f"press_{direction}.png")
     bpy.ops.render.render(write_still=True)
-    metadata["faces"][direction] = {"anchor_px": anchor_px}
+    metadata["faces"][direction] = {
+        "anchor_px": anchor_px,
+        "bed_bbox_px": projected_bounds(bed_object),
+    }
 
 (OUTPUT / "press_anchors.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
 print(f"Rendered four press views with common anchor {anchor_px} to {OUTPUT}")

@@ -65,39 +65,39 @@ def material(name, color, metallic, roughness, grain=0):
 
 
 def timber(name, dark_color, light_color, grain_axis):
-    """Subtle lengthwise oak grain, scaled for the beam rather than the studio desk."""
+    """Low-contrast lengthwise grain for wood stained like dark mahogany furniture."""
     mat = material(name, light_color, 0.0, 0.87)
     nodes = mat.node_tree.nodes
     links = mat.node_tree.links
     coords = nodes.new("ShaderNodeTexCoord")
     stretch = nodes.new("ShaderNodeVectorMath")
     stretch.operation = "MULTIPLY"
-    stretch.inputs[1].default_value = tuple(1.5 if i == grain_axis else 35.0 for i in range(3))
+    stretch.inputs[1].default_value = tuple(1.5 if i == grain_axis else 12.0 for i in range(3))
     noise = nodes.new("ShaderNodeTexNoise")
     noise.inputs["Scale"].default_value = 3.0
     noise.inputs["Detail"].default_value = 4.0
     noise.inputs["Roughness"].default_value = 0.70
     ramp = nodes.new("ShaderNodeValToRGB")
-    ramp.color_ramp.elements[0].position = 0.25
+    ramp.color_ramp.elements[0].position = 0.28
     ramp.color_ramp.elements[0].color = (*dark_color, 1)
-    ramp.color_ramp.elements[1].position = 0.77
+    ramp.color_ramp.elements[1].position = 0.72
     ramp.color_ramp.elements[1].color = (*light_color, 1)
     middle = ramp.color_ramp.elements.new(0.51)
-    middle.color = (*tuple((dark_color[i] + light_color[i]) * 0.45 for i in range(3)), 1)
+    middle.color = (*tuple((dark_color[i] + light_color[i]) * 0.50 for i in range(3)), 1)
     bump = nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.32
-    bump.inputs["Distance"].default_value = 0.0012
+    bump.inputs["Strength"].default_value = 0.12
+    bump.inputs["Distance"].default_value = 0.00045
     stains = nodes.new("ShaderNodeTexNoise")
     stains.inputs["Scale"].default_value = 6.0
     stains.inputs["Detail"].default_value = 3.0
     stain_range = nodes.new("ShaderNodeValToRGB")
     stain_range.color_ramp.elements[0].position = 0.32
-    stain_range.color_ramp.elements[0].color = (0.35, 0.30, 0.25, 1)
+    stain_range.color_ramp.elements[0].color = (0.80, 0.77, 0.73, 1)
     stain_range.color_ramp.elements[1].position = 0.67
     stain_range.color_ramp.elements[1].color = (1, 1, 1, 1)
     stained_color = nodes.new("ShaderNodeMixRGB")
     stained_color.blend_type = "MULTIPLY"
-    stained_color.inputs[0].default_value = 0.45
+    stained_color.inputs[0].default_value = 0.22
     links.new(coords.outputs["Generated"], stretch.inputs[0])
     links.new(stretch.outputs["Vector"], noise.inputs["Vector"])
     links.new(noise.outputs["Fac"], ramp.inputs["Fac"])
@@ -293,9 +293,9 @@ press = collection("AMMUNITION_PRESS__MODEL")
 studio = collection("STUDIO_PREVIEW_ONLY__NOT_PART_OF_PRESS")
 concept_stage = collection("DARK_REFERENCE_STAGE__NOT_PART_OF_PRESS")
 
-oak_base = timber("01 / weathered oak bed", (0.056, 0.025, 0.011), (0.16, 0.074, 0.032), 0)
-oak_upright = timber("02 / old oak buttress", (0.050, 0.022, 0.010), (0.15, 0.069, 0.029), 2)
-oak_handle = timber("03 / dark oak lever", (0.040, 0.018, 0.008), (0.115, 0.053, 0.022), 2)
+oak_base = timber("01 / dark-stained oak bed", (0.035, 0.009, 0.002), (0.060, 0.017, 0.004), 0)
+oak_upright = timber("02 / dark-stained oak buttress", (0.033, 0.008, 0.002), (0.058, 0.016, 0.004), 2)
+oak_handle = timber("03 / dark finished oak lever", (0.047, 0.015, 0.005), (0.077, 0.029, 0.010), 2)
 iron = material("04 / rough blacksmith-forged iron", (0.053, 0.051, 0.045), 0.66, 0.76, 75)
 edge_iron = material("05 / rubbed iron edges", (0.11, 0.105, 0.093), 0.71, 0.64, 105)
 steel = material("06 / oiled ram steel", (0.085, 0.079, 0.069), 0.60, 0.75)
@@ -388,24 +388,28 @@ cylinder("Main lever pivot", (-0.158, -0.143, 0.391),
 cylinder("Visible pivot pin", (-0.158, -0.168, 0.391),
          0.011, 0.006, bolts, press, 16, 0.0006,
          rotation=(math.pi / 2, 0, 0))
-lever_outline = [(-0.168, 0.378), (0.044, 0.435),
-                 (0.042, 0.458), (-0.167, 0.407)]
+# Keep the forged arm and timber grip on one shallow, continuous lever line.
+# The shorter projection reduces face-to-face silhouette drift without changing
+# the physical bed or the common sprite scale.
+lever_outline = [(-0.168, 0.378), (0.044, 0.402),
+                 (0.042, 0.425), (-0.167, 0.407)]
 profile_prism("Flat forged lever arm", lever_outline,
               -0.163, -0.131, iron, press, 0.003)
-cylinder("Link top pin", (0.011, -0.172, 0.436),
-         0.010, 0.007, bolts, press, 16, 0.0005,
-         rotation=(math.pi / 2, 0, 0))
-rod("Short exposed connecting link", (0.011, -0.170, 0.436),
-    (die_x, -0.164, 0.383), 0.009, edge_iron, press)
-cylinder("Moving ram fork pin", (die_x, -0.175, 0.383),
-         0.010, 0.008, bolts, press, 16, 0.0005,
-         rotation=(math.pi / 2, 0, 0))
 lever_pivot_x = (lever_outline[0][0] + lever_outline[3][0]) / 2
 lever_pivot_z = (lever_outline[0][1] + lever_outline[3][1]) / 2
 lever_tip_x = (lever_outline[1][0] + lever_outline[2][0]) / 2
 lever_tip_z = (lever_outline[1][1] + lever_outline[2][1]) / 2
 lever_slope = (lever_tip_z - lever_pivot_z) / (lever_tip_x - lever_pivot_x)
-handle_start_x, handle_end_x = 0.040, 0.290
+link_top_z = lever_pivot_z + (0.011 - lever_pivot_x) * lever_slope
+cylinder("Link top pin", (0.011, -0.172, link_top_z),
+         0.010, 0.007, bolts, press, 16, 0.0005,
+         rotation=(math.pi / 2, 0, 0))
+rod("Short exposed connecting link", (0.011, -0.170, link_top_z),
+    (die_x, -0.164, 0.383), 0.009, edge_iron, press)
+cylinder("Moving ram fork pin", (die_x, -0.175, 0.383),
+         0.010, 0.008, bolts, press, 16, 0.0005,
+         rotation=(math.pi / 2, 0, 0))
+handle_start_x, handle_end_x = 0.040, 0.230
 handle_start_z = lever_tip_z + (handle_start_x - lever_tip_x) * lever_slope
 handle_end_z = handle_start_z + (handle_end_x - handle_start_x) * lever_slope
 rod("Long dark oak lever", (handle_start_x, -0.146, handle_start_z),
