@@ -19,6 +19,7 @@
 
 - [Auxilia's Crossbow](mods/auxilias-crossbow/README.md)
 - [Auxilia's Ammunition](mods/auxilias-ammunition/README.md)
+- [Auxilia's Quality of Life](mods/auxilias-qol/README.md) — 편의성 기능을 추가할 준비 단계
 
 ## 공통 명령
 

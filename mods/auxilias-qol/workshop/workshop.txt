@@ -1,0 +1,5 @@
+version=1
+title=Auxilia's Quality of Life
+description=Version 0.1.0. A foundation for future quality-of-life improvements; no gameplay changes yet.
+tags=Build 42;Utilities
+visibility=private

@@ -20,6 +20,16 @@
       "releaseTagPrefix": "auxilias-ammunition/v",
       "coverSource": "source-assets/workshop/AuxiliasAmmunition-cover-source.png",
       "sharedLua": []
+    },
+    {
+      "slug": "auxilias-qol",
+      "displayName": "Auxilia's Quality of Life",
+      "modId": "AuxiliasQoL",
+      "path": "mods/auxilias-qol",
+      "packageName": "AuxiliasQoL",
+      "releaseTagPrefix": "auxilias-qol/v",
+      "coverSource": "source-assets/workshop/AuxiliasQoL-cover-source.png",
+      "sharedLua": []
     }
   ]
 }
