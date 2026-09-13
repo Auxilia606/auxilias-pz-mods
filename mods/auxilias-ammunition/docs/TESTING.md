@@ -43,6 +43,9 @@ game's 2:1 floor projection, and reduces the lever's length and upward angle. Th
 builder verifies one projected bed footprint and contact height across all four faces.
 Reload the client and verify the revised wood, four faces, scale, tabletop contact,
 and clean edges before release.
+The next art candidate replaces the square lower and upper stamping blocks with shallow,
+matching octagonal dies. Inspect all four installed faces to ensure the center reads as
+working tooling rather than an unattached iron lump.
 
 The placed-object Rotate mode did not recognize the press because its tiles defined
 `Facing` without offsets to the other three faces. The current candidate supplies all

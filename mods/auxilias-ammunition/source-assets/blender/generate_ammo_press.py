@@ -355,12 +355,15 @@ for x, z in ((-0.122, 0.141), (-0.124, 0.257), (0.025, 0.317)):
 
 # Both dies and the sliding ram share one centerline, inside the C throat.
 die_x, die_y = 0.063, -0.045
-cube("Lower die iron bed", (die_x, die_y, 0.108),
-     (0.091, 0.092, 0.019), edge_iron, press, 0.002)
-cube("Removable lower die block", (die_x, die_y, 0.132),
-     (0.041, 0.044, 0.029), steel, press, 0.002)
-cylinder("Small lower die socket", (die_x, die_y, 0.148),
-         0.009, 0.002, dark, press, 16, 0)
+# Keep the tooling visibly seated in the C-frame. Two stacked square blocks
+# read as loose iron chunks in the 50-pixel game sprite, so use shallow,
+# faceted removable dies on a low mounting collar instead.
+cylinder("Lower die mounting collar", (die_x, die_y, 0.1195),
+         0.031, 0.009, edge_iron, press, 12, 0.001)
+cylinder("Removable lower octagonal die", (die_x, die_y, 0.130),
+         0.017, 0.012, steel, press, 8, 0.001)
+cylinder("Small lower die socket", (die_x, die_y, 0.1365),
+         0.006, 0.001, dark, press, 12, 0)
 cube("Compact iron ram guide at C nose", (die_x, -0.055, 0.296),
      (0.047, 0.063, 0.061), iron, press, 0.003)
 for x in (die_x - 0.025, die_x + 0.025):
@@ -369,8 +372,8 @@ for x in (die_x - 0.025, die_x + 0.025):
     face_rivet("Guide cheek bolt", x, -0.100, 0.293, bolts, press)
 cylinder("Vertical working ram", (die_x, die_y, 0.295),
          0.017, 0.150, steel, press, 20, 0.001)
-cube("Upper stamping die", (die_x, die_y, 0.206),
-     (0.040, 0.044, 0.029), edge_iron, press, 0.002)
+cylinder("Matching upper octagonal die", (die_x, die_y, 0.2115),
+         0.017, 0.018, edge_iron, press, 8, 0.001)
 cube("Moving upper ram fork", (die_x, -0.074, 0.380),
      (0.039, 0.047, 0.026), iron, press, 0.002)
 cube("Frontward moving link clevis", (die_x, -0.128, 0.380),

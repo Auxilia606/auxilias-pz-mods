@@ -17,6 +17,8 @@
 - Matched the press wood to dark dining furniture and reduced its grain contrast;
   adjusted the orthographic view to the game's 2:1 floor projection and shortened and
   flattened the lever so all four faces retain a consistent physical footprint.
+- Replaced the stacked square stamping blocks with low, matching octagonal dies seated
+  in the forged frame so the working point reads as part of the press at tile scale.
 - Removed pottery molds, kiln firing, and charcoal fuel from current body production; saved molds
   remain defined and can be salvaged through their published recipe IDs.
 - Combined projectile and casing manufacture into four cartridge-body recipes, with one
