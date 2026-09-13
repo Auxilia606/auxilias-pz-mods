@@ -28,7 +28,9 @@ $versionRoot = Join-Path $modRoot $releaseLine
 $requiredDirectories = @(
     (Join-Path $projectRoot 'docs'),
     (Join-Path $projectRoot 'source-assets'),
-    (Join-Path $versionRoot 'media')
+    (Join-Path $versionRoot 'media'),
+    (Join-Path $versionRoot 'media\lua\client'),
+    (Join-Path $versionRoot 'media\lua\shared')
 )
 foreach ($path in $requiredDirectories) {
     if (-not (Test-Path -LiteralPath $path -PathType Container)) {
@@ -50,6 +52,11 @@ $requiredFiles = @(
     (Join-Path $versionRoot 'icon.png'),
     (Join-Path $versionRoot 'poster.png')
 ) + $modMetadataPaths
+$requiredFiles += @(
+    (Join-Path $versionRoot 'media\lua\client\AQoLVehicleDismantleMenu.lua'),
+    (Join-Path $versionRoot 'media\lua\shared\AQoLVehicleDismantle.lua'),
+    (Join-Path $versionRoot 'media\lua\shared\Vehicles\TimedActions\ISAQoLDismantleVehicle.lua')
+)
 foreach ($path in $requiredFiles) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
         throw "Missing required mod file: $path"
@@ -87,4 +94,36 @@ foreach ($metadataPath in $modMetadataPaths) {
     }
 }
 
-Write-Host "AuxiliasQoL skeleton validation passed for Project Zomboid $releaseLine (mod $version)."
+$translationRoot = Join-Path $versionRoot 'media\lua\shared\Translate'
+$expectedKeys = @{
+    'ContextMenu' = @('ContextMenu_AQoL_DismantleVehicle')
+    'Tooltip' = @(
+        'Tooltip_AQoL_DismantleVehicle', 'Tooltip_AQoL_VehicleUnavailable',
+        'Tooltip_AQoL_StopVehicle', 'Tooltip_AQoL_DetachVehicle',
+        'Tooltip_AQoL_EmptySeats', 'Tooltip_AQoL_RemoveAnimals',
+        'Tooltip_AQoL_NeedMask',
+        'Tooltip_AQoL_NeedTorch'
+    )
+    'IG_UI' = @('IGUI_AQoL_ConfirmDismantleVehicle')
+}
+foreach ($category in $expectedKeys.Keys) {
+    foreach ($language in @('EN', 'KO')) {
+        $translationPath = Join-Path $translationRoot "$language\$category.json"
+        if (-not (Test-Path -LiteralPath $translationPath -PathType Leaf)) {
+            throw "Missing translation file: $translationPath"
+        }
+        $translations = Get-Content -LiteralPath $translationPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $actualKeys = @($translations.PSObject.Properties.Name | Sort-Object)
+        $requiredKeys = @($expectedKeys[$category] | Sort-Object)
+        if (@(Compare-Object $actualKeys $requiredKeys).Count -ne 0) {
+            throw "Unexpected translation keys in ${translationPath}: $($actualKeys -join ', ')"
+        }
+        foreach ($key in $requiredKeys) {
+            if ([string]::IsNullOrWhiteSpace([string]$translations.$key)) {
+                throw "Empty translation ${key}: $translationPath"
+            }
+        }
+    }
+}
+
+Write-Host "AuxiliasQoL validation passed for Project Zomboid $releaseLine (mod $version)."

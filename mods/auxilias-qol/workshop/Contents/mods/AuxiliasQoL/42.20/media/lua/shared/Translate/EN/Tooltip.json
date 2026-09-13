@@ -1,0 +1,10 @@
+{
+  "Tooltip_AQoL_DismantleVehicle": "Dismantle this vehicle with a welding mask and 10 propane torch uses. Stored items will drop on the ground. Salvage and Welding XP match dismantling a car wreck.",
+  "Tooltip_AQoL_VehicleUnavailable": "This vehicle cannot be dismantled here.",
+  "Tooltip_AQoL_StopVehicle": "Stop the vehicle and turn off the engine first.",
+  "Tooltip_AQoL_DetachVehicle": "Detach all towing connections first.",
+  "Tooltip_AQoL_EmptySeats": "All occupants must leave the vehicle first.",
+  "Tooltip_AQoL_RemoveAnimals": "Remove all animals from the vehicle first.",
+  "Tooltip_AQoL_NeedMask": "Welding mask required.",
+  "Tooltip_AQoL_NeedTorch": "Propane torch with at least 10 uses required."
+}

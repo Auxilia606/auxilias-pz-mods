@@ -1,5 +1,5 @@
 version=1
 title=Auxilia's Quality of Life
-description=Version 0.1.0. A foundation for future quality-of-life improvements; no gameplay changes yet.
+description=Version 0.2.1. Dismantle ordinary vehicles with welding tools; stored items drop on the ground.
 tags=Build 42;Utilities
 visibility=private

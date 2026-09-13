@@ -1,0 +1,10 @@
+{
+  "Tooltip_AQoL_DismantleVehicle": "용접 마스크와 프로판 토치 10회분을 사용해 차량을 분해합니다. 차량에 보관된 물건은 땅에 떨어집니다. 폐차 분해와 같은 금속 재료 및 용접 경험치를 얻습니다.",
+  "Tooltip_AQoL_VehicleUnavailable": "이 차량은 여기서 분해할 수 없습니다.",
+  "Tooltip_AQoL_StopVehicle": "차량을 세우고 시동을 끄세요.",
+  "Tooltip_AQoL_DetachVehicle": "견인 연결을 모두 해제하세요.",
+  "Tooltip_AQoL_EmptySeats": "탑승자가 모두 내려야 합니다.",
+  "Tooltip_AQoL_RemoveAnimals": "차량에 실은 동물을 모두 내리세요.",
+  "Tooltip_AQoL_NeedMask": "용접 마스크가 필요합니다.",
+  "Tooltip_AQoL_NeedTorch": "10회분 이상 남은 프로판 토치가 필요합니다."
+}
