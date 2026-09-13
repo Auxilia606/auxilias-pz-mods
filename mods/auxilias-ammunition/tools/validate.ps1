@@ -143,6 +143,9 @@ for ($direction = 0; $direction -lt 4; $direction++) {
     if ($tileBody -notmatch "(?m)^\s*Facing\s*=\s*$($pressFaces[$direction])\s*$") {
         throw "Incorrect press tile facing: $direction"
     }
+    if ($tileBody -notmatch '(?m)^\s*IgnoreSurfaceSnap\s*=\s*$') {
+        throw "Press tile $direction must keep its selected facing when placed on a table."
+    }
     for ($target = 0; $target -lt 4; $target++) {
         if ($target -eq $direction) { continue }
         $offsetName = "$($pressFaces[$target])offset"

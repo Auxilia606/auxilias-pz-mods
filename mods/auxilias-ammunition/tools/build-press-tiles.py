@@ -66,6 +66,7 @@ def tile_properties(face: str) -> tuple[tuple[str, str], ...]:
         *face_offsets,
         ("GenericCraftingSurface", "false"),
         ("GroupName", "Ammo"),
+        ("IgnoreSurfaceSnap", ""),
         ("IsMoveAble", ""),
         ("IsSurfaceOffset", ""),
         ("IsTableTop", ""),

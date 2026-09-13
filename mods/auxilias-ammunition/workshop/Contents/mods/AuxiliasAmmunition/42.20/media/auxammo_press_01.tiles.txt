@@ -17,6 +17,7 @@ tileset
         Woffset = 3
         GenericCraftingSurface = false
         GroupName = Ammo
+        IgnoreSurfaceSnap =
         IsMoveAble =
         IsSurfaceOffset =
         IsTableTop =
@@ -38,6 +39,7 @@ tileset
         Woffset = 2
         GenericCraftingSurface = false
         GroupName = Ammo
+        IgnoreSurfaceSnap =
         IsMoveAble =
         IsSurfaceOffset =
         IsTableTop =
@@ -59,6 +61,7 @@ tileset
         Woffset = 1
         GenericCraftingSurface = false
         GroupName = Ammo
+        IgnoreSurfaceSnap =
         IsMoveAble =
         IsSurfaceOffset =
         IsTableTop =
@@ -80,6 +83,7 @@ tileset
         Noffset = -1
         GenericCraftingSurface = false
         GroupName = Ammo
+        IgnoreSurfaceSnap =
         IsMoveAble =
         IsSurfaceOffset =
         IsTableTop =

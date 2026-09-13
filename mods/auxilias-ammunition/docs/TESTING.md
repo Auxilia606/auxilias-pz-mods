@@ -44,6 +44,16 @@ three relative offsets on each face. Confirm an already placed press can be sele
 cycled through four directions, rotated, saved, and reloaded on a client; static tile
 validation cannot substitute for that interaction check.
 
+The next client check still found that tabletop placement and rotation settled on one
+direction. Build 42 can replace a tabletop moveable's chosen sprite with the parent
+table's facing; rotating a single-sprite moveable also goes through pickup and placement.
+All four faces now set `IgnoreSurfaceSnap`. An isolated 42.20.4 server probe confirmed
+that every face loads as moveable, exposes its three face offsets, and reports
+`hasFaces()` and `canManuallyRotate()` true. Its log is
+`work/tiledef-runtime-probe/Logs/2026-09-13_18-52_DebugLog-server.txt`.
+This establishes tile-property loading, not the final client interaction; repeat the
+placement and rotation check on the table used for the screenshots.
+
 ## Earlier v1.1.0 server load smoke (before tabletop press)
 
 On 2026-09-13, an isolated dedicated-server cache loaded the redesigned Workshop tree on the

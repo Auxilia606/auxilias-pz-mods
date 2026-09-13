@@ -12,6 +12,8 @@
   silhouettes and shifting placement.
 - Connected the four tile faces with rotation offsets so a press already placed on a
   table can be turned with the furniture Rotate mode.
+- Kept the selected face during tabletop placement and rotation by disabling automatic
+  surface-facing snap on all four press tiles.
 - Removed pottery molds, kiln firing, and charcoal fuel from current body production; saved molds
   remain defined and can be salvaged through their published recipe IDs.
 - Combined projectile and casing manufacture into four cartridge-body recipes, with one

@@ -30,6 +30,17 @@ default asset conventions for this monorepo.
   and backpack replacement transforms. In Build 42.20, `Rifle` suits narrow long guns while
   `Shovel` includes the axial roll needed to keep a broad head or prod close to the back.
 
+## Moveable tile furniture
+
+- Build 42's furniture cursor reads the placed sprite's tile properties, not an entity's
+  `SpriteConfig` faces. Four-direction moveables need `Facing` plus linked face offsets;
+  `IsoWorld.LoadTileDefinitions` can derive offsets from matching `GroupName` and
+  `CustomName`, but explicit offsets make a custom tileset's links auditable.
+- A tabletop moveable may be snapped to its parent table's facing during placement when
+  `IgnoreSurfaceSnap` is absent. Rotating a single-sprite moveable picks it up and places
+  it again, so the same snap can undo a requested rotation. Give freely rotating tabletop
+  tools `IgnoreSurfaceSnap` on every face.
+
 ## Workshop artwork
 
 - Treat `preview.png` plus the root and release-line copies of mod `poster.png` and `icon.png`
