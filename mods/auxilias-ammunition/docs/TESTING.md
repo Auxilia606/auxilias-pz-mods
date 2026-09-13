@@ -28,6 +28,11 @@ texture being present; vanilla XUI icons produced the same warning in that serve
 Client rendering, tabletop placement/recovery, CraftBench interaction, actual crafting,
 old-save migration, and multiplayer behavior still require the acceptance checks below.
 
+An initial 42.20.4 client placement screenshot showed the press on a table but exposed an
+oversized sprite and a checkerboard fringe under its wooden base. The art was regenerated
+with a maximum 68×65-pixel footprint, a bottom anchor at y=181, and opaque/transparent
+alpha only. Reload the client and verify the corrected scale and edges before release.
+
 ## Earlier v1.1.0 server load smoke (before tabletop press)
 
 On 2026-09-13, an isolated dedicated-server cache loaded the redesigned Workshop tree on the

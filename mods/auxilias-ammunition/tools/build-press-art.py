@@ -22,7 +22,9 @@ RELEASE_LINE = CONFIG["target"]["releaseLine"]
 TEXTURES = ROOT / "workshop" / "Contents" / "mods" / "AuxiliasAmmunition" / RELEASE_LINE / "media" / "textures"
 
 DIRECTIONS = ("south", "east", "north", "west")
-BOTTOM = 190  # Vanilla tabletop machinery ends at about y=183 on a 128x256 tile.
+SPRITE_SIZE = (68, 65)  # Match the footprint of vanilla small tabletop machinery.
+BOTTOM = 181  # Key Duplicator art ends near y=181 on a 128x256 tile.
+ALPHA_CUTOFF = 128  # Avoid the game's checkerboard dither on translucent render edges.
 
 
 def cutout(direction: str) -> Image.Image:
@@ -53,9 +55,10 @@ def main() -> None:
     for index, direction in enumerate(DIRECTIONS):
         cut = brighten(cutout(direction))
         cutouts.append(cut)
-        sprite = fit(cut, 106, 99)
+        sprite = fit(cut, *SPRITE_SIZE)
         tile = Image.new("RGBA", (128, 256))
         tile.alpha_composite(sprite, ((128 - sprite.width) // 2, BOTTOM - sprite.height))
+        tile.putalpha(tile.getchannel("A").point(lambda alpha: 255 if alpha >= ALPHA_CUTOFF else 0))
         tile.save(TILES / f"auxammo_press_01_{index}.png")
 
     icon = fit(cutouts[0], 116, 116)
