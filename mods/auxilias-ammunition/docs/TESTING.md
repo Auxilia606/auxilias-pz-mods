@@ -46,6 +46,14 @@ and clean edges before release.
 The next art candidate replaces the square lower and upper stamping blocks with shallow,
 matching octagonal dies. Inspect all four installed faces to ensure the center reads as
 working tooling rather than an unattached iron lump.
+The selected centered-lever redesign replaces the offset C-frame and long side grip with
+a 0.323 m square bed, mirrored uprights, a forged arch, and one central vertical ram.
+The grip stays above the bed footprint. The four Blender faces and the packed tile art
+must retain one anchor, one pixel scale, and matching bed bounds. In-client appearance
+and save/reload after this redesign still need an acceptance check.
+The current 128x256 source tiles have the same alpha bounds `(40,130,89,185)` on
+south, east, north, and west. The projected bed is 50.12x31.33 pixels with one
+contact height across all faces; the 32-pixel inventory icon remains legible.
 
 The placed-object Rotate mode did not recognize the press because its tiles defined
 `Facing` without offsets to the other three faces. The current candidate supplies all

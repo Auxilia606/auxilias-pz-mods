@@ -1,8 +1,9 @@
 # Tabletop press redesign options
 
-These three images are visual concepts for review, not four-face game tiles. No
-runtime sprite, item ID, crafting rule, or installed furniture is changed by
-this proposal.
+These three images are visual concepts, not four-face game tiles. Option 2 was
+selected for the current centered-lever model. Its final game tiles come from
+the Blender model, not from the generated concept image. Item IDs, crafting
+rules, and furniture-facing metadata are preserved.
 
 ## Shared brief
 
@@ -20,8 +21,8 @@ this proposal.
 | 2. Centered lever frame | [Image 2](../source-assets/concepts/press-redesign-02-center-lever.png) | Two matching uprights and open arched bridge, short lever on the front/back centerline, slim central ram. Retains the preferred manual-lever character while removing the old off-axis connecting block. The grip must remain within the bed footprint when viewed from above. |
 | 3. Top handwheel | [Image 3](../source-assets/concepts/press-redesign-03-top-wheel-v2.png) | Matching iron posts and a horizontal wheel directly above the central ram. No side projection and nearly rotation-invariant silhouette; the thin wheel may flatten visually at final tile size, so its rim and spokes need a small-sprite check. |
 
-Option 2 best preserves the original lever concept; option 1 is the least risky
-choice for four equal-scale game faces.
+Option 2 was selected because it preserves the original lever concept. Option
+1 remains the least risky alternative for four equal-scale game faces.
 
 ## Four-face tile plan
 
@@ -53,6 +54,10 @@ review them on a table before adding grain, rivets, and forge texture. After the
 shape is approved, finish the materials, run the four-face footprint checks, and
 then inspect placement and rotation in the client. This catches silhouette and
 occlusion errors before detailed modeling work.
+
+The implemented option 2 currently has equal `(40,130,89,185)` alpha bounds on
+all four 128x256 source tiles. The [four-face preview](../source-assets/tiles/press_four_faces_preview.png)
+is a tile-scale review aid; installed-client acceptance remains separate.
 
 The concept images were generated with built-in imagegen. Their prompts share
 this brief: isolated three-quarter orthographic game-prop concept, antique dark

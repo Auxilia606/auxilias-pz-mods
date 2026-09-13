@@ -19,6 +19,9 @@
   flattened the lever so all four faces retain a consistent physical footprint.
 - Replaced the stacked square stamping blocks with low, matching octagonal dies seated
   in the forged frame so the working point reads as part of the press at tile scale.
+- Rebuilt the tabletop press around the selected centered-lever concept: square
+  wooden bed, paired uprights, one forged arch, central ram, and a short grip
+  within the bed footprint. All four faces use the same model, scale, and anchor.
 - Removed pottery molds, kiln firing, and charcoal fuel from current body production; saved molds
   remain defined and can be salvaged through their published recipe IDs.
 - Combined projectile and casing manufacture into four cartridge-body recipes, with one

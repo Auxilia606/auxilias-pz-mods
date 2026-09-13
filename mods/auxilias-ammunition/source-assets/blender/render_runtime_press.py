@@ -24,7 +24,7 @@ OUTPUT.mkdir(parents=True, exist_ok=True)
 RENDER_SIZE = 768
 PRESS_COLLECTION = "AMMUNITION_PRESS__MODEL"
 BED_OBJECT_NAME = "Solid weathered oak press bed"
-BED_ANCHOR = Vector((-0.019, 0.002, 0.0025))
+BED_ANCHOR = Vector((0, 0, 0.0025))
 CAMERA_TARGET = Vector((BED_ANCHOR.x, BED_ANCHOR.y, 0.28))
 # Rotate the model rather than orbiting the camera so each sprite shares its
 # orthographic projection, game-view lighting, and screen-space position.
