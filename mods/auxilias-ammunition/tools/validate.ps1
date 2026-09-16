@@ -14,21 +14,15 @@ $scriptRoot = Join-Path $versionRoot 'media\scripts'
 $translationRoot = Join-Path $versionRoot 'media\lua\shared\Translate'
 $itemsPath = Join-Path $scriptRoot 'auxilias_ammunition_items.txt'
 $recipesPath = Join-Path $scriptRoot 'auxilias_ammunition_recipes.txt'
-$modelsPath = Join-Path $scriptRoot 'auxilias_ammunition_models.txt'
 $pressPath = Join-Path $scriptRoot 'auxilias_ammunition_press.txt'
 $pressSkinPath = Join-Path $scriptRoot 'auxilias_ammunition_press_xuiSkin.txt'
 $pressTilePath = Join-Path $versionRoot 'media\auxammo_press_01.tiles'
 $pressTileTextPath = Join-Path $versionRoot 'media\auxammo_press_01.tiles.txt'
 $pressPackPath = Join-Path $versionRoot 'media\texturepacks\auxammo_press_01.pack'
 $lootPath = Join-Path $versionRoot 'media\lua\server\AuxiliasAmmunition_Loot.lua'
-$componentModelAssignments = [ordered]@{
-    SmallPistolProjectile = 'AuxAmmoSmallPistolProjectile_Ground'
-    HeavyPistolProjectile = 'AuxAmmoHeavyPistolProjectile_Ground'
-    RifleProjectile = 'AuxAmmoRifleProjectile_Ground'
-    ShotCharge = 'AuxAmmoShotCharge_Ground'
-    ShotgunHull = 'AuxAmmoShotgunHull_Ground'
-}
-
+$pressWorldPath = Join-Path $versionRoot 'media\lua\shared\AuxiliasAmmunition_PressWorld.lua'
+$pressContextIconPath = Join-Path $versionRoot 'media\lua\client\AuxiliasAmmunition_PressContextIcon.lua'
+$pressLeftClickPath = Join-Path $versionRoot 'media\lua\client\AuxiliasAmmunition_PressLeftClick.lua'
 function Get-PngSize([string]$Path) {
     $bytes = [System.IO.File]::ReadAllBytes($Path)
     if ($bytes.Length -lt 24 -or $bytes[0] -ne 137 -or $bytes[1] -ne 80 -or $bytes[2] -ne 78 -or $bytes[3] -ne 71) {
@@ -62,22 +56,16 @@ function Get-PngAlphaRange([string]$Path) {
 $requiredFiles = @(
     (Join-Path $repoRoot 'VERSION'), (Join-Path $repoRoot 'README.md'), (Join-Path $repoRoot 'CHANGELOG.md'),
     (Join-Path $repoRoot 'docs\VANILLA-AMMO-AUDIT.md'), (Join-Path $repoRoot 'docs\DESIGN.md'),
-    (Join-Path $repoRoot 'docs\BALANCE.md'), (Join-Path $repoRoot 'docs\TESTING.md'), (Join-Path $repoRoot 'docs\MODELING.md'),
+    (Join-Path $repoRoot 'docs\BALANCE.md'), (Join-Path $repoRoot 'docs\TESTING.md'),
     (Join-Path $repoRoot 'docs\reports\RELEASE-VALIDATION-1.0.0.md'),
     (Join-Path $repoRoot 'workshop\workshop.txt'), (Join-Path $repoRoot 'workshop\preview.png'),
     (Join-Path $modRoot 'mod.info'), (Join-Path $modRoot 'poster.png'), (Join-Path $modRoot 'icon.png'),
     (Join-Path $versionRoot 'mod.info'), (Join-Path $versionRoot 'poster.png'), (Join-Path $versionRoot 'icon.png'),
-    $itemsPath, $recipesPath, $modelsPath, $pressPath, $pressSkinPath, $pressTilePath, $pressTileTextPath, $pressPackPath, $lootPath,
+    $itemsPath, $recipesPath, $pressPath, $pressSkinPath, $pressTilePath, $pressTileTextPath, $pressPackPath, $lootPath, $pressWorldPath, $pressContextIconPath, $pressLeftClickPath,
     (Join-Path $repoRoot 'tools\sync-icons.ps1'),
-    (Join-Path $repoRoot 'source-assets\blender\generate_components.py'),
-    (Join-Path $repoRoot 'source-assets\blender\AuxiliasAmmunitionComponents.blend'),
     (Join-Path $repoRoot 'source-assets\workshop\AuxiliasAmmunition-cover-source.png'),
-    (Join-Path $repoRoot 'source-assets\icons\AuxAmmoShotgunMold-source.png'),
-    (Join-Path $versionRoot 'media\textures\WorldItems\AuxAmmoComponentAtlas.png')
+    (Join-Path $repoRoot 'source-assets\icons\generate_body_icons.py')
 )
-foreach ($modelName in $componentModelAssignments.Values) {
-    $requiredFiles += Join-Path $versionRoot "media\models_X\WorldItems\$modelName.fbx"
-}
 foreach ($path in $requiredFiles) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing required file: $path" }
 }
@@ -100,10 +88,9 @@ foreach ($metadataPath in @((Join-Path $modRoot 'mod.info'), (Join-Path $version
 
 $itemsText = Get-Content -LiteralPath $itemsPath -Raw
 $recipesText = Get-Content -LiteralPath $recipesPath -Raw
-$modelsText = Get-Content -LiteralPath $modelsPath -Raw
 $pressText = Get-Content -LiteralPath $pressPath -Raw
 $pressSkinText = Get-Content -LiteralPath $pressSkinPath -Raw
-foreach ($entry in @(@($itemsPath, $itemsText), @($recipesPath, $recipesText), @($modelsPath, $modelsText), @($pressPath, $pressText), @($pressSkinPath, $pressSkinText))) {
+foreach ($entry in @(@($itemsPath, $itemsText), @($recipesPath, $recipesText), @($pressPath, $pressText), @($pressSkinPath, $pressSkinText))) {
     if (([regex]::Matches($entry[1], '\{')).Count -ne ([regex]::Matches($entry[1], '\}')).Count) { throw "Unbalanced braces: $($entry[0])" }
 }
 if ($itemsText -match '(?m)^\s*module\s+Base\s*$' -or $recipesText -match '(?m)^\s*module\s+Base\s*$') { throw 'Items and recipes may not override module Base.' }
@@ -115,20 +102,23 @@ if ($pressText -notmatch '(?ms)^\s*module\s+AuxiliasAmmunition\s*\{\s*entity\s+A
 }
 if ($pressSkinText -notmatch '(?ms)^\s*module\s+Base\s*\{\s*xuiSkin\s+default\s*\{\s*entity\s+ES_AmmoPress\s*\{' -or
     $pressSkinText -notmatch 'LuaWindowClass\s*=\s*ISEntityWindow,' -or
-    $pressSkinText -notmatch 'Icon\s*=\s*Item_AuxAmmoPress,') {
-    throw 'The press UI skin must be declared in module Base for Build 42.'
+    $pressSkinText -notmatch 'Icon\s*=\s*Item_AuxAmmoPress,' -or
+    $pressSkinText -notmatch '(?s)components\s*\{\s*CraftBench\s*\{\s*LuaPanelClass\s*=\s*ISCraftBenchPanel,.*?Enabled\s*=\s*true,') {
+    throw 'The press UI skin must expose an enabled CraftBench panel in module Base.'
 }
 for ($direction = 0; $direction -lt 4; $direction++) {
     if ($pressText -notmatch "row\s*=\s*auxammo_press_01_$direction,") {
         throw "Missing press entity sprite direction: $direction"
     }
 }
-$pressItem = [regex]::Match($itemsText, '(?ms)^\s*item\s+Mov_AmmoPress\s*\{(?<body>.*?)^\s*\}')
+$pressItem = [regex]::Match($itemsText, '(?ms)^    item\s+Mov_AmmoPress\s*\{(?<body>.*?)^    \}')
 if (-not $pressItem.Success -or
     $pressItem.Groups['body'].Value -notmatch '(?m)^\s*ItemType\s*=\s*base:moveable,' -or
     $pressItem.Groups['body'].Value -notmatch '(?m)^\s*WorldObjectSprite\s*=\s*auxammo_press_01_0,' -or
-    $pressItem.Groups['body'].Value -notmatch '(?m)^\s*Tooltip\s*=\s*Tooltip_item_AuxAmmo_Press,') {
-    throw 'Movable press item must place the dedicated tabletop sprite and expose its tooltip.'
+    $pressItem.Groups['body'].Value -notmatch '(?m)^\s*Tooltip\s*=\s*Tooltip_item_AuxAmmo_Press,' -or
+    $pressItem.Groups['body'].Value -notmatch '(?s)component\s+UiConfig\s*\{\s*xuiSkin\s*=\s*default,\s*entityStyle\s*=\s*ES_AmmoPress,\s*uiEnabled\s*=\s*true,' -or
+    $pressItem.Groups['body'].Value -notmatch '(?s)component\s+CraftBench\s*\{\s*Recipes\s*=\s*AuxAmmoPress,') {
+    throw 'Movable press item must carry UiConfig and CraftBench for its custom-item world object.'
 }
 if ((Get-Item -LiteralPath $pressTilePath).Length -lt 500 -or
     (Get-Item -LiteralPath $pressPackPath).Length -lt 10000) {
@@ -160,50 +150,17 @@ if (([regex]::Matches($pressTileText, 'CustomItem\s*=\s*AuxiliasAmmunition\.Mov_
     throw 'All four press tile directions must be recoverable tabletop moveables.'
 }
 
-foreach ($assignment in $componentModelAssignments.GetEnumerator()) {
-    $itemPattern = "(?ms)^\s*item\s+$([regex]::Escape($assignment.Key))\s*\{.*?^\s*WorldStaticModel\s*=\s*Base\.$([regex]::Escape($assignment.Value)),.*?^\s*\}"
-    if ($itemsText -notmatch $itemPattern) {
-        throw "Dedicated component model assignment is missing: $($assignment.Key) -> $($assignment.Value)"
-    }
-    $modelPattern = "(?ms)^\s*model\s+$([regex]::Escape($assignment.Value))\s*\{.*?^\s*mesh\s*=\s*WorldItems/$([regex]::Escape($assignment.Value)),.*?^\s*texture\s*=\s*WorldItems/AuxAmmoComponentAtlas,.*?^\s*scale\s*=\s*0\.01,.*?^\s*\}"
-    if ($modelsText -notmatch $modelPattern) {
-        throw "Dedicated component model definition is incomplete: $($assignment.Value)"
-    }
-    $fbxPath = Join-Path $versionRoot "media\models_X\WorldItems\$($assignment.Value).fbx"
-    if ((Get-Item -LiteralPath $fbxPath).Length -lt 20000) {
-        throw "Component FBX is unexpectedly small: $fbxPath"
-    }
-}
-foreach ($forbiddenComponentModel in @('Base.9mmRounds','Base.38SpecialBullets','Base.RifleAmmo','Base.ShotGunShells')) {
-    if ($itemsText -match "(?ms)^\s*item\s+(?:SmallPistolProjectile|HeavyPistolProjectile|RifleProjectile|ShotCharge|ShotgunHull)\s*\{.*?WorldStaticModel\s*=\s*$([regex]::Escape($forbiddenComponentModel)),") {
-        throw "Component item may not reuse a complete-ammunition model: $forbiddenComponentModel"
-    }
-}
-
-$componentAtlasPath = Join-Path $versionRoot 'media\textures\WorldItems\AuxAmmoComponentAtlas.png'
-$componentAtlasSize = Get-PngSize $componentAtlasPath
-if ($componentAtlasSize.Width -ne 128 -or $componentAtlasSize.Height -ne 128) {
-    throw "Component model atlas must be 128x128: $componentAtlasPath"
-}
-$generatorText = Get-Content -LiteralPath (Join-Path $repoRoot 'source-assets\blender\generate_components.py') -Raw
-foreach ($pipelineCheck in @('ASSET_NAMES','build_single_projectile_model','build_shot_charge','build_single_shotgun_hull','finalize_collection','collapse_game_materials','validate_exports','fbx_round_trip_dimensions')) {
-    if ($generatorText -notmatch [regex]::Escape($pipelineCheck)) {
-        throw "Component model pipeline check is missing: $pipelineCheck"
-    }
-}
-
 $itemIds = @([regex]::Matches($itemsText, '(?m)^\s*item\s+([A-Za-z0-9_]+)\s*$') | ForEach-Object { $_.Groups[1].Value })
 $recipeIds = @([regex]::Matches($recipesText, '(?m)^\s*craftRecipe\s+([A-Za-z0-9_]+)\s*$') | ForEach-Object { $_.Groups[1].Value })
-if ($itemIds.Count -ne 25 -or @($itemIds | Select-Object -Unique).Count -ne 25) { throw "Expected 25 unique items; found $($itemIds.Count)." }
-if ($recipeIds.Count -ne 26 -or @($recipeIds | Select-Object -Unique).Count -ne 26) { throw "Expected 26 unique craft recipes; found $($recipeIds.Count)." }
-if (([regex]::Matches($recipesText, '(?m)^\s*NeedToBeLearn\s*=\s*true,')).Count -ne 21) { throw 'The 21 active production recipes must require knowledge.' }
-if (([regex]::Matches($recipesText, '(?m)^\s*NeedToBeLearn\s*=\s*false,')).Count -ne 5) { throw 'Only carbon grinding and four legacy-mold salvage recipes may be learned by default.' }
+if ($itemIds.Count -ne 12 -or @($itemIds | Select-Object -Unique).Count -ne 12) { throw "Expected 12 unique items; found $($itemIds.Count)." }
+if ($recipeIds.Count -ne 19 -or @($recipeIds | Select-Object -Unique).Count -ne 19) { throw "Expected 19 unique craft recipes; found $($recipeIds.Count)." }
+if (([regex]::Matches($recipesText, '(?m)^\s*NeedToBeLearn\s*=\s*true,')).Count -ne 16) { throw 'The 16 production recipes must require knowledge.' }
+if (([regex]::Matches($recipesText, '(?m)^\s*NeedToBeLearn\s*=\s*false,')).Count -ne 3) { throw 'Only carbon grinding and two nitrogenous-mix recipes may be learned by default.' }
 
 $expectedRecipeIds = @(
-    'AuxAmmoShapeBulletMold','AuxAmmoFireBulletMold','AuxAmmoShapeShotgunMold','AuxAmmoFireShotgunMold',
     'AuxAmmoCastSmallPistolProjectiles','AuxAmmoCastHeavyPistolProjectiles','AuxAmmoCastRifleProjectiles','AuxAmmoCastShotCharges',
-    'AuxAmmoFormSmallPistolCasings','AuxAmmoFormHeavyPistolCasings','AuxAmmoFormRifleCasings','AuxAmmoFormShotgunHulls',
-    'AuxAmmoRefineMineralSalts','AuxAmmoGrindCarbonPowder','AuxAmmoBlendSurvivalPropellant','AuxAmmoFormImprovisedPrimers',
+    'AuxAmmoRefineMineralSalts','AuxAmmoGrindCarbonPowder','AuxAmmoPrepareNitrogenousMixFromCompost','AuxAmmoPrepareNitrogenousMixFromFertilizer',
+    'AuxAmmoBlendSurvivalPropellant',
     'AuxAmmoAssemble9mm','AuxAmmoAssemble38','AuxAmmoAssemble357','AuxAmmoAssemble45','AuxAmmoAssemble44',
     'AuxAmmoAssemble556','AuxAmmoAssemble3030','AuxAmmoAssemble308','AuxAmmoAssembleShotgun',
     'CraftAmmoPress'
@@ -212,43 +169,42 @@ foreach ($recipeId in $expectedRecipeIds) {
     if ($recipeId -notin $recipeIds) { throw "Missing established or redesigned recipe ID: $recipeId" }
 }
 
-foreach ($newItemId in @('SmallPistolBody','HeavyPistolBody','RifleBody','ShotgunBody','CarbonPowder','Mov_AmmoPress')) {
+foreach ($newItemId in @('SmallPistolBody','HeavyPistolBody','RifleBody','ShotgunBody','CarbonPowder','NitrogenousMix','Mov_AmmoPress')) {
     if ($newItemId -notin $itemIds) { throw "Missing redesigned component item: $newItemId" }
     if ($recipesText -notmatch "AuxiliasAmmunition\.$([regex]::Escape($newItemId))\b") {
         throw "Redesigned component item is not referenced by a recipe: $newItemId"
     }
 }
 
-$bodyRecipePairs = @(
-    @('AuxAmmoCastSmallPistolProjectiles','AuxAmmoFormSmallPistolCasings','SmallPistolProjectile','SmallPistolCasing','SmallPistolBody',30),
-    @('AuxAmmoCastHeavyPistolProjectiles','AuxAmmoFormHeavyPistolCasings','HeavyPistolProjectile','HeavyPistolCasing','HeavyPistolBody',20),
-    @('AuxAmmoCastRifleProjectiles','AuxAmmoFormRifleCasings','RifleProjectile','RifleCasing','RifleBody',15),
-    @('AuxAmmoCastShotCharges','AuxAmmoFormShotgunHulls','ShotCharge','ShotgunHull','ShotgunBody',15)
+$bodyRecipes = @(
+    @('AuxAmmoCastSmallPistolProjectiles','SmallPistolBody',30),
+    @('AuxAmmoCastHeavyPistolProjectiles','HeavyPistolBody',20),
+    @('AuxAmmoCastRifleProjectiles','RifleBody',15),
+    @('AuxAmmoCastShotCharges','ShotgunBody',15)
 )
-$pressRecipeIds = @($bodyRecipePairs | ForEach-Object { @($_[0], $_[1]) }) + @(
-    'AuxAmmoFormImprovisedPrimers','AuxAmmoAssemble9mm','AuxAmmoAssemble38',
+$pressRecipeIds = @($bodyRecipes | ForEach-Object { $_[0] }) + @(
+    'AuxAmmoAssemble9mm','AuxAmmoAssemble38',
     'AuxAmmoAssemble357','AuxAmmoAssemble45','AuxAmmoAssemble44',
     'AuxAmmoAssemble556','AuxAmmoAssemble3030','AuxAmmoAssemble308','AuxAmmoAssembleShotgun'
 )
-if ($pressRecipeIds.Count -ne 18) { throw 'Expected 18 press-based production and conversion recipes.' }
+if ($pressRecipeIds.Count -ne 13) { throw 'Expected 13 press-based production recipes.' }
 foreach ($pressRecipeId in $pressRecipeIds) {
     $pressRecipe = [regex]::Match($recipesText, "(?ms)^    craftRecipe\s+$([regex]::Escape($pressRecipeId))\s*\{(?<body>.*?)^    \}")
     if (-not $pressRecipe.Success -or $pressRecipe.Groups['body'].Value -notmatch '(?m)^\s*Tags\s*=\s*AuxAmmoPress,') {
         throw "Recipe must use the dedicated ammunition press: $pressRecipeId"
     }
 }
-if (([regex]::Matches($recipesText, '(?m)^\s*Tags\s*=\s*AuxAmmoPress,')).Count -ne 18) {
-    throw 'Only the 18 intended recipes may use the ammunition press.'
+if (([regex]::Matches($recipesText, '(?m)^\s*Tags\s*=\s*AuxAmmoPress,')).Count -ne 13) {
+    throw 'Only the 13 intended recipes may use the ammunition press.'
 }
 if ($recipesText -match '(?m)^\s*Tags\s*=\s*(?:HandPress|Furnace|AdvancedFurnace|PotteryBench|KilnSmall|KilnLarge)\b') {
     throw 'The new workflow must not use former mold, furnace, or vanilla hand-press stations.'
 }
-foreach ($pair in $bodyRecipePairs) {
+foreach ($pair in $bodyRecipes) {
     $castRecipe = [regex]::Match($recipesText, "(?ms)^    craftRecipe\s+$([regex]::Escape($pair[0]))\s*\{(?<body>.*?)^    \}")
-    $legacyRecipe = [regex]::Match($recipesText, "(?ms)^    craftRecipe\s+$([regex]::Escape($pair[1]))\s*\{(?<body>.*?)^    \}")
-    if (-not $castRecipe.Success -or -not $legacyRecipe.Success) { throw "Missing component recipe pair for $($pair[4])" }
-    if ($castRecipe.Groups['body'].Value -notmatch "(?m)^\s*item\s+$($pair[5])\s+AuxiliasAmmunition\.$([regex]::Escape($pair[4])),") {
-        throw "Pressing must produce $($pair[5]) combined components: $($pair[0]) -> $($pair[4])"
+    if (-not $castRecipe.Success) { throw "Missing body recipe: $($pair[0])" }
+    if ($castRecipe.Groups['body'].Value -notmatch "(?m)^\s*item\s+$($pair[2])\s+AuxiliasAmmunition\.$([regex]::Escape($pair[1])),") {
+        throw "Pressing must produce $($pair[2]) bodies: $($pair[0]) -> $($pair[1])"
     }
     if ($castRecipe.Groups['body'].Value -notmatch '(?m)^\s*item\s+1\s+\[Base\.IronIngot\],') {
         throw "Body pressing must include one iron ingot: $($pair[0])"
@@ -256,7 +212,7 @@ foreach ($pair in $bodyRecipePairs) {
     if ($castRecipe.Groups['body'].Value -notmatch '(?m)^\s*item\s+1\s+\[Base\.CopperScrap\],') {
         throw "Body pressing must include one copper scrap: $($pair[0])"
     }
-    if ($pair[4] -eq 'ShotgunBody' -and $castRecipe.Groups['body'].Value -notmatch '(?m)^\s*item\s+2\s+\[Base\.RippedSheets\],') {
+    if ($pair[1] -eq 'ShotgunBody' -and $castRecipe.Groups['body'].Value -notmatch '(?m)^\s*item\s+2\s+\[Base\.RippedSheets\],') {
         throw 'Shotgun body pressing must include two ripped sheets.'
     }
     if ($castRecipe.Groups['body'].Value -notmatch '(?m)^\s*Tags\s*=\s*AuxAmmoPress,') {
@@ -267,37 +223,9 @@ foreach ($pair in $bodyRecipePairs) {
         $castRecipe.Groups['body'].Value -match 'tags\[base:charcoal\]') {
         throw "Body pressing must not require a ceramic mold, furnace tongs, or fuel: $($pair[0])"
     }
-    foreach ($legacyPart in @($pair[2], $pair[3])) {
-        if ($legacyRecipe.Groups['body'].Value -notmatch "AuxiliasAmmunition\.$([regex]::Escape($legacyPart))\b") {
-            throw "Legacy conversion must consume its old component: $($pair[1]) -> $legacyPart"
-        }
-    }
-    if ($legacyRecipe.Groups['body'].Value -notmatch "(?m)^\s*item\s+\d+\s+AuxiliasAmmunition\.$([regex]::Escape($pair[4])),") {
-        throw "Legacy conversion must produce combined component: $($pair[1]) -> $($pair[4])"
-    }
 }
-
-$legacyMoldRecipes = [ordered]@{
-    AuxAmmoShapeBulletMold = @('BulletMoldUnfired','Base.Clay')
-    AuxAmmoFireBulletMold = @('BulletMold','AuxiliasAmmunition.MineralSalts')
-    AuxAmmoShapeShotgunMold = @('ShotgunMoldUnfired','Base.Clay')
-    AuxAmmoFireShotgunMold = @('ShotgunMold','AuxiliasAmmunition.MineralSalts')
-}
-foreach ($salvage in $legacyMoldRecipes.GetEnumerator()) {
-    $recipe = [regex]::Match($recipesText, "(?ms)^    craftRecipe\s+$([regex]::Escape($salvage.Key))\s*\{(?<body>.*?)^    \}")
-    if (-not $recipe.Success -or
-        $recipe.Groups['body'].Value -notmatch "\[AuxiliasAmmunition\.$([regex]::Escape($salvage.Value[0]))\]" -or
-        $recipe.Groups['body'].Value -notmatch "(?m)^\s*item\s+\d+\s+$([regex]::Escape($salvage.Value[1]))," -or
-        $recipe.Groups['body'].Value -notmatch '(?m)^\s*category\s*=\s*LegacyAmmunition,' -or
-        $recipe.Groups['body'].Value -notmatch '(?m)^\s*NeedToBeLearn\s*=\s*false,') {
-        throw "Retired mold must have an ungated legacy salvage recipe: $($salvage.Key)"
-    }
-}
-if ($recipesText -match '(?m)^\s*item\s+\d+\s+AuxiliasAmmunition\.(?:BulletMold|ShotgunMold)(?:Unfired)?,') {
-    throw 'No current recipe may produce a ceramic mold.'
-}
-if ($recipesText -match '\[AuxiliasAmmunition\.(?:BulletMold|ShotgunMold)\]\s+mode:keep') {
-    throw 'No current production recipe may require a ceramic mold.'
+if ($itemsText -notmatch '(?ms)item\s+ShotgunBody\s*\{[^}]*WorldStaticModel\s*=\s*Base\.ShotGunShells,') {
+    throw 'Shotgun body must use the verified vanilla shotgun-shell ground model.'
 }
 
 $allowedTags = @('AuxAmmoPress','AnySurfaceCraft','CanBeDoneFromFloor')
@@ -331,26 +259,46 @@ $assemblyBodies = [ordered]@{
     AuxAmmoAssemble308 = 'RifleBody'
     AuxAmmoAssembleShotgun = 'ShotgunBody'
 }
+$assemblyPowder = @{
+    AuxAmmoAssemble9mm = 10
+    AuxAmmoAssemble38 = 10
+    AuxAmmoAssemble357 = 15
+    AuxAmmoAssemble45 = 12
+    AuxAmmoAssemble44 = 16
+    AuxAmmoAssemble556 = 16
+    AuxAmmoAssemble3030 = 18
+    AuxAmmoAssemble308 = 20
+    AuxAmmoAssembleShotgun = 20
+}
 foreach ($assembly in $assemblyBodies.GetEnumerator()) {
     $recipe = [regex]::Match($recipesText, "(?ms)^    craftRecipe\s+$([regex]::Escape($assembly.Key))\s*\{(?<body>.*?)^    \}")
-    if (-not $recipe.Success -or $recipe.Groups['body'].Value -notmatch "\[AuxiliasAmmunition\.$([regex]::Escape($assembly.Value))\]") {
-        throw "Final ammunition recipe must consume combined component: $($assembly.Key) -> $($assembly.Value)"
+    if (-not $recipe.Success) { throw "Missing final ammunition recipe: $($assembly.Key)" }
+    $inputSection = [regex]::Match($recipe.Groups['body'].Value, '(?ms)^\s{8}inputs\s*\{(?<lines>.*?)^\s{8}\}')
+    if (-not $inputSection.Success) { throw "Missing final ammunition inputs: $($assembly.Key)" }
+    $lines = $inputSection.Groups['lines'].Value
+    if (([regex]::Matches($lines, '(?m)^\s*item\s+')).Count -ne 2 -or
+        $lines -notmatch "(?m)^\s*item\s+10\s+\[AuxiliasAmmunition\.$([regex]::Escape($assembly.Value))\],\s*$" -or
+        $lines -notmatch "(?m)^\s*item\s+$($assemblyPowder[$assembly.Key])\s+\[AuxiliasAmmunition\.SurvivalPropellant\],\s*$") {
+        throw "Final ammunition must consume only 10 bodies and the intended field-powder amount: $($assembly.Key)"
     }
 }
 
 $carbonRecipe = [regex]::Match($recipesText, '(?ms)^    craftRecipe\s+AuxAmmoGrindCarbonPowder\s*\{(?<body>.*?)^    \}')
 if (-not $carbonRecipe.Success -or
-    $carbonRecipe.Groups['body'].Value -notmatch 'tags\[base:charcoal\]' -or
+    $carbonRecipe.Groups['body'].Value -notmatch '\[Base\.CharcoalCrafted;Base\.Charcoal;Base\.Coke\]' -or
+    $carbonRecipe.Groups['body'].Value -notmatch 'tags\[base:mortarpestle\] mode:keep' -or
     $carbonRecipe.Groups['body'].Value -notmatch '(?m)^\s*item\s+\d+\s+AuxiliasAmmunition\.CarbonPowder,') {
-    throw 'Carbon-powder recipe must grind vanilla charcoal-tagged fuel into CarbonPowder.'
+    throw 'Carbon-powder recipe must grind wood charcoal, charcoal, or coke into CarbonPowder.'
 }
 if ($carbonRecipe.Groups['body'].Value -notmatch '(?m)^\s*NeedToBeLearn\s*=\s*false,' -or
-    $carbonRecipe.Groups['body'].Value -match '(?m)^\s*AutoLearnAll\s*=') {
-    throw 'Carbon-powder grinding must be available by default for existing saves.'
+    $carbonRecipe.Groups['body'].Value -match '(?m)^\s*(?:SkillRequired|xpAward|AutoLearnAll)\s*=') {
+    throw 'Carbon-powder grinding must require no manual or skill and award no Reloading XP.'
 }
 $propellantRecipe = [regex]::Match($recipesText, '(?ms)^    craftRecipe\s+AuxAmmoBlendSurvivalPropellant\s*\{(?<body>.*?)^    \}')
-if (-not $propellantRecipe.Success -or $propellantRecipe.Groups['body'].Value -notmatch '\[AuxiliasAmmunition\.CarbonPowder\]') {
-    throw 'Survival propellant must consume CarbonPowder.'
+if (-not $propellantRecipe.Success -or
+    $propellantRecipe.Groups['body'].Value -notmatch '\[AuxiliasAmmunition\.CarbonPowder\]' -or
+    $propellantRecipe.Groups['body'].Value -notmatch '\[AuxiliasAmmunition\.NitrogenousMix\]') {
+    throw 'Survival propellant must consume CarbonPowder and NitrogenousMix.'
 }
 
 function Assert-RecipeQuantities([string]$Id, [string[]]$Inputs, [string]$Output) {
@@ -370,42 +318,35 @@ function Assert-RecipeQuantities([string]$Id, [string[]]$Inputs, [string]$Output
 }
 Assert-RecipeQuantities 'AuxAmmoRefineMineralSalts' @('item 2 [Base.Stone2;Base.Limestone]') 'item 40 AuxiliasAmmunition.MineralSalts'
 Assert-RecipeQuantities 'CraftAmmoPress' @('item 3 [Base.Plank]','item 1 [Base.IronBar]','item 2 [Base.IronBand]','item 1 [Base.SmallSheetMetal]','item 6 [Base.Nails]') 'item 1 AuxiliasAmmunition.Mov_AmmoPress'
-Assert-RecipeQuantities 'AuxAmmoShapeBulletMold' @('item 1 [AuxiliasAmmunition.BulletMoldUnfired]') 'item 2 Base.Clay'
-Assert-RecipeQuantities 'AuxAmmoShapeShotgunMold' @('item 1 [AuxiliasAmmunition.ShotgunMoldUnfired]') 'item 2 Base.Clay'
-Assert-RecipeQuantities 'AuxAmmoFireBulletMold' @('item 1 [AuxiliasAmmunition.BulletMold]') 'item 20 AuxiliasAmmunition.MineralSalts'
-Assert-RecipeQuantities 'AuxAmmoFireShotgunMold' @('item 1 [AuxiliasAmmunition.ShotgunMold]') 'item 20 AuxiliasAmmunition.MineralSalts'
-Assert-RecipeQuantities 'AuxAmmoGrindCarbonPowder' @('item 8 tags[base:charcoal]') 'item 40 AuxiliasAmmunition.CarbonPowder'
-Assert-RecipeQuantities 'AuxAmmoBlendSurvivalPropellant' @('item 40 [AuxiliasAmmunition.MineralSalts]','item 40 [AuxiliasAmmunition.CarbonPowder]') 'item 40 AuxiliasAmmunition.SurvivalPropellant'
-Assert-RecipeQuantities 'AuxAmmoFormImprovisedPrimers' @('item 10 [AuxiliasAmmunition.MineralSalts]','item 10 [AuxiliasAmmunition.CarbonPowder]','item 1 [Base.CopperScrap]') 'item 30 AuxiliasAmmunition.ImprovisedPrimer'
+Assert-RecipeQuantities 'AuxAmmoGrindCarbonPowder' @('item 8 [Base.CharcoalCrafted;Base.Charcoal;Base.Coke]') 'item 40 AuxiliasAmmunition.CarbonPowder'
+Assert-RecipeQuantities 'AuxAmmoPrepareNitrogenousMixFromCompost' @('item 2 [Base.CompostBag]') 'item 1 AuxiliasAmmunition.NitrogenousMix'
+Assert-RecipeQuantities 'AuxAmmoPrepareNitrogenousMixFromFertilizer' @('item 2 [Base.Fertilizer]') 'item 1 AuxiliasAmmunition.NitrogenousMix'
+Assert-RecipeQuantities 'AuxAmmoBlendSurvivalPropellant' @('item 40 [AuxiliasAmmunition.MineralSalts]','item 40 [AuxiliasAmmunition.CarbonPowder]','item 1 [AuxiliasAmmunition.NitrogenousMix]') 'item 40 AuxiliasAmmunition.SurvivalPropellant'
 
 $customReferences = @([regex]::Matches($recipesText, 'AuxiliasAmmunition\.([A-Za-z0-9_]+)') | ForEach-Object { $_.Groups[1].Value } | Select-Object -Unique)
 foreach ($reference in $customReferences) { if ($reference -notin $itemIds) { throw "Undeclared custom item reference: $reference" } }
 $manualCoverage = @([regex]::Matches($itemsText, '(?:AuxAmmo[A-Za-z0-9_]+|CraftAmmoPress)') | ForEach-Object { $_.Value } | Where-Object { $_ -in $recipeIds })
-foreach ($recipeId in @($expectedRecipeIds | Where-Object { $_ -ne 'AuxAmmoGrindCarbonPowder' })) {
+foreach ($recipeId in @($expectedRecipeIds | Where-Object { $_ -notin @('AuxAmmoGrindCarbonPowder','AuxAmmoPrepareNitrogenousMixFromCompost','AuxAmmoPrepareNitrogenousMixFromFertilizer') })) {
     if (($manualCoverage | Where-Object { $_ -eq $recipeId }).Count -ne 1) { throw "Established recipe must appear in exactly one manual: $recipeId" }
 }
-if ('AuxAmmoGrindCarbonPowder' -in $manualCoverage) { throw 'Carbon-powder grinding must not require a newly read manual.' }
+foreach ($recipeId in @('AuxAmmoGrindCarbonPowder','AuxAmmoPrepareNitrogenousMixFromCompost','AuxAmmoPrepareNitrogenousMixFromFertilizer')) {
+    if ($recipeId -in $manualCoverage) { throw "Preparation recipe must not require a manual: $recipeId" }
+    $recipe = [regex]::Match($recipesText, "(?ms)^    craftRecipe\s+$recipeId\s*\{(?<body>.*?)^    \}")
+    if (-not $recipe.Success -or $recipe.Groups['body'].Value -notmatch '(?m)^\s*NeedToBeLearn\s*=\s*false,') {
+        throw "Preparation recipe must be available without a manual: $recipeId"
+    }
+}
 
 $customIconAssignments = [ordered]@{
     Mov_AmmoPress = 'AuxAmmoPress'
-    ShotgunMold = 'AuxAmmoShotgunMold'
     SmallPistolBody = 'AuxAmmoSmallPistolBody'
     HeavyPistolBody = 'AuxAmmoHeavyPistolBody'
     RifleBody = 'AuxAmmoRifleBody'
     ShotgunBody = 'AuxAmmoShotgunBody'
     CarbonPowder = 'AuxAmmoCarbonPowder'
-    SmallPistolProjectile = 'AuxAmmoSmallPistolProjectile'
-    HeavyPistolProjectile = 'AuxAmmoHeavyPistolProjectile'
-    RifleProjectile = 'AuxAmmoRifleProjectile'
-    ShotCharge = 'AuxAmmoShotCharge'
-    SmallPistolCasing = 'AuxAmmoSmallPistolCasing'
-    HeavyPistolCasing = 'AuxAmmoHeavyPistolCasing'
-    RifleCasing = 'AuxAmmoRifleCasing'
-    ShotgunHull = 'AuxAmmoShotgunHull'
-    ImprovisedPrimer = 'AuxAmmoImprovisedPrimer'
-    FactoryPrimer = 'AuxAmmoFactoryPrimer'
+    NitrogenousMix = 'AuxAmmoNitrogenousMix'
 }
-$vanillaIcons = @('ClayMold_GlassPane_Unfired','BulletMold','Limestone','GunpowderJar','Magazine_Armory1','Magazine_Armory2','Magazine_Metalworking2')
+$vanillaIcons = @('Limestone','GunpowderJar','Magazine_Armory1','Magazine_Armory2','Magazine_Metalworking2')
 foreach ($icon in @([regex]::Matches($itemsText, '(?m)^\s*Icon\s*=\s*([^,]+),') | ForEach-Object { $_.Groups[1].Value.Trim() })) {
     if ($icon -in $vanillaIcons) { continue }
     $iconPath = Join-Path $versionRoot "media\textures\Item_$icon.png"
@@ -476,12 +417,20 @@ if (@($recipeTranslationKeys | Where-Object { $_ -like 'Recipe_*' }).Count -gt 0
 }
 
 $luaFiles = @(Get-ChildItem -LiteralPath (Join-Path $versionRoot 'media\lua') -Recurse -Filter '*.lua' -File)
-if ($luaFiles.Count -ne 1 -or $luaFiles[0].FullName -ne $lootPath) { throw 'The release may contain only the server loot-injection Lua file.' }
+if ($luaFiles.Count -ne 4 -or @($luaFiles | Where-Object { $_.FullName -notin @($lootPath, $pressWorldPath, $pressContextIconPath, $pressLeftClickPath) }).Count -gt 0) {
+    throw 'The release may contain only the server loot, shared press-world, client press-icon, and client press-left-click Lua files.'
+}
 $lootText = Get-Content -LiteralPath $lootPath -Raw
-foreach ($requiredLootToken in @('Events.OnPreDistributionMerge.Add','lootInjected','GunStoreLiterature','FactoryPrimer')) {
+$pressWorldText = Get-Content -LiteralPath $pressWorldPath -Raw
+$pressContextIconText = Get-Content -LiteralPath $pressContextIconPath -Raw
+$pressLeftClickText = Get-Content -LiteralPath $pressLeftClickPath -Raw
+foreach ($requiredLootToken in @('Events.OnPreDistributionMerge.Add','lootInjected','GunStoreLiterature')) {
     if ($lootText -notmatch [regex]::Escape($requiredLootToken)) { throw "Loot integration is incomplete: $requiredLootToken" }
 }
-$allRuntimeText = $itemsText + $recipesText + $modelsText + $pressText + $lootText
+$allRuntimeText = $itemsText + $recipesText + $pressText + $lootText + $pressWorldText + $pressContextIconText + $pressLeftClickText
+if ($allRuntimeText -match '(?i)primer|뇌관|LegacyAmmunition') {
+    throw 'Retired primer and legacy-part content must not remain in runtime files.'
+}
 foreach ($forbidden in @('OnWeaponSwingHitPoint','OnWeaponSwing','OnPlayerAttackFinished','modData','sendClientCommand','sendServerCommand','OnTick','spent casing','SpentCasing')) {
     if ($allRuntimeText -match [regex]::Escape($forbidden)) { throw "Forbidden v1 runtime feature found: $forbidden" }
 }
@@ -503,4 +452,4 @@ if (@($hashes | Select-Object -Unique).Count -ne 1) { throw 'Workshop preview an
 $coverSize = Get-PngSize (Join-Path $repoRoot 'source-assets\workshop\AuxiliasAmmunition-cover-source.png')
 if ($coverSize.Width -ne $coverSize.Height -or $coverSize.Width -lt 1254) { throw 'Workshop cover source must be square and at least 1254px.' }
 
-Write-Host "Auxilia's Ammunition validation passed: 25 items, 26 recipes, 9 vanilla calibers, tabletop press, 5 dedicated component models, EN/KO parity."
+Write-Host "Auxilia's Ammunition validation passed: 12 items, 19 recipes, 9 vanilla calibers, tabletop press, EN/KO parity."

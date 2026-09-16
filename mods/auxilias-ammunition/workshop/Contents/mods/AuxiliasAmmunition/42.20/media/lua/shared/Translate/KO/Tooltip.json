@@ -1,23 +1,11 @@
 {
-    "Tooltip_item_AuxAmmo_BulletMold": "이전 제작 방식에서 사용하던 세라믹 주형입니다. 부수면 광물 가루를 얻습니다.",
     "Tooltip_item_AuxAmmo_CarbonPowder": "숯이나 코크스를 갈아 만든 가루입니다. 야전 화약의 추상화된 재료로 사용합니다.",
-    "Tooltip_item_AuxAmmo_FactoryPrimer": "신뢰성 높은 공장제 부품입니다. 탄약 보관소에서 드물게 발견됩니다.",
-    "Tooltip_item_AuxAmmo_HeavyPistolBody": "대형 권총 탄두와 탄피를 한데 묶은 몸체입니다. 야전 화약과 뇌관을 더해 탄약을 만듭니다.",
-    "Tooltip_item_AuxAmmo_HeavyCasing": ".45 오토와 .44 매그넘 탄약용으로 성형한 탄피입니다.",
-    "Tooltip_item_AuxAmmo_HeavyProjectile": ".45 오토와 .44 매그넘 탄약용으로 주조한 탄두입니다.",
-    "Tooltip_item_AuxAmmo_ImprovisedPrimer": "높은 기술로 재생 가능한 자원에서 만든 야전 탄약용 점화 부품입니다.",
+    "Tooltip_item_AuxAmmo_HeavyPistolBody": "대형 권총 탄두와 탄피를 한데 묶은 몸체입니다. 야전 화약을 더해 탄약을 만듭니다.",
     "Tooltip_item_AuxAmmo_MineralSalts": "야전 탄약에 쓰는 분쇄 광물 재료입니다. 게임을 위한 추상화이며 실제 화학 제조법이 아닙니다.",
+    "Tooltip_item_AuxAmmo_NitrogenousMix": "퇴비나 비료에서 준비한 야전 화약 재료입니다. 게임을 위한 추상화이며 실제 화학 제조법이 아닙니다.",
     "Tooltip_item_AuxAmmo_Press": "나무와 철로 만든 수동 프레스입니다. 책상 위에 놓고 탄약 몸체를 찍거나 탄약을 조립합니다.",
     "Tooltip_item_AuxAmmo_Propellant": "탄약 조립에만 쓰는 야전 화약입니다. 폭발물 제작용 바닐라 화약을 대체하지 않습니다.",
-    "Tooltip_item_AuxAmmo_RifleBody": "소총 탄두와 탄피를 한데 묶은 몸체입니다. 야전 화약과 뇌관을 더해 탄약을 만듭니다.",
-    "Tooltip_item_AuxAmmo_RifleCasing": "바닐라 소총 탄약용으로 성형한 탄피입니다.",
-    "Tooltip_item_AuxAmmo_RifleProjectile": "바닐라 소총 탄약용으로 주조한 탄두입니다.",
-    "Tooltip_item_AuxAmmo_ShotCharge": "산탄총 탄약 한 발에 필요한 산탄 장약입니다.",
-    "Tooltip_item_AuxAmmo_ShotgunBody": "산탄 장약과 탄피를 한데 묶은 몸체입니다. 야전 화약과 뇌관을 더해 탄약을 만듭니다.",
-    "Tooltip_item_AuxAmmo_ShotgunHull": "산탄총 탄약 한 발에 필요한 몸통과 금속 베이스입니다.",
-    "Tooltip_item_AuxAmmo_ShotgunMold": "이전 제작 방식에서 사용하던 세라믹 주형입니다. 부수면 광물 가루를 얻습니다.",
-    "Tooltip_item_AuxAmmo_SmallPistolBody": "소형 권총 탄두와 탄피를 한데 묶은 몸체입니다. 야전 화약과 뇌관을 더해 탄약을 만듭니다.",
-    "Tooltip_item_AuxAmmo_SmallCasing": "9mm, .38 스페셜, .357 매그넘 탄약용으로 성형한 탄피입니다.",
-    "Tooltip_item_AuxAmmo_SmallProjectile": "9mm, .38 스페셜, .357 매그넘 탄약용으로 주조한 탄두입니다.",
-    "Tooltip_item_AuxAmmo_UnfiredMold": "이전 제작 방식에서 사용하던 굽지 않은 주형입니다. 점토를 회수할 수 있습니다."
+    "Tooltip_item_AuxAmmo_RifleBody": "소총 탄두와 탄피를 한데 묶은 몸체입니다. 야전 화약을 더해 탄약을 만듭니다.",
+    "Tooltip_item_AuxAmmo_ShotgunBody": "산탄 장약과 탄피를 한데 묶은 몸체입니다. 야전 화약을 더해 탄약을 만듭니다.",
+    "Tooltip_item_AuxAmmo_SmallPistolBody": "소형 권총 탄두와 탄피를 한데 묶은 몸체입니다. 야전 화약을 더해 탄약을 만듭니다."
 }

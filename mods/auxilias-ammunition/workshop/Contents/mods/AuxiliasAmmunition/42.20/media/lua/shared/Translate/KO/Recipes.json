@@ -13,16 +13,9 @@
     "AuxAmmoCastRifleProjectiles": "소총 탄약 몸체 제작",
     "AuxAmmoCastShotCharges": "산탄총 탄약 몸체 제작",
     "AuxAmmoCastSmallPistolProjectiles": "소형 권총 탄약 몸체 제작",
-    "AuxAmmoFireBulletMold": "기존 소성 탄두 주형 부수기",
-    "AuxAmmoFireShotgunMold": "기존 소성 산탄 주형 부수기",
-    "AuxAmmoFormHeavyPistolCasings": "기존 대형 권총 부품 결합",
-    "AuxAmmoFormImprovisedPrimers": "급조 뇌관 성형",
-    "AuxAmmoFormRifleCasings": "기존 소총 부품 결합",
-    "AuxAmmoFormShotgunHulls": "기존 산탄총 부품 결합",
-    "AuxAmmoFormSmallPistolCasings": "기존 소형 권총 부품 결합",
     "AuxAmmoGrindCarbonPowder": "탄소 가루 분쇄",
+    "AuxAmmoPrepareNitrogenousMixFromCompost": "퇴비에서 질소질 혼합물 준비",
+    "AuxAmmoPrepareNitrogenousMixFromFertilizer": "비료에서 질소질 혼합물 준비",
     "AuxAmmoRefineMineralSalts": "광물 가루 분쇄",
-    "AuxAmmoShapeBulletMold": "기존 탄두 주형에서 점토 회수",
-    "AuxAmmoShapeShotgunMold": "기존 산탄 주형에서 점토 회수",
     "CraftAmmoPress": "탁상형 탄약 프레스 제작"
 }

@@ -8,126 +8,16 @@ module AuxiliasAmmunition
         Icon = AuxAmmoPress,
         WorldObjectSprite = auxammo_press_01_0,
         Tooltip = Tooltip_item_AuxAmmo_Press,
-    }
-
-    item BulletMoldUnfired
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.6,
-        Icon = ClayMold_GlassPane_Unfired,
-        WorldStaticModel = Base.AuxiliaBulletMold_Ground,
-        Tooltip = Tooltip_item_AuxAmmo_UnfiredMold,
-    }
-
-    item BulletMold
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.5,
-        Icon = BulletMold,
-        WorldStaticModel = Base.AuxiliaBulletMold_Ground,
-        Tooltip = Tooltip_item_AuxAmmo_BulletMold,
-    }
-
-    item ShotgunMoldUnfired
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.6,
-        Icon = ClayMold_GlassPane_Unfired,
-        WorldStaticModel = Base.ShotGunShellsMold_Ground,
-        Tooltip = Tooltip_item_AuxAmmo_UnfiredMold,
-    }
-
-    item ShotgunMold
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.5,
-        Icon = AuxAmmoShotgunMold,
-        WorldStaticModel = Base.ShotGunShellsMold_Ground,
-        Tooltip = Tooltip_item_AuxAmmo_ShotgunMold,
-    }
-
-    item SmallPistolProjectile
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.01,
-        Icon = AuxAmmoSmallPistolProjectile,
-        WorldStaticModel = Base.AuxAmmoSmallPistolProjectile_Ground,
-        Tooltip = Tooltip_item_AuxAmmo_SmallProjectile,
-    }
-
-    item HeavyPistolProjectile
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.015,
-        Icon = AuxAmmoHeavyPistolProjectile,
-        WorldStaticModel = Base.AuxAmmoHeavyPistolProjectile_Ground,
-        Tooltip = Tooltip_item_AuxAmmo_HeavyProjectile,
-    }
-
-    item RifleProjectile
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.02,
-        Icon = AuxAmmoRifleProjectile,
-        WorldStaticModel = Base.AuxAmmoRifleProjectile_Ground,
-        Tooltip = Tooltip_item_AuxAmmo_RifleProjectile,
-    }
-
-    item ShotCharge
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.03,
-        Icon = AuxAmmoShotCharge,
-        WorldStaticModel = Base.AuxAmmoShotCharge_Ground,
-        Tooltip = Tooltip_item_AuxAmmo_ShotCharge,
-    }
-
-    item SmallPistolCasing
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.008,
-        Icon = AuxAmmoSmallPistolCasing,
-        WorldStaticModel = Base.BrassScrap,
-        Tooltip = Tooltip_item_AuxAmmo_SmallCasing,
-    }
-
-    item HeavyPistolCasing
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.012,
-        Icon = AuxAmmoHeavyPistolCasing,
-        WorldStaticModel = Base.BrassScrap,
-        Tooltip = Tooltip_item_AuxAmmo_HeavyCasing,
-    }
-
-    item RifleCasing
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.02,
-        Icon = AuxAmmoRifleCasing,
-        WorldStaticModel = Base.BrassScrap,
-        Tooltip = Tooltip_item_AuxAmmo_RifleCasing,
-    }
-
-    item ShotgunHull
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.025,
-        Icon = AuxAmmoShotgunHull,
-        WorldStaticModel = Base.AuxAmmoShotgunHull_Ground,
-        Tooltip = Tooltip_item_AuxAmmo_ShotgunHull,
+        component UiConfig
+        {
+            xuiSkin = default,
+            entityStyle = ES_AmmoPress,
+            uiEnabled = true,
+        }
+        component CraftBench
+        {
+            Recipes = AuxAmmoPress,
+        }
     }
 
     item SmallPistolBody
@@ -166,7 +56,7 @@ module AuxiliasAmmunition
         ItemType = base:normal,
         Weight = 0.055,
         Icon = AuxAmmoShotgunBody,
-        WorldStaticModel = Base.AuxAmmoShotgunHull_Ground,
+        WorldStaticModel = Base.ShotGunShells,
         Tooltip = Tooltip_item_AuxAmmo_ShotgunBody,
     }
 
@@ -190,6 +80,16 @@ module AuxiliasAmmunition
         Tooltip = Tooltip_item_AuxAmmo_CarbonPowder,
     }
 
+    item NitrogenousMix
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 0.08,
+        Icon = AuxAmmoNitrogenousMix,
+        WorldStaticModel = Base.LimestoneCrushed,
+        Tooltip = Tooltip_item_AuxAmmo_NitrogenousMix,
+    }
+
     item SurvivalPropellant
     {
         DisplayCategory = Material,
@@ -200,27 +100,6 @@ module AuxiliasAmmunition
         Tooltip = Tooltip_item_AuxAmmo_Propellant,
     }
 
-    item ImprovisedPrimer
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.001,
-        Icon = AuxAmmoImprovisedPrimer,
-        WorldStaticModel = Base.CopperScrap,
-        Tooltip = Tooltip_item_AuxAmmo_ImprovisedPrimer,
-    }
-
-    item FactoryPrimer
-    {
-        DisplayCategory = Material,
-        ItemType = base:normal,
-        Weight = 0.001,
-        Icon = AuxAmmoFactoryPrimer,
-        count = 20,
-        WorldStaticModel = Base.CopperScrap,
-        Tooltip = Tooltip_item_AuxAmmo_FactoryPrimer,
-    }
-
     item AmmunitionManual1
     {
         DisplayCategory = RecipeResource,
@@ -229,7 +108,7 @@ module AuxiliasAmmunition
         Icon = Magazine_Armory1,
         BoredomChange = -20,
         StressChange = -15,
-        LearnedRecipes = CraftAmmoPress;AuxAmmoShapeBulletMold;AuxAmmoFireBulletMold;AuxAmmoShapeShotgunMold;AuxAmmoFireShotgunMold;AuxAmmoCastSmallPistolProjectiles;AuxAmmoFormSmallPistolCasings,
+        LearnedRecipes = CraftAmmoPress;AuxAmmoCastSmallPistolProjectiles,
         StaticModel = Base.Magazine,
         WorldStaticModel = Base.MagazineGround,
         Tags = base:magazine,
@@ -244,7 +123,7 @@ module AuxiliasAmmunition
         Icon = Magazine_Armory2,
         BoredomChange = -20,
         StressChange = -15,
-        LearnedRecipes = AuxAmmoRefineMineralSalts;AuxAmmoBlendSurvivalPropellant;AuxAmmoFormImprovisedPrimers;AuxAmmoAssemble9mm;AuxAmmoAssemble38;AuxAmmoCastHeavyPistolProjectiles;AuxAmmoFormHeavyPistolCasings;AuxAmmoAssemble45;AuxAmmoAssemble357,
+        LearnedRecipes = AuxAmmoRefineMineralSalts;AuxAmmoBlendSurvivalPropellant;AuxAmmoAssemble9mm;AuxAmmoAssemble38;AuxAmmoCastHeavyPistolProjectiles;AuxAmmoAssemble45;AuxAmmoAssemble357,
         StaticModel = Base.Magazine,
         WorldStaticModel = Base.MagazineGround,
         Tags = base:magazine,
@@ -259,7 +138,7 @@ module AuxiliasAmmunition
         Icon = Magazine_Metalworking2,
         BoredomChange = -20,
         StressChange = -15,
-        LearnedRecipes = AuxAmmoCastRifleProjectiles;AuxAmmoCastShotCharges;AuxAmmoFormRifleCasings;AuxAmmoFormShotgunHulls;AuxAmmoAssemble44;AuxAmmoAssemble556;AuxAmmoAssemble3030;AuxAmmoAssemble308;AuxAmmoAssembleShotgun,
+        LearnedRecipes = AuxAmmoCastRifleProjectiles;AuxAmmoCastShotCharges;AuxAmmoAssemble44;AuxAmmoAssemble556;AuxAmmoAssemble3030;AuxAmmoAssemble308;AuxAmmoAssembleShotgun,
         StaticModel = Base.Magazine,
         WorldStaticModel = Base.MagazineGround,
         Tags = base:magazine,

@@ -14,36 +14,27 @@ the implemented scripts and station placement in game before release.
 | Rifle body batch | Tabletop press | Blacksmith 7, Metalworking 7 | Iron ingot 1, copper scrap 1, kept pliers | 15 | 450 |
 | Shotgun body batch | Tabletop press | Blacksmith 6, Metalworking 7 | Iron ingot 1, copper scrap 1, ripped sheets 2, kept pliers | 15 | 450 |
 | Crush mineral powder | Any surface | Foraging 3 | Stone or limestone 2, hammer (retained) | 40 | 180 |
-| Grind carbon powder | Any surface | Reloading 3 | Charcoal or coke 8, mortar/pestle (retained) | 40 | 240 |
-| Mix field powder | Any surface | Reloading 5, Blacksmith 5 | Mineral powder 40, carbon powder 40, mortar/pestle (retained) | 40 | 300 |
-| Form primers | Tabletop press | Metalworking 8, Reloading 6 | Mineral powder 10, carbon powder 10, copper scrap 1 | 30 | 450 |
+| Grind carbon powder | Any surface | None | Wood charcoal, charcoal, or coke 8; mortar/pestle (retained) | 40 | 240 |
+| Prepare nitrogenous mix from compost | Any surface | Farming 3 | Compost bag 2 uses (50% of a full bag), mortar/pestle (retained) | 1 | 240 |
+| Prepare nitrogenous mix from NPK fertilizer | Any surface | Farming 3 | Fertilizer 2 uses (25% of a full bag), mortar/pestle (retained) | 1 | 180 |
+| Mix field powder | Any surface | Reloading 5, Blacksmith 5 | Mineral powder 40, carbon powder 40, nitrogenous mix 1, mortar/pestle (retained) | 40 | 300 |
 
-The two powder inputs are a fictional ammo-only game abstraction. Charcoal and vanilla coke
-share the `base:charcoal` tag; no `Base.Coal` item is assumed. Mineral powder retains the
-published `MineralSalts` ID, and field powder retains `SurvivalPropellant`.
-
-## Legacy-part conversion
-
-The four former casing/hull recipe IDs are one-for-one tabletop press conversions for
-previously saved parts. Each consumes one matching projectile/charge and casing/hull, and
-produces one body. They take 45 time units and award 1 Metalworking XP per item.
-
-| Old pair | New body | Metalworking |
-|---|---|---:|
-| Small pistol projectile + casing | Small pistol body | 5 |
-| Heavy pistol projectile + casing | Heavy pistol body | 6 |
-| Rifle projectile + casing | Rifle body | 7 |
-| Shot charge + shotgun hull | Shotgun body | 7 |
-
-Four former pottery recipe IDs provide optional cleanup of saved molds without reopening the
-pottery production chain. Unfired bullet and shotgun molds each yield two clay; fired molds
-each yield 20 mineral powder with a kept hammer. These salvage recipes require no manual or
-skill gate.
+The three field-powder inputs are a fictional ammo-only game abstraction. The carbon
+recipe explicitly accepts `Base.CharcoalCrafted` (Wood Charcoal), `Base.Charcoal`, and
+`Base.Coke` rather than relying on a tag label in the crafting UI. It requires no skill
+level and awards no Reloading XP. No `Base.Coal` item is assumed. Mineral powder retains the
+published `MineralSalts` ID, and field powder retains `SurvivalPropellant`. The new
+`NitrogenousMix` can be prepared from either vanilla `Base.CompostBag` or `Base.Fertilizer`.
+Compost comes from rotten food or picked-up animal dung processed in a vanilla composter.
+Native drainable input amounts count uses, not whole bags: `Base.CompostBag` has four uses
+(25% each) and becomes `Base.EmptySandbag` on depletion; `Base.Fertilizer` has eight uses
+(12.5% each) and has no replacement item defined. A full bag therefore supports two or
+four field-powder batches respectively. The two nitrogenous-mix preparation recipes are
+skill-gated but do not require a manual.
 
 ## Final assembly
 
-Every row consumes ten bodies and ten factory or improvised primers. Factory primers and
-improvised primers are alternatives, never combined.
+Every row consumes ten bodies and the listed amount of field powder.
 
 | Output | Body family | Field powder | Reloading | Time | Batch |
 |---|---|---:|---:|---:|---:|
@@ -59,13 +50,13 @@ improvised primers are alternatives, never combined.
 
 ## Economy intent
 
-One mineral-powder batch and one carbon-powder batch support one 40-unit field-powder batch;
-primers require another ten of each powder per 30-unit batch. Ten common pistol rounds use
-one quarter of a field-powder batch; ten .308 or shotgun rounds use one half. One body batch
+One mineral-powder batch, one carbon-powder batch, and one nitrogenous-mix unit support one
+40-unit field-powder batch. Ten common pistol rounds use one quarter of a field-powder
+batch; ten .308 or shotgun rounds use one half. One body batch
 always consumes one iron ingot and one copper scrap. Rifle and shotgun yields are only 15,
-creating material remainders and discouraging instant mass production. Charcoal or coke is
-consumed during carbon-powder grinding, while the hand press itself needs no fuel.
+creating material remainders and discouraging instant mass production. Wood charcoal,
+charcoal, or coke is consumed during carbon-powder grinding, while the hand press itself
+needs no fuel.
 
 Looted factory ammunition remains superior: it costs no high-level labor, fuel, metal, stone,
-or station time. Factory primers are valuable but do not bypass body manufacture, field
-powder, skill, or workstation requirements.
+or station time.

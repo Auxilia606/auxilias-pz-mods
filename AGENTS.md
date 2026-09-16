@@ -3,6 +3,8 @@
 This is a Project Zomboid mod monorepo. Before changing a mod, read
 `config/project-zomboid.json`, its entry in `config/mods.json`, and the relevant files in
 `shared/knowledge`.
+For ammunition crafting or its tabletop press, also read
+`mods/auxilias-ammunition/docs/DEVELOPMENT-HANDOFF.md` before editing.
 
 - Keep each independently released mod under `mods/<slug>` with its own `VERSION`,
   `CHANGELOG.md`, `docs`, `source-assets`, `tools`, and installable `workshop` tree.

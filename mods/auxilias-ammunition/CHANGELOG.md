@@ -2,9 +2,19 @@
 
 ## 1.1.0 (release candidate)
 
+- Open the placed tabletop press's CraftBench window with one left click, like
+  the vanilla furnace. This also works when the click picker selects the table
+  beneath the press; the icon-bearing right-click option remains available.
+- Reused the tabletop press item icon beside its right-click menu entry, making the
+  station easier to identify. Verified that the icon renders and the entry still opens
+  the CraftBench window in the 42.20.4 client.
 - Added a hand-operated tabletop ammunition press as the common station for body
-  pressing, primer forming, final assembly, and old-part conversion. Placement and
-  crafting behavior still require in-game acceptance.
+  pressing and final assembly. Its right-click CraftBench window and recipe list were
+  confirmed in a 42.20.4 client; crafting consumption still requires acceptance.
+- Added `UiConfig` and `CraftBench` to the press's custom moveable item and an enabled
+  XUI CraftBench panel. Restored missing components on presses already placed in saves,
+  using scoped chunk-load and game-start checks. The previously placed press now shows
+  **Tabletop Ammunition Press** on right-click and opens its CraftBench window.
 - Reduced its placed sprite to the size of vanilla tabletop machinery and removed
   translucent edge pixels that appeared as a checkerboard along the wooden base.
 - Rebuilt all four press faces with one isometric camera, common scale and tabletop
@@ -23,29 +33,25 @@
   wooden bed, paired uprights, one forged arch, central ram, and a short grip
   within the bed footprint. Lengthened the grip slightly for a clearer silhouette;
   all four faces use the same model, scale, and anchor.
-- Removed pottery molds, kiln firing, and charcoal fuel from current body production; saved molds
-  remain defined and can be salvaged through their published recipe IDs.
+- Removed pottery molds, kiln firing, and charcoal fuel from body production.
 - Combined projectile and casing manufacture into four cartridge-body recipes, with one
-  body item per caliber family and preserved vanilla ten-round outputs.
-- Reused the former casing recipe IDs for one-to-one conversion of matching components
-  already held in saves; retained all published item and recipe IDs.
-- Replaced compost-based propellant processing with portable crushing of stone and grinding
-  of charcoal or coke into two abstract powders, then blending ammo-only field powder.
-- Updated improvised primers, English and Korean crafting text, documentation, and static
-  validation for the redesigned chain. Runtime acceptance remains pending.
-
-- Replaced complete-ammunition placeholder world models with dedicated meshes for small and
-  heavy pistol projectiles, rifle projectiles, shot charge, and empty shotgun hulls.
-- Matched world-model quantity semantics to crafting counts: projectile and hull models now
-  show one counted component, while a shot charge remains a multi-pellet one-shell charge.
-- Added a reproducible Blender component-model pipeline, shared atlas, validation renders,
-  FBX round-trip checks, and static guards against restoring the placeholder mappings.
+  body item per caliber family and preserved vanilla ten-round outputs. Retired the
+  separate projectile, casing, hull, charge, and mold items and their recipes.
+- Reworked propellant processing around portable mineral and carbon powders plus a new
+  nitrogenous mix. Two uses of a compost bag (50%) or two uses of NPK fertilizer (25%)
+  prepare one mix; the existing field-powder recipe now consumes it. Collected animal dung
+  and rotten food feed the compost route through the vanilla composter. Partially used bags
+  remain usable, and the new recipes require Farming 3 without a manual.
+- Carbon grinding explicitly accepts wood charcoal, charcoal, or coke and no longer
+  requires Reloading 3 or awards Reloading XP for using a mortar and pestle.
+- Removed improvised and factory primers from the crafting chain, item set, and loot.
+  Final assembly now uses cartridge bodies and field powder. Runtime acceptance remains pending.
 - Installed the Workshop poster and mod-list icon beside the Build 42.20 metadata so the game
   no longer renders white placeholders when it selects the versioned `mod.info`.
 - Fixed all Build 42 crafting recipe translations so the crafting UI shows localized names
   instead of internal `AuxAmmo*` IDs.
-- Replaced reused vanilla component art with dedicated projectile, shot-charge, casing,
-  hull, and primer icons that remain distinct at the 32×32 inventory size.
+- Added dedicated cartridge-body and powder-component icons that remain distinct at
+  the 32×32 inventory size.
 - Reworked the Workshop cover as part of the shared Auxilia visual family: worn dark
   workbench, warm upper-left light, blackened metal, and restrained rust-orange accents.
 - Added reproducible icon and Workshop-art synchronization from high-resolution sources.

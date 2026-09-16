@@ -1,30 +1,33 @@
 # Auxilia's Ammunition
 
 Current version: **1.1.0** (release candidate; redesigned crafting has not completed in-game acceptance)
-Target: **Project Zomboid Build 42.20** (vanilla balance audited against 42.20.2; v1.0.0 runtime tested on 42.20.3)
+Target: **Project Zomboid Build 42.20** (current candidate checked on 42.20.4;
+historical v1.0.0 balance/runtime evidence uses earlier builds)
 
 Auxilia's Ammunition combines Build 42's charcoal, foraging, and metalworking systems
-with a small hand-operated tabletop ammunition press. It adds no skill, firearm
-override, or custom crafting runtime.
+with a small hand-operated tabletop ammunition press. It adds no skill or firearm
+override; production uses the game's native crafting system.
 
 ## Production loop
 
-1. Craft the movable tabletop ammunition press and place it on a suitable surface.
-2. Press a caliber-family cartridge body from iron and copper at the press. Each body
+1. Craft the movable tabletop ammunition press, place it on a suitable surface, and
+   left-click its tile to open the CraftBench directly, or right-click it and choose
+   **Tabletop Ammunition Press**.
+2. Press a caliber-family cartridge body from iron and copper in that window. Each body
    represents its projectile and casing together; shotgun bodies also use ripped sheets.
-3. Crush ordinary stone or limestone into mineral powder, grind charcoal or coke into
-   carbon powder, and combine the two on any surface into ammo-only field powder.
-4. Form primers at the ammunition press, then press batches of ten rounds using body +
-   field powder + primer.
+3. Crush ordinary stone or limestone into mineral powder and grind wood charcoal,
+   charcoal, or coke into carbon powder with a mortar and pestle; grinding requires no
+   skill level. Prepare nitrogenous mix from two uses of a compost bag (50%) or two
+   uses of NPK fertilizer (25%), then blend all three components into ammo-only field
+   powder. Rotten food and collected animal dung feed the vanilla composter.
+4. Press batches of ten rounds using cartridge bodies and field powder.
 
 The final outputs are the nine vanilla ammunition items, so vanilla guns and mods that
-consume vanilla ammo continue to work without patches. Factory primers remain a rare loot
-shortcut. High skill levels automatically reveal recipes so existing saves are not locked
-out if their manuals were generated before the mod was added.
+consume vanilla ammo continue to work without patches. High skill levels also reveal
+recipes without manuals.
 
-The press, cartridge bodies, and primers use dedicated icons so frequently handled items
-remain distinguishable at 32×32. Legacy molds, projectile, shot charge, casing, and hull
-items retain their IDs and icons for existing saves.
+The press, cartridge bodies, and nitrogenous mix use dedicated icons so frequently
+handled items remain distinguishable at 32×32.
 Run the repository-level `tools/sync-icons.ps1 -Mod auxilias-ammunition` after changing a
 128×128 master in `source-assets/icons`.
 
@@ -35,16 +38,6 @@ the next applies one scale and bed anchor to four 128×256 source tiles, writes 
 four-face preview and icon; the last writes the game's binary texture pack and tile
 definitions. The `tiledef=auxammo_press_01 7713` registration in
 both `mod.info` files must remain stable once the station appears in saved worlds.
-
-The old-part conversion and retired ceramic-mold salvage recipes are grouped under
-**Saved Ammo Parts** so the normal ammunition crafting list stays focused on current
-production. Existing mold item IDs remain valid in older saves, but new body recipes no
-longer require pottery or a kiln.
-
-The legacy projectiles, shot charge, and empty shotgun hull retain dedicated ground models
-instead of vanilla complete-ammunition meshes. Their reproducible Blender source, shared
-texture atlas, FBX round-trip checks, and regeneration command are documented in
-[the component model pipeline](docs/MODELING.md).
 
 ## Installation
 
@@ -58,7 +51,9 @@ loading a world. Servers and every connecting client must use the same version.
   `.30-30`, `.308`, and shotgun shells.
 - Does not override `Base` ammunition or firearms.
 - Does not recover spent casings; no firing event hooks are installed.
-- Uses one server-side Lua file only for procedural loot injection.
+- Uses server Lua for procedural loot, shared Lua to restore native components on
+  previously placed presses, and client Lua to display the press icon in its
+  right-click menu.
 - Other mods can consume the vanilla output. Adding recipes for their custom calibers is
   intentionally left to compatibility patches.
 
@@ -68,7 +63,7 @@ loading a world. Servers and every connecting client must use the same version.
 - [System design](docs/DESIGN.md)
 - [Balance tables](docs/BALANCE.md)
 - [Testing and known limits](docs/TESTING.md)
-- [Component model pipeline](docs/MODELING.md)
+- [Development handoff and confirmed pitfalls](docs/DEVELOPMENT-HANDOFF.md)
 - [1.0.0 release validation report](docs/reports/RELEASE-VALIDATION-1.0.0.md)
 - [Changelog](CHANGELOG.md)
 

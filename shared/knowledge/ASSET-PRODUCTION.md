@@ -40,6 +40,21 @@ default asset conventions for this monorepo.
   `IgnoreSurfaceSnap` is absent. Rotating a single-sprite moveable picks it up and places
   it again, so the same snap can undo a requested rotation. Give freely rotating tabletop
   tools `IgnoreSurfaceSnap` on every face.
+- In Build 42.20.4, moveable tiles can declare `CustomItem` alongside a matching entity
+  script. Vanilla's tabletop Key Duplicator does this: its moveable item has no
+  `UiConfig` or `CraftBench`, while its entity script defines the UI, bench, and sprite
+  components. The item's component list alone therefore cannot establish whether the
+  placed world object will open an entity window. Inspect that object's components and
+  right-click behavior in a client, including after save/reload.
+- A placed moveable already stored in a save may retain its original component set after
+  item or entity scripts change. On Build 42.20.4, a saved custom ammunition press had
+  one component and no `UiConfig` despite a current item script with both `UiConfig` and
+  `CraftBench`. Loading the script on a dedicated server and instantiating a fresh item
+  did not detect this. If an update needs old placed objects to gain components, repair
+  them on chunk load and check nearby loaded squares at game start; keep the repair
+  scoped to the custom sprite and `CustomItem`, and make it idempotent.
+- For the entity-window conditions, a scoped saved-object repair, and adding an icon to
+  the vanilla right-click option, see `BUILD-42-ENTITY-WORKSTATIONS-AND-CONTEXT-MENUS.md`.
 
 ## Workshop artwork
 

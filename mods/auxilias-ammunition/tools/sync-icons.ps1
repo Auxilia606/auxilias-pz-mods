@@ -27,8 +27,8 @@ if (-not (Test-Path -LiteralPath $runtimeRoot -PathType Container)) {
 }
 
 $icons = @(Get-ChildItem -LiteralPath $sourceRoot -Filter 'Item_AuxAmmo*.png' -File)
-if ($icons.Count -ne 16) {
-    throw "Expected 16 dedicated icon masters, found $($icons.Count)."
+if ($icons.Count -ne 7) {
+    throw "Expected 7 dedicated icon masters, found $($icons.Count)."
 }
 
 foreach ($icon in $icons) {

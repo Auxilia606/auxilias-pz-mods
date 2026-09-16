@@ -1,6 +1,6 @@
-"""Draw distinct ammunition-body and carbon-powder icon masters.
+"""Draw distinct ammunition-body and powder-component icon masters.
 
-The five 128px PNGs produced here are source assets. Run the repository's
+The six 128px PNGs produced here are source assets. Run the repository's
 sync-icons tool afterwards to generate the 32px Workshop textures.
 """
 
@@ -99,11 +99,9 @@ def draw_body(kind, width, body_top, body_bottom, tip_top, tip_shape, rotation):
     d.line(points(((left + 6, tip_top + 8), (left + 8, body_top - 4))),
            fill=(242, 190, 138, 165), width=px(2))
 
-    # The open dark primer pocket signals that this is an unfinished body.
+    # A plain closed base keeps the unfinished body distinct without a separate primer detail.
     d.ellipse(rect((left - 2, body_bottom - 7, right + 2, body_bottom + 5)),
               fill=(129, 72, 35, 255), outline=(41, 25, 20, 255), width=px(2))
-    d.ellipse(rect((61, body_bottom - 4, 67, body_bottom + 2)),
-              fill=(34, 30, 29, 255), outline=(198, 129, 57, 255), width=px(1))
     d.arc(rect((left + 3, body_bottom - 5, right - 3, body_bottom + 1)),
           182, 355, fill=(248, 175, 81, 215), width=px(1))
 
@@ -138,8 +136,6 @@ def draw_shotgun_body():
     d.line(points(((49, 91), (80, 91))), fill=(244, 182, 91, 215), width=px(2))
     d.ellipse(rect((43, 100, 86, 112)), fill=(122, 72, 35, 255),
               outline=(42, 27, 23, 255), width=px(2))
-    d.ellipse(rect((60, 102, 68, 109)), fill=(31, 31, 30, 255),
-              outline=(207, 139, 66, 255), width=px(1))
     image = image.rotate(27, resample=Image.Resampling.BICUBIC)
     return image.resize((128, 128), Image.Resampling.LANCZOS)
 
@@ -178,6 +174,47 @@ def draw_carbon_powder():
     return image.resize((128, 128), Image.Resampling.LANCZOS)
 
 
+def draw_nitrogenous_mix():
+    """An olive granular mixture in a shallow bowl, distinct from both powder piles."""
+    image = Image.new("RGBA", (CANVAS, CANVAS), (0, 0, 0, 0))
+    d = ImageDraw.Draw(image)
+    d.ellipse(rect((23, 99, 110, 118)), fill=(12, 12, 10, 90))
+    d.ellipse(rect((23, 64, 105, 108)), fill=(82, 51, 35, 255),
+              outline=(35, 29, 25, 255), width=px(3))
+    d.ellipse(rect((29, 68, 99, 94)), fill=(37, 34, 29, 255),
+              outline=(177, 116, 65, 255), width=px(2))
+
+    mound = Image.new("L", image.size)
+    ImageDraw.Draw(mound).polygon(points([
+        (31, 83), (38, 71), (47, 65), (54, 53), (69, 57),
+        (77, 65), (90, 69), (98, 82), (92, 91), (37, 91),
+    ]), fill=255)
+    image.alpha_composite(shaded_fill(
+        mound, (181, 175, 108), (111, 113, 67), (54, 64, 48), 921,
+    ))
+    d = ImageDraw.Draw(image)
+    d.line(points(((34, 81), (44, 69), (55, 62), (69, 64))),
+           fill=(223, 202, 124, 190), width=px(2))
+    rng = random.Random(921)
+    for _ in range(55):
+        x = rng.randrange(36, 95)
+        y = rng.randrange(68, 91)
+        if mound.getpixel((px(x), px(y))) == 0:
+            continue
+        radius = rng.choice((1, 1, 2))
+        d.ellipse(rect((x - radius, y - radius, x + radius, y + radius)),
+                  fill=rng.choice(((48, 54, 37, 245), (213, 183, 111, 230),
+                                   (139, 103, 61, 235))))
+
+    d.arc(rect((24, 69, 104, 109)), 4, 177,
+          fill=(30, 25, 22, 255), width=px(5))
+    d.arc(rect((28, 71, 100, 105)), 8, 171,
+          fill=(202, 137, 73, 230), width=px(3))
+    d.arc(rect((32, 77, 96, 102)), 10, 170,
+          fill=(103, 64, 40, 230), width=px(2))
+    return image.resize((128, 128), Image.Resampling.LANCZOS)
+
+
 def main():
     icons = {
         "AuxAmmoSmallPistolBody": draw_body(
@@ -196,6 +233,7 @@ def main():
         ),
         "AuxAmmoShotgunBody": draw_shotgun_body(),
         "AuxAmmoCarbonPowder": draw_carbon_powder(),
+        "AuxAmmoNitrogenousMix": draw_nitrogenous_mix(),
     }
     for name, icon in icons.items():
         icon.save(ROOT / f"Item_{name}.png")

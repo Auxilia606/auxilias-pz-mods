@@ -7,6 +7,17 @@ module Base
             LuaWindowClass = ISEntityWindow,
             DisplayName = Tabletop Ammunition Press,
             Icon = Item_AuxAmmoPress,
+            components
+            {
+                CraftBench
+                {
+                    LuaPanelClass = ISCraftBenchPanel,
+                    DisplayName = Press,
+                    Icon = Item_AuxAmmoPress,
+                    Enabled = true,
+                    ListOrderZ = 1000,
+                }
+            }
         }
     }
 }

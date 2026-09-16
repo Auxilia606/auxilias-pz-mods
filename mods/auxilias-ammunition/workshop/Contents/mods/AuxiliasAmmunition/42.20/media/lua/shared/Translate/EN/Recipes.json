@@ -13,16 +13,9 @@
     "AuxAmmoCastRifleProjectiles": "Make Rifle Round Bodies",
     "AuxAmmoCastShotCharges": "Make Shotgun Shell Bodies",
     "AuxAmmoCastSmallPistolProjectiles": "Make Small Pistol Round Bodies",
-    "AuxAmmoFireBulletMold": "Break Down Old Fired Bullet Mold",
-    "AuxAmmoFireShotgunMold": "Break Down Old Fired Shotgun Mold",
-    "AuxAmmoFormHeavyPistolCasings": "Combine Legacy Large Pistol Parts",
-    "AuxAmmoFormImprovisedPrimers": "Form Improvised Primers",
-    "AuxAmmoFormRifleCasings": "Combine Legacy Rifle Parts",
-    "AuxAmmoFormShotgunHulls": "Combine Legacy Shotgun Parts",
-    "AuxAmmoFormSmallPistolCasings": "Combine Legacy Small Pistol Parts",
     "AuxAmmoGrindCarbonPowder": "Grind Carbon Powder",
+    "AuxAmmoPrepareNitrogenousMixFromCompost": "Prepare Nitrogenous Mix from Compost",
+    "AuxAmmoPrepareNitrogenousMixFromFertilizer": "Prepare Nitrogenous Mix from Fertilizer",
     "AuxAmmoRefineMineralSalts": "Crush Mineral Powder",
-    "AuxAmmoShapeBulletMold": "Reclaim Clay from Old Bullet Mold",
-    "AuxAmmoShapeShotgunMold": "Reclaim Clay from Old Shotgun Mold",
     "CraftAmmoPress": "Craft Tabletop Ammunition Press"
 }
