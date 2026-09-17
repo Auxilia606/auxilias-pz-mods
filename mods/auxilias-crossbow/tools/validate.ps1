@@ -25,6 +25,7 @@ $requiredFiles = @(
     (Join-Path $versionRoot 'media\scripts\auxilia_items.txt'),
     (Join-Path $versionRoot 'media\scripts\auxilia_recipes.txt'),
     (Join-Path $versionRoot 'media\scripts\auxilia_models.txt'),
+    (Join-Path $versionRoot 'media\lua\shared\AuxiliaCrossbow_Crafting.lua'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_AmmoSelection.lua'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_ModelState.lua'),
     (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_FirearmEffects.lua'),
@@ -116,6 +117,9 @@ $englishRecipes = Get-Content -LiteralPath (Join-Path $translationRoot 'EN\Recip
 $expectedEnglishRecipeNames = @{
     ShapeBoltHead = 'Shape Metal Crossbow Bolt Head from Nail'
     KnappBoltHeads = 'Knap Stone Crossbow Bolt Heads'
+    CarveBoltShaftBatch = 'Carve 5 Crossbow Bolt Shafts'
+    MakeStandardBoltsBatch = 'Assemble 5 Metal Crossbow Bolts'
+    MakeStoneBoltBatch = 'Assemble 5 Stone Crossbow Bolts'
 }
 foreach ($recipeName in $expectedEnglishRecipeNames.Keys) {
     if ($englishRecipes.$recipeName -ne $expectedEnglishRecipeNames[$recipeName]) {
@@ -439,7 +443,7 @@ function Get-CraftRecipeBlock {
     throw "Recipe closing brace not found: $Name"
 }
 
-foreach ($recipeName in @('MakeLightCrossbow', 'MakeCrossbow', 'MakeHeavyCrossbow', 'CarveBoltShaft', 'ShapeBoltHead', 'KnappBoltHeads', 'ForgeBoltHeads', 'MakeStandardBolts', 'MakeStoneBolt', 'SalvageBrokenBolts', 'SalvageBrokenStoneBolt')) {
+foreach ($recipeName in @('MakeLightCrossbow', 'MakeCrossbow', 'MakeHeavyCrossbow', 'CarveBoltShaft', 'CarveBoltShaftBatch', 'ShapeBoltHead', 'KnappBoltHeads', 'ForgeBoltHeads', 'MakeStandardBolts', 'MakeStandardBoltsBatch', 'MakeStoneBolt', 'MakeStoneBoltBatch', 'SalvageBrokenBolts', 'SalvageBrokenStoneBolt')) {
     if ($recipesText -notmatch [regex]::Escape("craftRecipe $recipeName")) {
         throw "Recipe definition not found: $recipeName"
     }
@@ -488,15 +492,18 @@ if ($recipesText -match 'CraftKnifeSpear') {
 }
 
 $vanillaAlignedRecipeChecks = @(
-    @{ Recipe = 'MakeLightCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:20;Carving:20;Maintenance:10', 'item\s+1\s+\[Base\.Plank\]') },
-    @{ Recipe = 'MakeCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:40;Carving:30;Maintenance:30', 'item\s+1\s+\[AuxiliasCrossbow\.ImprovisedCrossbow\]', 'item\s+1\s+\[Base\.MetalBar\]', 'tags\[base:screwdriver\]', 'tags\[base:pliers\]') },
-    @{ Recipe = 'MakeHeavyCrossbow'; Patterns = @('time\s*=\s*900', 'Tags\s*=\s*AdvancedForge', 'timedAction\s*=\s*HammerMetalStanding', 'xpAward\s*=\s*Maintenance:40;Blacksmith:45', 'item\s+4\s+tags\[base:charcoal\]', 'item\s+1\s+\[AuxiliasCrossbow\.ReinforcedCrossbow\]', 'item\s+1\s+\[Base\.SteelBarHalf\]', 'tags\[base:ballpeenhammer\]', 'tags\[base:tongs\]') },
+    @{ Recipe = 'MakeLightCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:20;Carving:10;Maintenance:5', 'item\s+1\s+\[Base\.Plank\]') },
+    @{ Recipe = 'MakeCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:40;Carving:15;Maintenance:10', 'OnTest\s*=\s*AuxiliaCrossbowCrafting\.canUseUpgradeItem', 'OnCreate\s*=\s*AuxiliaCrossbowCrafting\.finishUpgrade', 'item\s+1\s+\[AuxiliasCrossbow\.ImprovisedCrossbow\]\s+flags\[Prop2;InheritCondition\]', 'item\s+1\s+\[Base\.MetalBar\]', 'item\s+1\s+\[Base\.HandDrill;Base\.StoneDrill\]', 'tags\[base:screwdriver\]', 'tags\[base:pliers\]') },
+    @{ Recipe = 'MakeHeavyCrossbow'; Patterns = @('time\s*=\s*900', 'Tags\s*=\s*AdvancedForge', 'NeedToBeLearn\s*=\s*true', 'AutoLearnAll\s*=\s*Maintenance:4;Blacksmith:6', 'timedAction\s*=\s*HammerMetalStanding', 'xpAward\s*=\s*Maintenance:10;Blacksmith:45', 'OnTest\s*=\s*AuxiliaCrossbowCrafting\.canUseUpgradeItem', 'OnCreate\s*=\s*AuxiliaCrossbowCrafting\.finishUpgrade', 'item\s+4\s+tags\[base:charcoal\]', 'item\s+1\s+\[AuxiliasCrossbow\.ReinforcedCrossbow\]\s+flags\[InheritCondition\]', 'item\s+1\s+\[Base\.SteelBarHalf\]', 'item\s+1\s+\[Base\.HandDrill;Base\.StoneDrill\]', 'tags\[base:ballpeenhammer\]', 'tags\[base:tongs\]') },
     @{ Recipe = 'CarveBoltShaft'; Patterns = @('time\s*=\s*100', 'xpAward\s*=\s*Carving:10') },
+    @{ Recipe = 'CarveBoltShaftBatch'; Patterns = @('time\s*=\s*450', 'SkillRequired\s*=\s*Carving:2', 'xpAward\s*=\s*Carving:40', 'item\s+5\s+\[Base\.SmallHandle\]', 'item\s+5\s+AuxiliasCrossbow\.BoltShaft') },
     @{ Recipe = 'ShapeBoltHead'; Patterns = @('time\s*=\s*100', 'xpAward\s*=\s*Maintenance:5') },
     @{ Recipe = 'KnappBoltHeads'; Patterns = @('time\s*=\s*230', 'xpAward\s*=\s*FlintKnapping:20') },
     @{ Recipe = 'ForgeBoltHeads'; Patterns = @('time\s*=\s*200', 'xpAward\s*=\s*Blacksmith:20') },
     @{ Recipe = 'MakeStandardBolts'; Patterns = @('time\s*=\s*100', 'Tags\s*=\s*InHandCraft;Survivalist', 'SkillRequired\s*=\s*Maintenance:1', 'timedAction\s*=\s*MakingJewellery', 'xpAward\s*=\s*Maintenance:5') },
+    @{ Recipe = 'MakeStandardBoltsBatch'; Patterns = @('time\s*=\s*450', 'SkillRequired\s*=\s*Maintenance:1', 'xpAward\s*=\s*Maintenance:20', 'item\s+5\s+\[AuxiliasCrossbow\.BoltShaft\]', 'item\s+5\s+\[AuxiliasCrossbow\.BoltHead\]', 'item\s+5\s+tags\[base:feather\]', 'item\s+5\s+\[Base\.Twine\]', 'item\s+5\s+Base\.AuxiliasCrossbowBolt') },
     @{ Recipe = 'MakeStoneBolt'; Patterns = @('time\s*=\s*100', 'Tags\s*=\s*InHandCraft;Survivalist', 'SkillRequired\s*=\s*Maintenance:1', 'timedAction\s*=\s*MakingJewellery', 'xpAward\s*=\s*Maintenance:5') },
+    @{ Recipe = 'MakeStoneBoltBatch'; Patterns = @('time\s*=\s*450', 'SkillRequired\s*=\s*Maintenance:1', 'xpAward\s*=\s*Maintenance:20', 'item\s+5\s+\[AuxiliasCrossbow\.BoltShaft\]', 'item\s+5\s+\[AuxiliasCrossbow\.StoneBoltHead\]', 'item\s+5\s+tags\[base:feather\]', 'item\s+5\s+\[Base\.Twine\]', 'item\s+5\s+Base\.AuxiliasStoneCrossbowBolt') },
     @{ Recipe = 'SalvageBrokenBolts'; Patterns = @('time\s*=\s*60', 'category\s*=\s*Assembly'); Forbidden = @('SkillRequired\s*=', 'xpAward\s*=') },
     @{ Recipe = 'SalvageBrokenStoneBolt'; Patterns = @('time\s*=\s*60', 'category\s*=\s*Assembly'); Forbidden = @('SkillRequired\s*=', 'xpAward\s*=') }
 )
@@ -518,6 +525,9 @@ foreach ($recipeSpec in $vanillaAlignedRecipeChecks) {
 if (([regex]::Matches($recipesText, 'item\s+1\s+tags\[base:feather\]')).Count -ne 2) {
     throw 'Both bolt assembly recipes must require one vanilla-compatible feather.'
 }
+if (([regex]::Matches($recipesText, 'item\s+5\s+tags\[base:feather\]')).Count -ne 2) {
+    throw 'Both batch assembly recipes must require five vanilla-compatible feathers.'
+}
 
 if ($recipesText -match 'Base\.DuctTape') {
     throw 'Feather fletching must not be bypassed with Duct Tape.'
@@ -533,16 +543,19 @@ foreach ($recipeCheck in @(
     }
 }
 
-if ($recipesText -match 'item\s+5\s+Base\.AuxiliasCrossbowBolt') {
-    throw 'Standard bolts must be assembled one at a time.'
-}
-
 if ($recipesText -match 'item\s+2\s+\[AuxiliasCrossbow\.BrokenBolt\]') {
     throw 'Broken bolts must be salvaged one at a time.'
 }
 
-if ($recipesText -match 'NeedToBeLearn\s*=\s*true') {
-    throw 'Auxilia recipes must remain skill-gated without a separate recipe unlock.'
+if (([regex]::Matches($recipesText, 'NeedToBeLearn\s*=\s*true')).Count -ne 1) {
+    throw 'Only the Heavy Crossbow may require advanced recipe learning.'
+}
+
+$craftingLuaText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\shared\AuxiliaCrossbow_Crafting.lua') -Raw
+foreach ($stateCheck in @('function AuxiliaCrossbowCrafting.canUseUpgradeItem', 'getCurrentAmmoCount() == 0', 'function AuxiliaCrossbowCrafting.finishUpgrade', 'getAllConsumedItems()', 'getFirstCreatedItem()', 'setAmmoType(ammoType)', 'syncItemFields()')) {
+    if ($craftingLuaText -notmatch [regex]::Escape($stateCheck)) {
+        throw "Crossbow upgrade state handling is missing: $stateCheck"
+    }
 }
 
 $registriesText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\registries.lua') -Raw
@@ -633,7 +646,7 @@ foreach ($testKitCheck in @('isDebugEnabled', 'AuxiliasStoneCrossbowBolt', 'Cont
 }
 
 $alignmentDocText = Get-Content -LiteralPath (Join-Path $repoRoot 'docs\VANILLA-RECIPE-ALIGNMENT.md') -Raw
-foreach ($documentationCheck in @('Build 42.20.2 vanilla recipe alignment', 'Vanilla anchors', 'Auxilia changes', 'Material and workstation corrections', 'ReclaimFromSpear', 'Forge_Nails_From_Piece')) {
+foreach ($documentationCheck in @('Build 42.20.2 vanilla recipe alignment', 'Vanilla anchors', 'Earlier Auxilia calibration', 'Build 42.20.4 follow-up', 'Material and workstation corrections', 'ReclaimFromSpear', 'Forge_Nails_From_Piece')) {
     if ($alignmentDocText -notmatch [regex]::Escape($documentationCheck)) {
         throw "Vanilla recipe-alignment documentation is incomplete: $documentationCheck"
     }

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Preserved condition and selected bolt material when upgrading an unloaded Crossbow, and blocked loaded weapons from upgrade inputs so their bolt cannot be consumed unnoticed.
+- Added five-item Bolt Shaft, Metal Bolt, and Stone Bolt batch recipes at unchanged per-item material cost, with modest time and XP savings.
+- Reduced secondary-skill XP from the three Crossbow construction recipes; the Heavy Crossbow now auto-unlocks at Maintenance 4 and Blacksmith 6.
+- Accepted Stone Drill alongside Hand Drill for both Crossbow upgrades.
+- Refined the Metal/Stone bolt family to match the edited crossbows: tapered shafts, shaped fletching, ridged bindings, a necked bodkin and knapped stone facets; all six loaded models use the same updated parts with checked stock/groove clearance.
+- Replaced oversized broken-bolt shafts and separate splinter rods with shorter integral fractures that share the intact bolts' exact heads and shaft thickness. Added canonical shaft and head models for crafting components, replacing the vanilla model placeholders without changing item IDs.
+- Made the Blender file the editable source for all three crossbows, with named parts, linked body meshes across nine weapon states, canonical loaded/loose bolt meshes, and an export-only pipeline that preserves authored edits.
+- Refined the wooden stocks, replaced top-only UV projection with per-face mapping, added a packed 512px material atlas and calibrated preview lighting, and simplified the front bindings while preserving the tested limb/string geometry and game attachment frame.
+- Added FBX triangle/UV/winding comparison, collapsed-UV checks, source/export hashes, and loaded-bolt identity checks to the model audit.
 - Restored Build 42's aimed-firearm path for the crosshair, ranged target selection, hit resolution, and multiplayer shot synchronization. Same-tick muzzle-light removal hides the firearm flash without disabling ballistics; the engine's bright tracer remains because its per-ammunition controller is not exposed to ordinary mod Lua.
 - Corrected every relaxed and loaded crossbow's dropped-world transform so the broad prod rests top-side-up above the floor instead of standing on edge with one limb embedded in the ground.
 - Redesigned both broken-bolt icons as shortened recoverable head-side fragments with compact V-shaped fractures, and replaced the world models' long lateral branch with two short break splinters so damage no longer resembles brown fletching.

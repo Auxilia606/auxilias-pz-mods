@@ -61,13 +61,18 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - Firing is dramatically quieter than a pistol.
 - After hits, zombie and animal corpses contain an intact or broken bolt matching the loaded material.
 - A Small Handle can be carved into exactly one Bolt Shaft.
+- Five Small Handles can be carved into exactly five Bolt Shafts with the batch recipe, consuming no extra material.
 - One Nail can be shaped into exactly one Metal Bolt Head.
 - One Chipped Stone can be knapped into exactly two Stone Bolt Heads at Flint Knapping 2.
 - One Iron or Steel Piece plus Charcoal can be forged into exactly two Metal Bolt Heads at a Primitive Forge with Blacksmith 2.
 - The forging recipe is unavailable away from a Primitive Forge.
 - The Heavy Crossbow recipe is unavailable away from an Advanced Forge and consumes one Crossbow, four Charcoal, and one Steel Bar Half.
+- The Heavy Crossbow recipe is unavailable before it auto-unlocks at Maintenance 4 and Blacksmith 6; the Light and standard Crossbow recipes retain their skill-only availability.
 - Crossbow construction consumes one Light Crossbow and requires both a Screwdriver and Pliers for its screws and wire.
+- Hand Drill and Stone Drill each satisfy the drill input for both Crossbow upgrades.
+- Upgrading a partially damaged, unloaded Crossbow preserves its condition fraction and selected Metal or Stone Bolt type. A Crossbow with a loaded bolt is not a valid upgrade input.
 - One Bolt Shaft, one matching Bolt Head, Twine, and one Chicken or Turkey Feather assemble exactly one bolt of that material.
+- Five shafts, five matching heads, five feathers, and five Twine uses assemble exactly five bolts in one batch. A partially used Twine spool supplies only its remaining uses; batch crafting does not duplicate Twine or bolts.
 - Duct Tape cannot replace the feather.
 - Butchering a chicken or turkey supplies vanilla feathers usable by both bolt assembly recipes.
 - One Broken Bolt yields one reusable head of its original material and never a complete bolt.
@@ -75,7 +80,7 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - Both recovery recipes use the compact small-parts action rather than hammering the intact head or displaying a full-size spear prop.
 - In a sufficiently large recovery sample, Metal Bolts approach 70% intact and Stone Bolts approach 45% intact.
 - Crafting recipes unlock only when every listed skill requirement is met.
-- Debug recipe-time and XP checks match `docs/VANILLA-RECIPE-ALIGNMENT.md`: `time = 600` for Light Crossbow and Crossbow, 900 for Heavy Crossbow, 230 for knapping, 200 for small forging, 100 for carving/assembly, and 60 for salvage with no XP.
+- Debug recipe-time and XP checks match the current section of `docs/VANILLA-RECIPE-ALIGNMENT.md`: `time = 600` for Light Crossbow and Crossbow, 900 for Heavy Crossbow, 450 for five-item batches, 230 for knapping, 200 for small forging, 100 for single-item carving/assembly, and 60 for salvage with no XP.
 - Survivor bags and barricaded/safehouse distributions very rarely contain a crossbow.
 - Item names and recipe names change correctly between English and Korean.
 - All ten dedicated mod icons have no black box, clipped edge, or missing texture and remain distinct from the 3D model textures.

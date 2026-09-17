@@ -24,7 +24,9 @@ Vanilla weapon recipes commonly use `time = 600` for complex two-handed construc
 
 XP usually follows the primary skill gate in roughly ten-point steps. Small secondary operations often award 1–5 XP, while a Blacksmith 4 forged spear head awards 45 XP. Reclaiming an already-built item awards no XP.
 
-## Auxilia changes
+## Earlier Auxilia calibration
+
+The following table records the original Build 42.20.2 balance pass. The current changes are listed in the 42.20.4 follow-up below.
 
 | Auxilia recipe | Previous | Adjusted 42.20.2 value | Basis |
 |---|---|---|---|
@@ -58,6 +60,20 @@ The remaining shared inputs were checked against their installed vanilla definit
 
 ## Intentional project-specific differences
 
-Some advanced vanilla recipes require research or auto-learning thresholds. Auxilia recipes intentionally remain available through skill gates alone, as established by the mod's design. No magazine or schematic requirement was added during this balance pass.
+This earlier balance pass left every Auxilia recipe available through skill gates alone. The later follow-up adds automatic learning to the Heavy Crossbow only; no magazine or schematic item is required.
 
 The Light and standard Crossbows use multiple skills because their recipes combine stock shaping, joinery, and mechanical fitting. The Heavy Crossbow upgrade requires only Maintenance and Blacksmith because it reuses the completed Crossbow's hardwood tiller while adding a steel prod and reinforced iron fittings. Linear upgrade inputs and material cost limit the recipes' usefulness for repeatable XP farming.
+
+## Build 42.20.4 follow-up
+
+The installed Build 42.20.4 scripts confirm that vanilla `AssembleBlade`, `AssembleSpear`, and `NailSpikeWeapon` mark a consumed weapon or main component with `InheritCondition`. `ForgeSpearHead` and `ForgeLongSpearHead` require learned recipes and auto-unlock at higher skills. The installed `InputScript` bytecode checks `IsEmpty` for containers and drainables but not a HandWeapon's ammunition count, so the two crossbow upgrades use an `OnTest` callback to reject loaded inputs. Their `OnCreate` callback carries the selected Metal or Stone ammunition type into the new weapon.
+
+| Current recipe | Time / XP | Change |
+|---|---|---|
+| Light Crossbow | 600 / Woodwork 20, Carving 10, Maintenance 5 | Reduced secondary-skill XP |
+| Crossbow | 600 / Woodwork 40, Carving 15, Maintenance 10 | Reduced secondary-skill XP; inherits Light Crossbow condition and ammunition selection; requires it to be unloaded |
+| Heavy Crossbow | 900 / Blacksmith 45, Maintenance 10 | Reduced secondary-skill XP; inherits Crossbow condition and ammunition selection; requires it to be unloaded; auto-learns at Maintenance 4 and Blacksmith 6 |
+| Carve 5 Bolt Shafts | 450 / Carving 40 | Five Small Handles yield five shafts, preserving material cost |
+| Assemble 5 Metal or Stone Bolts | 450 / Maintenance 20 each | Five shafts, matching heads, feathers, and Twine uses yield five bolts |
+
+The single-bolt recipes retain their original IDs and values. Both Crossbow upgrades explicitly accept `Base.HandDrill` or `Base.StoneDrill`; the latter has only the vanilla `base:drillwoodpoor` tag and therefore cannot enter through the original `base:drillmetal` input. The three new batch recipes bring the total to fourteen without changing existing item IDs.

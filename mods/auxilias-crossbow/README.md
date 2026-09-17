@@ -60,7 +60,7 @@ complete mod rather than an early playable milestone.
 
 ## Recipe balance
 
-Crafting times, tools, workstations, materials, skill gates, and XP awards are calibrated against the installed stable 42.20.2 vanilla recipes. The comparison includes every Auxilia crafting recipe and records each previous and adjusted value in the [vanilla recipe alignment report](docs/VANILLA-RECIPE-ALIGNMENT.md).
+Crafting times, tools, workstations, materials, skill gates, and XP awards are calibrated against installed vanilla recipes. The [vanilla recipe alignment report](docs/VANILLA-RECIPE-ALIGNMENT.md) records the original calibration and current adjustments. Bolts can be assembled singly or in batches of five; the Heavy Crossbow recipe auto-unlocks at Maintenance 4 and Blacksmith 6.
 
 ## Package
 
@@ -73,7 +73,7 @@ missing release for the current tagged version without replacing an existing rel
 
 ## Verification status
 
-The 0.1.0 package and every post-release development milestone were loaded by the installed Project Zomboid 42.20.2 server or client without an Auxilia-related registry, script, model, or Lua error. Both ammunition registries, all current items, and all eleven recipes were accepted exactly once. The project owner completed the final single-player integration procedure on 2026-08-17, covering ammunition switching and preservation, crafting, firing, recovery, balance, loot, and English/Korean presentation. On 2026-08-23, the project owner also passed the Build 42.20.3 client, existing-save, and multiplayer compatibility checks, including aimed-firearm targeting, Metal/Stone Bolt behavior, muzzle-light suppression, vanilla firearm lighting, and remote shot synchronization. The asset pipeline round-trips separate Metal and Stone Bolt models plus fixed-length relaxed/cocked states for all three crossbows. It also validates ten dedicated hand-painted item icons independently from the 3D models. See `docs/SMOKE-TEST.md` and `docs/TESTING.md`.
+The 0.1.0 package and earlier post-release development milestones were loaded by the installed Project Zomboid 42.20.2 server or client without an Auxilia-related registry, script, model, or Lua error. Both ammunition registries, all earlier items, and the original eleven recipes were accepted exactly once. The project owner completed the final single-player integration procedure on 2026-08-17, covering ammunition switching and preservation, crafting, firing, recovery, balance, loot, and English/Korean presentation. On 2026-08-23, the project owner also passed the Build 42.20.3 client, existing-save, and multiplayer compatibility checks, including aimed-firearm targeting, Metal/Stone Bolt behavior, muzzle-light suppression, vanilla firearm lighting, and remote shot synchronization. The asset pipeline round-trips separate Metal and Stone Bolt models plus fixed-length relaxed/cocked states for all three crossbows. It also validates ten dedicated hand-painted item icons independently from the 3D models. See `docs/SMOKE-TEST.md` and `docs/TESTING.md`.
 
 ## License
 

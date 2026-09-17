@@ -1,5 +1,15 @@
 # Build 42.20 compatibility and smoke-test report
 
+## Recipe balance and drill alternatives — Build 42.20.4
+
+Date: 2026-09-17
+
+The updated mod was copied into an isolated cache and loaded by the locally installed Build 42.20.4 dedicated server in no-Steam mode. The server discovered `AuxiliasCrossbow`, parsed the fourteen crafting recipes, and reached `*** SERVER STARTED ****`. No script-load error or mod-specific exception appeared in the final server log.
+
+The first load exposed a duplicate `Prop2` assignment in `MakeHeavyCrossbow` (Tongs and the consumed Crossbow). Removing `Prop2` from the Crossbow input fixed the parser error; `InheritCondition` remains on that input. Repository-wide validation passed after the correction.
+
+The server smoke test verifies loading and recipe syntax. Exact ingredient consumption, batch outputs, automatic learning, loaded-weapon rejection, and condition/ammunition inheritance still require the interactive checks in `docs/TESTING.md`.
+
 Date: 2026-08-16
 
 The repository build was copied into an isolated Project Zomboid cache and loaded by the locally installed 42.20.2 dedicated server in no-Steam mode.

@@ -30,6 +30,13 @@ was Build 42.20.4 (2026-09-13). Recheck these IDs and tags when the target chang
   vanilla recipes such as baking with flour and fixing with duct tape use the same syntax.
   Use separate recipe inputs when different drainables need different use counts; do not
   rely on per-alternative `N:Base.Item` consumption without an in-game check.
+- The installed `Base.HandDrill` has `base:drillmetal` and `base:drillwoodpoor` tags,
+  while `Base.StoneDrill` has `base:drillwoodpoor` but no `base:drillmetal`. A recipe
+  that should accept exactly these two tools can list them as explicit item alternatives.
+- The installed `InputScript.doesItemPassIsOrNotEmptyAndFullTests` bytecode applies
+  `IsEmpty` to containers, drainables, radios, weapon parts, and fluid containers,
+  but does not inspect a `HandWeapon`'s current ammunition count. Use a recipe
+  `OnTest` callback when an upgrade must reject a loaded firearm-style weapon.
 
 Sources in the installed game include `media/scripts/generated/items/normal.txt`,
 `media/scripts/generated/items/weapon.txt`,

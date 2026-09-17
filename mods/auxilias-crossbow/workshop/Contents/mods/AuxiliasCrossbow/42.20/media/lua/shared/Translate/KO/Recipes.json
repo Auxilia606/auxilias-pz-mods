@@ -3,11 +3,14 @@
     "MakeCrossbow": "석궁 제작",
     "MakeHeavyCrossbow": "중량 석궁 제작",
     "CarveBoltShaft": "석궁 볼트 몸체 가공",
+    "CarveBoltShaftBatch": "석궁 볼트 몸체 5개 가공",
     "ShapeBoltHead": "못으로 석궁 볼트촉 성형",
     "KnappBoltHeads": "석제 석궁 볼트촉 제작",
     "ForgeBoltHeads": "금속제 석궁 볼트촉 단조",
     "MakeStandardBolts": "금속제 석궁 볼트 조립",
+    "MakeStandardBoltsBatch": "금속제 석궁 볼트 5개 조립",
     "MakeStoneBolt": "석제 석궁 볼트 조립",
+    "MakeStoneBoltBatch": "석제 석궁 볼트 5개 조립",
     "SalvageBrokenBolts": "파손 석궁 볼트에서 금속촉 회수",
     "SalvageBrokenStoneBolt": "파손 석궁 볼트에서 석제 촉 회수"
 }

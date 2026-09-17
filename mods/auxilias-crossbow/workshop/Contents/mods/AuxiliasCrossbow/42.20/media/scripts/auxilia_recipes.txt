@@ -12,7 +12,7 @@ module AuxiliasCrossbow
         category = Weaponry,
         SkillRequired = Woodwork:2;Carving:2;Maintenance:1,
         timedAction = CraftWeapon2H,
-        xpAward = Woodwork:20;Carving:20;Maintenance:10,
+        xpAward = Woodwork:20;Carving:10;Maintenance:5,
         inputs
         {
             item 1 tags[base:saw;base:smallsaw;base:crudesaw] mode:keep flags[MayDegradeLight],
@@ -35,17 +35,19 @@ module AuxiliasCrossbow
         category = Weaponry,
         SkillRequired = Woodwork:4;Carving:3;Maintenance:3,
         timedAction = CraftWeapon2H,
-        xpAward = Woodwork:40;Carving:30;Maintenance:30,
+        xpAward = Woodwork:40;Carving:15;Maintenance:10,
+        OnTest = AuxiliaCrossbowCrafting.canUseUpgradeItem,
+        OnCreate = AuxiliaCrossbowCrafting.finishUpgrade,
         inputs
         {
             item 1 tags[base:saw;base:smallsaw] mode:keep flags[MayDegradeLight],
             item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
             item 1 tags[base:hammer] mode:keep flags[MayDegradeLight],
-            item 1 tags[base:drillmetal] mode:keep flags[MayDegradeLight],
+            item 1 [Base.HandDrill;Base.StoneDrill] mode:keep flags[MayDegradeLight],
             item 1 tags[base:screwdriver] mode:keep flags[MayDegradeLight],
             item 1 tags[base:pliers] mode:keep flags[MayDegradeLight],
             item 1 tags[base:file;base:whetstone] mode:keep flags[MayDegradeLight],
-            item 1 [AuxiliasCrossbow.ImprovisedCrossbow],
+            item 1 [AuxiliasCrossbow.ImprovisedCrossbow] flags[Prop2;InheritCondition],
             item 1 [Base.MetalBar],
             item 2 [Base.Wire],
             item 1 [Base.Rope],
@@ -63,18 +65,22 @@ module AuxiliasCrossbow
         Tags = AdvancedForge,
         category = Weaponry,
         SkillRequired = Maintenance:4;Blacksmith:4,
+        NeedToBeLearn = true,
+        AutoLearnAll = Maintenance:4;Blacksmith:6,
         timedAction = HammerMetalStanding,
-        xpAward = Maintenance:40;Blacksmith:45,
+        xpAward = Maintenance:10;Blacksmith:45,
+        OnTest = AuxiliaCrossbowCrafting.canUseUpgradeItem,
+        OnCreate = AuxiliaCrossbowCrafting.finishUpgrade,
         inputs
         {
             item 4 tags[base:charcoal],
             item 1 tags[base:ballpeenhammer] mode:keep flags[Prop1;MayDegradeLight],
             item 1 tags[base:tongs] mode:keep flags[Prop2;MayDegradeLight],
             item 1 tags[base:file;base:whetstone] mode:keep flags[MayDegradeLight],
-            item 1 tags[base:drillmetal] mode:keep flags[MayDegradeLight],
+            item 1 [Base.HandDrill;Base.StoneDrill] mode:keep flags[MayDegradeLight],
             item 1 tags[base:wrench] mode:keep flags[MayDegradeLight],
             item 1 tags[base:screwdriver] mode:keep flags[MayDegradeLight],
-            item 1 [AuxiliasCrossbow.ReinforcedCrossbow],
+            item 1 [AuxiliasCrossbow.ReinforcedCrossbow] flags[InheritCondition],
             item 1 [Base.SteelBarHalf],
             item 2 [Base.NutsBolts],
             item 4 [Base.Screws],
@@ -101,6 +107,25 @@ module AuxiliasCrossbow
         outputs
         {
             item 1 AuxiliasCrossbow.BoltShaft,
+        }
+    }
+
+    craftRecipe CarveBoltShaftBatch
+    {
+        time = 450,
+        Tags = AnySurfaceCraft,
+        category = Weaponry,
+        SkillRequired = Carving:2,
+        timedAction = SharpenStakeWood,
+        xpAward = Carving:40,
+        inputs
+        {
+            item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
+            item 5 [Base.SmallHandle],
+        }
+        outputs
+        {
+            item 5 AuxiliasCrossbow.BoltShaft,
         }
     }
 
@@ -186,6 +211,28 @@ module AuxiliasCrossbow
         }
     }
 
+    craftRecipe MakeStandardBoltsBatch
+    {
+        time = 450,
+        Tags = InHandCraft;Survivalist,
+        category = Weaponry,
+        SkillRequired = Maintenance:1,
+        timedAction = MakingJewellery,
+        xpAward = Maintenance:20,
+        inputs
+        {
+            item 1 tags[base:sharpknife] mode:keep flags[Prop1;IsNotDull;MayDegradeLight],
+            item 5 [AuxiliasCrossbow.BoltShaft] flags[Prop2],
+            item 5 [AuxiliasCrossbow.BoltHead],
+            item 5 tags[base:feather],
+            item 5 [Base.Twine],
+        }
+        outputs
+        {
+            item 5 Base.AuxiliasCrossbowBolt,
+        }
+    }
+
     craftRecipe MakeStoneBolt
     {
         time = 100,
@@ -205,6 +252,28 @@ module AuxiliasCrossbow
         outputs
         {
             item 1 Base.AuxiliasStoneCrossbowBolt,
+        }
+    }
+
+    craftRecipe MakeStoneBoltBatch
+    {
+        time = 450,
+        Tags = InHandCraft;Survivalist,
+        category = Weaponry,
+        SkillRequired = Maintenance:1,
+        timedAction = MakingJewellery,
+        xpAward = Maintenance:20,
+        inputs
+        {
+            item 1 tags[base:sharpknife] mode:keep flags[Prop1;IsNotDull;MayDegradeLight],
+            item 5 [AuxiliasCrossbow.BoltShaft] flags[Prop2],
+            item 5 [AuxiliasCrossbow.StoneBoltHead],
+            item 5 tags[base:feather],
+            item 5 [Base.Twine],
+        }
+        outputs
+        {
+            item 5 Base.AuxiliasStoneCrossbowBolt,
         }
     }
 

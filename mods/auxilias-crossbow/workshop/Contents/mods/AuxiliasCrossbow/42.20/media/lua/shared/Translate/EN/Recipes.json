@@ -3,11 +3,14 @@
     "MakeCrossbow": "Make Crossbow",
     "MakeHeavyCrossbow": "Make Heavy Crossbow",
     "CarveBoltShaft": "Carve Crossbow Bolt Shaft",
+    "CarveBoltShaftBatch": "Carve 5 Crossbow Bolt Shafts",
     "ShapeBoltHead": "Shape Metal Crossbow Bolt Head from Nail",
     "KnappBoltHeads": "Knap Stone Crossbow Bolt Heads",
     "ForgeBoltHeads": "Forge Metal Crossbow Bolt Heads",
     "MakeStandardBolts": "Assemble Metal Crossbow Bolt",
+    "MakeStandardBoltsBatch": "Assemble 5 Metal Crossbow Bolts",
     "MakeStoneBolt": "Assemble Stone Crossbow Bolt",
+    "MakeStoneBoltBatch": "Assemble 5 Stone Crossbow Bolts",
     "SalvageBrokenBolts": "Recover Metal Head from Broken Crossbow Bolt",
     "SalvageBrokenStoneBolt": "Recover Stone Head from Broken Crossbow Bolt"
 }
