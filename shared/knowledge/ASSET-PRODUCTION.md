@@ -24,6 +24,11 @@ default asset conventions for this monorepo.
 - Re-import generated FBX files and compare dimensions, UV layers, material count, and model
   bounds. A successful export alone does not prove the game-facing file is sound.
 - Keep validation renders and editable Blender sources outside the installable tree.
+- When rebaking an already packed Blender image, save the new pixels to PNG, reload
+  that PNG into a fresh image datablock, replace its material references, and pack it
+  before saving. In Blender 5.2, rebaking and calling `pack()` on the existing image
+  retained the previous packed payload in a reopened crossbow source. Compare the
+  packed bytes with the external PNG and verify the reopened source before exporting.
 - `AttachmentType` selects the character-model transform used by hotbar slots; a model's
   `world` attachment controls placed-world presentation and does not correct its position on
   the character. Match the attachment category to the model silhouette and test both normal

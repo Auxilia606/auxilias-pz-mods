@@ -17,7 +17,7 @@ All three use recoverable Metal or Stone Bolts. An unloaded crossbow can switch 
 ## Repository layout
 
 - `workshop/Contents/mods/AuxiliasCrossbow` — the installable Project Zomboid mod.
-- `source-assets/blender` — reproducible Blender source and asset generator.
+- `source-assets/blender` — editable Blender source, packed atlas, and texture copy.
 - `docs` — balance notes, test procedure, and deferred multiplayer concerns.
 - `tools` — validation and local deployment helpers.
 
@@ -27,7 +27,13 @@ the project's research, vertical-slice implementation, layered validation, clean
 deployment, evidence recording, and release workflow for use in other Project Zomboid
 mods.
 
-The Blender generator also re-imports every exported FBX and produces multi-angle validation renders. See `docs/MODELING.md` for the coordinate convention, measured bounds, and visual acceptance checklist.
+`tools/export_assets.py` reads the authored `.blend`, exports evaluated copies, re-imports every FBX, and produces multi-angle validation renders without rebuilding or saving the source. See `docs/MODELING.md` for the editing workflow, coordinate convention, and visual acceptance checklist.
+
+The model set includes nine crossbow states, four intact/broken bolts, and dedicated
+shaft/Metal-head/Stone-head crafting components. Loaded, loose, broken and component
+models share their corresponding canonical meshes. The September 17 bolt refinement
+passed Blender and package checks; its updated geometry and new crafting props still
+need a fresh in-game visual check. See [the bolt-family review](docs/BOLT-FAMILY-REVIEW-2026-09-17.md).
 
 ## Target
 

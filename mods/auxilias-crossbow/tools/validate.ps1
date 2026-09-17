@@ -62,7 +62,10 @@ $modelNames = @(
     'AuxiliaCrossbowBolt',
     'AuxiliaStoneCrossbowBolt',
     'AuxiliaBrokenBolt',
-    'AuxiliaBrokenStoneBolt'
+    'AuxiliaBrokenStoneBolt',
+    'AuxiliaBoltShaft',
+    'AuxiliaBoltHead',
+    'AuxiliaStoneBoltHead'
 )
 
 foreach ($modelName in $modelNames) {
@@ -171,20 +174,44 @@ if ($modelOpenBraces -ne $modelCloseBraces) {
     throw 'Unbalanced braces in auxilia_models.txt'
 }
 
-$generatorPath = Join-Path $repoRoot 'source-assets\blender\generate_assets.py'
-$generatorText = Get-Content -LiteralPath $generatorPath -Raw
-foreach ($pipelineCheck in @('MODEL_TEXTURE_NAME', 'finalize_collection', 'assign_palette_uv', 'collapse_game_materials', 'circular_limb_points', 'fixed_string_length', 'string_tip_center_offset', 'string_tip_vertical_clearance', 'power_axis_z', 'prod_root_z', 'prod_tip_rise', 'fore_end_overhang', 'power_axis_above_fore_end', 'loaded_nock_center_y', 'loaded_bolt_axis_offset', 'string_nock_contact_gap', 'stock_mat = dark_wood if tier == 3 else wood', 'BoltGroove', 'StringNut', 'LockPlate', 'TriggerLink', 'TriggerLever', 'HempBridle', 'LeatherBridle', 'BridlePass', 'ForeEndRivet', 'add_intact_bolt_geometry', 'transform_bolt_parts', 'BOLT_GEOMETRY_SCALE', 'TARGET_LOADED_POINT_OVERHANG', 'loaded_bolt_kind', 'loaded_bolt_scale = 1.0', 'metal_world_loaded_dimension_delta', 'stone_world_loaded_dimension_delta', 'loaded_point_overhang', 'crossbow_physics', 'validate_exports', 'render_validation', 'render_bolt_placement', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenStoneBolt')) {
-    if ($generatorText -notmatch [regex]::Escape($pipelineCheck)) {
-        throw "Blender model pipeline check is missing: $pipelineCheck"
+$blendSource = Join-Path $repoRoot 'source-assets\blender\AuxiliasCrossbowAssets.blend'
+foreach ($authoringFile in @($blendSource,
+    (Join-Path $repoRoot 'source-assets\blender\textures\AuxiliaCrossbowAtlas.png'),
+    (Join-Path $repoRoot 'tools\export_assets.py'))) {
+    if (-not (Test-Path -LiteralPath $authoringFile -PathType Leaf)) {
+        throw "Editable Blender authoring file is missing: $authoringFile"
     }
-}
-if ($generatorText -match 'f"\{model_name\}_(ProdSocket|ProdSeat|ProdBand|BoltRail|StringCatch|SearLink)"') {
-    throw 'Obsolete raised crossbow blocks must not return to the model pipeline.'
 }
 
 $physicsReportPath = Join-Path $repoRoot 'work\model-validation\report.json'
 if (Test-Path -LiteralPath $physicsReportPath) {
     $physicsReport = Get-Content -LiteralPath $physicsReportPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($physicsReport.authoring_schema -ne 2 -or -not $physicsReport.source_unchanged_by_export) {
+        throw 'Model audit must come from the editable-source exporter.'
+    }
+    if ($physicsReport.source_sha256 -ne (Get-FileHash -LiteralPath $blendSource -Algorithm SHA256).Hash) {
+        throw 'Blender source changed since its last export audit. Run tools/export_assets.py with Blender.'
+    }
+    foreach ($modelName in $modelNames) {
+        $asset = $physicsReport.assets.$modelName
+        $fbxPath = Join-Path $versionRoot "media\models_X\weapons\2handed\$modelName.fbx"
+        if ($null -eq $asset -or -not $asset.fbx_geometry_and_uv_match -or $asset.collapsed_uv_triangles -ne 0) {
+            throw "Model geometry/UV audit is missing or failed: $modelName"
+        }
+        if ($asset.fbx_sha256 -ne (Get-FileHash -LiteralPath $fbxPath -Algorithm SHA256).Hash) {
+            throw "FBX differs from its source audit: $modelName"
+        }
+    }
+    foreach ($componentName in @('AuxiliaBrokenBolt', 'AuxiliaBrokenStoneBolt', 'AuxiliaBoltShaft', 'AuxiliaBoltHead', 'AuxiliaStoneBoltHead')) {
+        $component = $physicsReport.bolt_family.$componentName
+        if ($null -eq $component -or -not $component.translation_only -or $component.shared_parts.Count -lt 1) {
+            throw "Canonical bolt-family audit is missing: $componentName"
+        }
+    }
+    $atlasPath = Join-Path $versionRoot 'media\textures\weapons\2handed\AuxiliaCrossbowAtlas.png'
+    if ($physicsReport.atlas_sha256 -ne (Get-FileHash -LiteralPath $atlasPath -Algorithm SHA256).Hash) {
+        throw 'Installed atlas differs from its source audit.'
+    }
     foreach ($crossbowName in @('AuxiliaImprovisedCrossbow', 'AuxiliaReinforcedCrossbow', 'AuxiliaHeavyArbalest')) {
         $physics = $physicsReport.crossbow_physics.$crossbowName
         if ($null -eq $physics) {
@@ -211,6 +238,12 @@ if (Test-Path -LiteralPath $physicsReportPath) {
         if ([math]::Abs([double]$physics.string_nock_contact_gap) -gt 0.000001) {
             throw "Drawn string does not meet the rear nock face for $crossbowName"
         }
+        foreach ($material in @('metal', 'stone')) {
+            $clearance = $physics."${material}_bolt_channel_clearance"
+            if ($null -eq $clearance -or [double]$clearance -lt 0.00015) {
+                throw "$material bolt does not clear the tiller/groove for $crossbowName"
+            }
+        }
         if ([math]::Abs([double]$physics.metal_loaded_bolt_scale - 1.0) -gt 0.000001 -or [math]::Abs([double]$physics.stone_loaded_bolt_scale - 1.0) -gt 0.000001) {
             throw "Loaded bolts must retain the canonical loose-world scale for $crossbowName"
         }
@@ -231,12 +264,6 @@ if (Test-Path -LiteralPath $physicsReportPath) {
         }
     }
 }
-if ($generatorText -notmatch 'axis_forward\s*=\s*"-Y"' -or $generatorText -notmatch 'axis_up\s*=\s*"Z"') {
-    throw 'Blender FBX export axes must remain -Y forward and Z up for Project Zomboid.'
-}
-if ($generatorText -notmatch 'game_obj\.rotation_euler\.x\s*\+=\s*math\.pi') {
-    throw 'Project Zomboid FBX exports must retain the tested 180-degree X-axis correction.'
-}
 
 foreach ($boltModelName in @('AuxiliaCrossbowBolt', 'AuxiliaStoneCrossbowBolt', 'AuxiliaBrokenBolt', 'AuxiliaBrokenStoneBolt')) {
     $boltModelBlockPattern = "(?s)model\s+$([regex]::Escape($boltModelName))\s*\{.*?(?=\s*model\s+\w+\s*\{|\s*\}\s*\z)"
@@ -247,6 +274,20 @@ foreach ($boltModelName in @('AuxiliaCrossbowBolt', 'AuxiliaStoneCrossbowBolt', 
 }
 
 $itemsText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\scripts\auxilia_items.txt') -Raw
+foreach ($componentCheck in @(
+    @{ Item = 'BoltShaft'; Model = 'AuxiliaBoltShaft'; Height = '0.003' },
+    @{ Item = 'BoltHead'; Model = 'AuxiliaBoltHead'; Height = '0.005' },
+    @{ Item = 'StoneBoltHead'; Model = 'AuxiliaStoneBoltHead'; Height = '0.007' }
+)) {
+    $itemPattern = "(?s)item\s+$($componentCheck.Item)\s*\{[^}]*StaticModel\s*=\s*Base\.$($componentCheck.Model),[^}]*WorldStaticModel\s*=\s*Base\.$($componentCheck.Model),"
+    if ($itemsText -notmatch $itemPattern) {
+        throw "Crafting component must use its canonical static/world model: $($componentCheck.Item)"
+    }
+    $modelPattern = "(?s)model\s+$($componentCheck.Model)\s*\{.*?attachment\s+world\s*\{\s*offset\s*=\s*$([regex]::Escape($componentCheck.Height))\s+0\.0\s+0\.0,\s*rotate\s*=\s*0\.0\s+-90\.0\s+0\.0,"
+    if ($modelsText -notmatch $modelPattern) {
+        throw "Crafting component must retain its centered ground-contact attachment: $($componentCheck.Model)"
+    }
+}
 foreach ($itemName in @('ImprovisedCrossbow', 'ReinforcedCrossbow', 'HeavyArbalest', 'AuxiliasCrossbowBolt', 'AuxiliasStoneCrossbowBolt', 'BoltShaft', 'BoltHead', 'StoneBoltHead', 'BrokenBolt', 'BrokenStoneBolt')) {
     if ($itemsText -notmatch [regex]::Escape($itemName)) {
         throw "Item definition not found: $itemName"

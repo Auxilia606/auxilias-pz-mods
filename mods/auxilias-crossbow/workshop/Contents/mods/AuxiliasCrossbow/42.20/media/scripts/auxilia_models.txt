@@ -177,6 +177,42 @@ module Base
         }
     }
 
+    model AuxiliaBoltShaft
+    {
+        mesh = weapons/2handed/AuxiliaBoltShaft,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
+        scale = 0.01,
+        attachment world
+        {
+            offset = 0.003 0.0 0.0,
+            rotate = 0.0 -90.0 0.0,
+        }
+    }
+
+    model AuxiliaBoltHead
+    {
+        mesh = weapons/2handed/AuxiliaBoltHead,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
+        scale = 0.01,
+        attachment world
+        {
+            offset = 0.005 0.0 0.0,
+            rotate = 0.0 -90.0 0.0,
+        }
+    }
+
+    model AuxiliaStoneBoltHead
+    {
+        mesh = weapons/2handed/AuxiliaStoneBoltHead,
+        texture = weapons/2handed/AuxiliaCrossbowAtlas,
+        scale = 0.01,
+        attachment world
+        {
+            offset = 0.007 0.0 0.0,
+            rotate = 0.0 -90.0 0.0,
+        }
+    }
+
     model AuxiliaBrokenBolt
     {
         mesh = weapons/2handed/AuxiliaBrokenBolt,

@@ -8,6 +8,7 @@ module Base
         Icon = AuxiliaCrossbowBolt,
         AmmoType = auxiliascrossbow:bolt,
         MetalValue = 1.0,
+        StaticModel = Base.AuxiliaCrossbowBolt,
         WorldStaticModel = AuxiliaCrossbowBolt,
         Tags = base:haswood;base:hasmetal,
     }
@@ -19,6 +20,7 @@ module Base
         Weight = 0.11,
         Icon = AuxiliaStoneCrossbowBolt,
         AmmoType = auxiliascrossbow:stonebolt,
+        StaticModel = Base.AuxiliaStoneCrossbowBolt,
         WorldStaticModel = AuxiliaStoneCrossbowBolt,
         Tags = base:haswood,
     }
@@ -37,8 +39,8 @@ module AuxiliasCrossbow
         ItemType = base:normal,
         Weight = 0.06,
         Icon = AuxiliaBoltShaft,
-        StaticModel = Base.SmallHandle,
-        WorldStaticModel = Base.SmallHandle,
+        StaticModel = Base.AuxiliaBoltShaft,
+        WorldStaticModel = Base.AuxiliaBoltShaft,
         Tags = base:haswood,
     }
 
@@ -49,7 +51,8 @@ module AuxiliasCrossbow
         Weight = 0.03,
         Icon = AuxiliaBoltHead,
         MetalValue = 1.0,
-        WorldStaticModel = Base.Nails,
+        StaticModel = Base.AuxiliaBoltHead,
+        WorldStaticModel = Base.AuxiliaBoltHead,
         Tags = base:hasmetal,
     }
 
@@ -59,7 +62,8 @@ module AuxiliasCrossbow
         ItemType = base:normal,
         Weight = 0.04,
         Icon = AuxiliaStoneBoltHead,
-        WorldStaticModel = ChippedStone,
+        StaticModel = Base.AuxiliaStoneBoltHead,
+        WorldStaticModel = Base.AuxiliaStoneBoltHead,
     }
 
     item BrokenBolt

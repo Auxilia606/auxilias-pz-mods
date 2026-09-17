@@ -207,3 +207,34 @@ and shot synchronization. The existing-save compatibility check also passed.
 
 This completes the 42.20.3 compatibility gate. No runtime code, item/recipe ID, mod
 version, or `42.20` distribution-directory change is required for the hotfix.
+
+## 2026-09-16 — Authored Blender assets on Build 42.20.4
+
+The existing Blender source was split into editable linked parts and refined for
+all three crossbows. The new exporter preserved that source and round-tripped all
+thirteen FBX files, checking triangle positions, winding and UVs within 0.000001.
+Every model has one mesh/material/UV layer and zero collapsed UV triangles. Packed,
+external-source and runtime atlas hashes match. Root validation passed for all
+three registered mods; a local crossbow ZIP passed the full file-content audit.
+
+An isolated 42.20.4 client loaded the new graphics. Actual mouse aim/fire input
+passed for Light, standard and Heavy crossbows with both Metal and Stone Bolts.
+All six combinations reached the attack-finished event with zero ammunition and
+the appropriate relaxed sprite; no Auxilia-related exception or crash occurred.
+The test harness only ran in the ignored client cache and is absent from the
+Workshop tree. Damage, accuracy and multiplayer acceptance were outside this
+graphics check. See [the Blender review](BLENDER-REVIEW-2026-09-16.md) for counts,
+evidence paths and visual-check scope.
+
+## 2026-09-17 — Bolt family and crafting components
+
+Refined the existing authored bolt meshes and all six linked loaded states, shortened
+both broken fragments with integral fractures, and added canonical shaft/head models
+for the three existing crafting components. All sixteen FBX files passed source
+triangle/UV/winding comparison. Stock/groove clearance and linked component checks
+passed; the prior 393 crossbow body/limb/string parts remained exactly unchanged.
+Root validation passed for all three mods and the local candidate package passed its
+file-content audit. See [the bolt-family review](BOLT-FAMILY-REVIEW-2026-09-17.md).
+
+This is an offline asset check. The updated bolts and new crafting props have not yet
+been rechecked in a client; the September 16 client evidence covers the earlier assets.
