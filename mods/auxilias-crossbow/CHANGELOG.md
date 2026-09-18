@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Let the existing single and five-bolt Metal/Stone assembly recipes accept clean Denim or Leather Strips in the feather input slot; recipe and bolt IDs remain intact.
 - Slimmed both broken-bolt icons to match the intact bolt family's shaft and head thickness; retained the short fragments and checked the final native 32px sprites side by side.
 - Curved all three braced prods to remove the near-T empty silhouette; solved the loaded curves against the existing nut with conserved measured string and limb lengths. Extended only the fore-end by 20 mm in model space.
 - Lengthened both canonical bolts and the crafting shaft by 20 mm, updated matching broken fragments, and retained shared full-size loaded meshes with about 30 mm point overhang. Refreshed eight affected icons against the revised models.

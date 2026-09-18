@@ -12,7 +12,7 @@ The first playable test build adds three non-modern, craftable crossbows:
 - Crossbow — a sturdier wood-and-iron hunting weapon.
 - Heavy Crossbow — a slow, powerful compact crossbow with a dark hardwood tiller, steel prod, and reinforced iron fittings.
 
-All three use recoverable Metal or Stone Bolts. An unloaded crossbow can switch ammunition material from its inventory context menu, after which the normal reload and unload controls use that material. Metal Bolts have a 70% intact recovery chance; easier-to-source Stone Bolts have a 45% intact recovery chance. Both require vanilla Chicken or Turkey Feathers for fletching.
+All three use recoverable Metal or Stone Bolts. An unloaded crossbow can switch ammunition material from its inventory context menu, after which the normal reload and unload controls use that material. Metal Bolts have a 70% intact recovery chance; easier-to-source Stone Bolts have a 45% intact recovery chance. Both can be fletched with vanilla Chicken or Turkey Feathers, or with clean Denim or Leather Strips cut from clothing.
 
 ## Repository layout
 

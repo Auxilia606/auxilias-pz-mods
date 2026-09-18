@@ -501,9 +501,9 @@ $vanillaAlignedRecipeChecks = @(
     @{ Recipe = 'KnappBoltHeads'; Patterns = @('time\s*=\s*230', 'xpAward\s*=\s*FlintKnapping:20') },
     @{ Recipe = 'ForgeBoltHeads'; Patterns = @('time\s*=\s*200', 'xpAward\s*=\s*Blacksmith:20') },
     @{ Recipe = 'MakeStandardBolts'; Patterns = @('time\s*=\s*100', 'Tags\s*=\s*InHandCraft;Survivalist', 'SkillRequired\s*=\s*Maintenance:1', 'timedAction\s*=\s*MakingJewellery', 'xpAward\s*=\s*Maintenance:5') },
-    @{ Recipe = 'MakeStandardBoltsBatch'; Patterns = @('time\s*=\s*450', 'SkillRequired\s*=\s*Maintenance:1', 'xpAward\s*=\s*Maintenance:20', 'item\s+5\s+\[AuxiliasCrossbow\.BoltShaft\]', 'item\s+5\s+\[AuxiliasCrossbow\.BoltHead\]', 'item\s+5\s+tags\[base:feather\]', 'item\s+5\s+\[Base\.Twine\]', 'item\s+5\s+Base\.AuxiliasCrossbowBolt') },
+    @{ Recipe = 'MakeStandardBoltsBatch'; Patterns = @('time\s*=\s*450', 'SkillRequired\s*=\s*Maintenance:1', 'xpAward\s*=\s*Maintenance:20', 'item\s+5\s+\[AuxiliasCrossbow\.BoltShaft\]', 'item\s+5\s+\[AuxiliasCrossbow\.BoltHead\]', 'item\s+5\s+\[Base\.ChickenFeather;Base\.TurkeyFeather;Base\.DenimStrips;Base\.LeatherStrips\]', 'item\s+5\s+\[Base\.Twine\]', 'item\s+5\s+Base\.AuxiliasCrossbowBolt') },
     @{ Recipe = 'MakeStoneBolt'; Patterns = @('time\s*=\s*100', 'Tags\s*=\s*InHandCraft;Survivalist', 'SkillRequired\s*=\s*Maintenance:1', 'timedAction\s*=\s*MakingJewellery', 'xpAward\s*=\s*Maintenance:5') },
-    @{ Recipe = 'MakeStoneBoltBatch'; Patterns = @('time\s*=\s*450', 'SkillRequired\s*=\s*Maintenance:1', 'xpAward\s*=\s*Maintenance:20', 'item\s+5\s+\[AuxiliasCrossbow\.BoltShaft\]', 'item\s+5\s+\[AuxiliasCrossbow\.StoneBoltHead\]', 'item\s+5\s+tags\[base:feather\]', 'item\s+5\s+\[Base\.Twine\]', 'item\s+5\s+Base\.AuxiliasStoneCrossbowBolt') },
+    @{ Recipe = 'MakeStoneBoltBatch'; Patterns = @('time\s*=\s*450', 'SkillRequired\s*=\s*Maintenance:1', 'xpAward\s*=\s*Maintenance:20', 'item\s+5\s+\[AuxiliasCrossbow\.BoltShaft\]', 'item\s+5\s+\[AuxiliasCrossbow\.StoneBoltHead\]', 'item\s+5\s+\[Base\.ChickenFeather;Base\.TurkeyFeather;Base\.DenimStrips;Base\.LeatherStrips\]', 'item\s+5\s+\[Base\.Twine\]', 'item\s+5\s+Base\.AuxiliasStoneCrossbowBolt') },
     @{ Recipe = 'SalvageBrokenBolts'; Patterns = @('time\s*=\s*60', 'category\s*=\s*Assembly'); Forbidden = @('SkillRequired\s*=', 'xpAward\s*=') },
     @{ Recipe = 'SalvageBrokenStoneBolt'; Patterns = @('time\s*=\s*60', 'category\s*=\s*Assembly'); Forbidden = @('SkillRequired\s*=', 'xpAward\s*=') }
 )
@@ -522,11 +522,9 @@ foreach ($recipeSpec in $vanillaAlignedRecipeChecks) {
     }
 }
 
-if (([regex]::Matches($recipesText, 'item\s+1\s+tags\[base:feather\]')).Count -ne 2) {
-    throw 'Both bolt assembly recipes must require one vanilla-compatible feather.'
-}
-if (([regex]::Matches($recipesText, 'item\s+5\s+tags\[base:feather\]')).Count -ne 2) {
-    throw 'Both batch assembly recipes must require five vanilla-compatible feathers.'
+if (([regex]::Matches($recipesText, 'item\s+1\s+\[Base\.ChickenFeather;Base\.TurkeyFeather;Base\.DenimStrips;Base\.LeatherStrips\]')).Count -ne 2 -or
+    ([regex]::Matches($recipesText, 'item\s+5\s+\[Base\.ChickenFeather;Base\.TurkeyFeather;Base\.DenimStrips;Base\.LeatherStrips\]')).Count -ne 2) {
+    throw 'Each Metal and Stone Bolt assembly recipe must accept feathers, clean denim, or clean leather in the same fletching input.'
 }
 
 if ($recipesText -match 'Base\.DuctTape') {

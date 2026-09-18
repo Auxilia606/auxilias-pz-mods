@@ -33,6 +33,11 @@ was Build 42.20.4 (2026-09-13). Recheck these IDs and tags when the target chang
 - The installed `Base.HandDrill` has `base:drillmetal` and `base:drillwoodpoor` tags,
   while `Base.StoneDrill` has `base:drillwoodpoor` but no `base:drillmetal`. A recipe
   that should accept exactly these two tools can list them as explicit item alternatives.
+- The installed Build 42.20.4 `RipDenimClothing` recipe uses scissors or a sharp knife
+  on denim or leather clothing and maps the result to `Base.DenimStrips` or
+  `Base.LeatherStrips`. Both are normal items in `media/scripts/generated/items/normal.txt`;
+  their dirty variants are separate IDs. Use an explicit item list when a recipe should
+  accept only clean strips.
 - The installed `InputScript.doesItemPassIsOrNotEmptyAndFullTests` bytecode applies
   `IsEmpty` to containers, drainables, radios, weapon parts, and fluid containers,
   but does not inspect a `HandWeapon`'s current ammunition count. Use a recipe
@@ -47,5 +52,6 @@ also use `media/scripts/generated/items/drainable.txt`,
 `media/scripts/generated/items/food.txt`,
 `media/lua/shared/TimedActions/ISPickupDung.lua`,
 `media/lua/shared/TimedActions/ISGetCompost.lua`,
-`media/scripts/generated/recipes/recipes_baking.txt`, and the installed
+`media/scripts/generated/recipes/recipes_baking.txt`,
+`media/scripts/generated/recipes/recipes.txt`, and the installed
 `projectzomboid.jar` classes `InputScript` and `CraftRecipeData`.

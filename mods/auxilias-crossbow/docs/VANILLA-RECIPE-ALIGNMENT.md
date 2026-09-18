@@ -77,3 +77,7 @@ The installed Build 42.20.4 scripts confirm that vanilla `AssembleBlade`, `Assem
 | Assemble 5 Metal or Stone Bolts | 450 / Maintenance 20 each | Five shafts, matching heads, feathers, and Twine uses yield five bolts |
 
 The single-bolt recipes retain their original IDs and values. Both Crossbow upgrades explicitly accept `Base.HandDrill` or `Base.StoneDrill`; the latter has only the vanilla `base:drillwoodpoor` tag and therefore cannot enter through the original `base:drillmetal` input. The three new batch recipes bring the total to fourteen without changing existing item IDs.
+
+## Strip fletching alternative
+
+The installed Build 42.20.4 `RipDenimClothing` recipe cuts denim or leather clothing with scissors or a sharp knife and produces `Base.DenimStrips` or `Base.LeatherStrips`. Both are normal material items in `media/scripts/generated/items/normal.txt`. Vanilla recipes use a bracketed list of item IDs as alternative inputs, including multi-item strip inputs. The four existing Auxilia assembly recipes now use that syntax to accept `Base.ChickenFeather`, `Base.TurkeyFeather`, `Base.DenimStrips`, or `Base.LeatherStrips` in one fletching slot. The explicit item list excludes dirty strips and Duct Tape. It also narrows the prior `base:feather` input to the two verified vanilla feather IDs, so mod-added feathers need explicit compatibility. Component counts, skill gates, timing, XP, published recipe/bolt IDs, and 70%/45% intact recovery rates are unchanged. Mixed fletching items in one five-bolt craft still require an in-game check.

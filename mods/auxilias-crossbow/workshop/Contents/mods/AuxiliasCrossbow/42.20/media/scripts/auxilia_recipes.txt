@@ -202,7 +202,7 @@ module AuxiliasCrossbow
             item 1 tags[base:sharpknife] mode:keep flags[Prop1;IsNotDull;MayDegradeLight],
             item 1 [AuxiliasCrossbow.BoltShaft] flags[Prop2],
             item 1 [AuxiliasCrossbow.BoltHead],
-            item 1 tags[base:feather],
+            item 1 [Base.ChickenFeather;Base.TurkeyFeather;Base.DenimStrips;Base.LeatherStrips],
             item 1 [Base.Twine],
         }
         outputs
@@ -224,7 +224,7 @@ module AuxiliasCrossbow
             item 1 tags[base:sharpknife] mode:keep flags[Prop1;IsNotDull;MayDegradeLight],
             item 5 [AuxiliasCrossbow.BoltShaft] flags[Prop2],
             item 5 [AuxiliasCrossbow.BoltHead],
-            item 5 tags[base:feather],
+            item 5 [Base.ChickenFeather;Base.TurkeyFeather;Base.DenimStrips;Base.LeatherStrips],
             item 5 [Base.Twine],
         }
         outputs
@@ -246,7 +246,7 @@ module AuxiliasCrossbow
             item 1 tags[base:sharpknife] mode:keep flags[Prop1;IsNotDull;MayDegradeLight],
             item 1 [AuxiliasCrossbow.BoltShaft] flags[Prop2],
             item 1 [AuxiliasCrossbow.StoneBoltHead],
-            item 1 tags[base:feather],
+            item 1 [Base.ChickenFeather;Base.TurkeyFeather;Base.DenimStrips;Base.LeatherStrips],
             item 1 [Base.Twine],
         }
         outputs
@@ -268,7 +268,7 @@ module AuxiliasCrossbow
             item 1 tags[base:sharpknife] mode:keep flags[Prop1;IsNotDull;MayDegradeLight],
             item 5 [AuxiliasCrossbow.BoltShaft] flags[Prop2],
             item 5 [AuxiliasCrossbow.StoneBoltHead],
-            item 5 tags[base:feather],
+            item 5 [Base.ChickenFeather;Base.TurkeyFeather;Base.DenimStrips;Base.LeatherStrips],
             item 5 [Base.Twine],
         }
         outputs

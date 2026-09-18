@@ -71,9 +71,10 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - Crossbow construction consumes one Light Crossbow and requires both a Screwdriver and Pliers for its screws and wire.
 - Hand Drill and Stone Drill each satisfy the drill input for both Crossbow upgrades.
 - Upgrading a partially damaged, unloaded Crossbow preserves its condition fraction and selected Metal or Stone Bolt type. A Crossbow with a loaded bolt is not a valid upgrade input.
-- One Bolt Shaft, one matching Bolt Head, Twine, and one Chicken or Turkey Feather assemble exactly one bolt of that material.
-- Five shafts, five matching heads, five feathers, and five Twine uses assemble exactly five bolts in one batch. A partially used Twine spool supplies only its remaining uses; batch crafting does not duplicate Twine or bolts.
-- Duct Tape cannot replace the feather.
+- One Bolt Shaft, one matching Bolt Head, one Twine use, and one Chicken Feather, Turkey Feather, clean Denim Strip, or clean Leather Strip assemble exactly one bolt of that material through the same recipe.
+- Five shafts, five matching heads, five Twine uses, and five of one fletching material assemble exactly five bolts in the existing batch recipe. A partially used Twine spool supplies only its remaining uses; batch crafting does not duplicate Twine or bolts.
+- Cut denim clothing and leather clothing with a sharp knife or scissors; verify each clean strip can replace the feather for both Metal and Stone Bolts. Check whether a batch can combine different eligible fletching items without extra output or incorrect consumption.
+- Dirty strips and Duct Tape cannot replace a feather, clean denim, or clean leather.
 - Butchering a chicken or turkey supplies vanilla feathers usable by both bolt assembly recipes.
 - One Broken Bolt yields one reusable head of its original material and never a complete bolt.
 - Metal-head recovery requires Pliers, while Stone-head recovery requires a non-dull sharp knife; knapping tools and mallets cannot substitute for the knife.
