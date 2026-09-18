@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Replaced all ten item icons with vanilla-style pixel sprites matched to the current models; retained full-resolution ImageGen originals and prompts, added reproducible palette/framing preparation, and preserved sharp native 32px output with nearest-neighbor synchronization.
 - Preserved condition and selected bolt material when upgrading an unloaded Crossbow, and blocked loaded weapons from upgrade inputs so their bolt cannot be consumed unnoticed.
 - Added five-item Bolt Shaft, Metal Bolt, and Stone Bolt batch recipes at unchanged per-item material cost, with modest time and XP savings.
 - Reduced secondary-skill XP from the three Crossbow construction recipes; the Heavy Crossbow now auto-unlocks at Maintenance 4 and Blacksmith 6.

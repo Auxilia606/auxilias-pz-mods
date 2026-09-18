@@ -13,6 +13,17 @@ default asset conventions for this monorepo.
 - Compare related icons as a set at the final 32×32 size. Silhouette, length, grouping, and
   material color must carry the distinction; fine engraving and text do not survive.
 - Use real PNG alpha. A painted white or checkerboard background is not transparency.
+- For vanilla-style inventory work, inspect native sprites rather than relying on
+  enlarged web images. The installed `UI2.pack` uses a `PZPK` version-1 header,
+  little-endian page/entry metadata, and length-prefixed PNG atlases. Sprite entries
+  include trimmed rectangles plus offsets and original canvas dimensions; restore
+  those offsets when extracting a reference.
+- A September 18, 2026 inspection of the target game's rifle, handle and forged
+  spearhead sprites found 32×32 canvases, binary alpha, and respectively 11, 7 and
+  5 visible RGB colors. This is a useful style reference for similar equipment,
+  not a claim that every vanilla texture shares those restrictions. A pixel master
+  enlarged from the native grid should be synchronized with nearest-neighbor
+  sampling; bicubic resizing introduces extra colors and translucent edge blur.
 
 ## Models and textures
 

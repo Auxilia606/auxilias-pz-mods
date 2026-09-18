@@ -84,5 +84,6 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - Survivor bags and barricaded/safehouse distributions very rarely contain a crossbow.
 - Item names and recipe names change correctly between English and Korean.
 - All ten dedicated mod icons have no black box, clipped edge, or missing texture and remain distinct from the 3D model textures.
-- Stone Bolt Heads use their dedicated compact knapped-point artwork rather than the vanilla Sharp Flint Flake icon; complete and broken Stone Bolts have visibly broader pale stone heads and lighter fletching than their Metal counterparts in both inventory and world views.
+- At native 32px, the icon set has crisp pixel edges and no translucent halo. Light/standard/Heavy crossbows remain distinguishable by their wooden/composite/steel prods, and broken-bolt icons are visibly shorter than intact bolts.
+- Stone Bolt Heads use their dedicated compact knapped-point artwork rather than the vanilla Sharp Flint Flake icon; complete and broken Stone Bolts have visibly broader pale stone heads. Only intact Stone Bolts have the lighter fletching; broken bolts have no fletching in inventory or world views.
 - Neither Metal nor Stone Crossbow Bolts appear as valid inputs for vanilla **Gather Gunpowder**.

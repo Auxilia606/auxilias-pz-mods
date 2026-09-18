@@ -35,6 +35,10 @@ models share their corresponding canonical meshes. The September 17 bolt refinem
 passed Blender and package checks; its updated geometry and new crafting props still
 need a fresh in-game visual check. See [the bolt-family review](docs/BOLT-FAMILY-REVIEW-2026-09-17.md).
 
+All ten item icons now follow the inspected vanilla inventory style: muted pixel
+sprites, native 32×32 sizing, and shapes matched to the current models. See the
+[icon preview and reference review](docs/ICON-REFRESH-2026-09-18.md).
+
 ## Target
 
 - Project Zomboid stable 42.20

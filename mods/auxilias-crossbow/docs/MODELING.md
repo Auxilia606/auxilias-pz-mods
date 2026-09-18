@@ -131,13 +131,15 @@ The renders use the same generated texture atlas and UV coordinates referenced b
 
 ## Item icons
 
-Ten transparent 128×128 hand-painted masters live under `source-assets/icons`: three crossbows, material-specific intact and broken bolts, Bolt Shaft, Metal Bolt Head, and Stone Bolt Head. They use consistent framing, muted earth colors, high small-size contrast, and a dark painted silhouette line, but are not renders of the 3D meshes. The Stone Bolt Head is a compact purpose-knapped projectile point rather than the vanilla Sharp Flint Flake artwork. Build 42's hotbar draws item textures at native size, so the installed copies are downsampled to its expected 32×32 canvas and remain inside a single slot.
+Ten transparent 128×128 pixel masters live under `source-assets/icons`: three crossbows, material-specific intact and broken bolts, Bolt Shaft, Metal Bolt Head, and Stone Bolt Head. Each stores a native 32×32 sprite enlarged four times. Their full-resolution ImageGen originals are kept in `source-assets/icons/generated`, with prompts alongside the masters. Current model renders supplied shape references; the inventory images were authored separately. They use a shared muted 24-color material palette, binary transparency and simple pixel clusters based on inspected vanilla icons. Build 42's hotbar receives native 32×32 textures.
 
-Broken-bolt artwork shows the recoverable head-side fragment rather than a full-length bolt. A compact V-shaped fracture and one detached chip carry the damage cue at 32×32; long radiating wood fibres are excluded because they merge into a feather- or broom-like tail at runtime. The authored broken world models now form the uneven fracture directly in the shaft, without separate splinter rods or a detached chip. They retain the intact bolt's shaft thickness and head size and measure about 65% of its complete length.
+Broken-bolt artwork shows the recoverable head-side fragment at about two thirds of the intact icon's span. The compact fracture is integral to the wood, matching the world models; the icons have no detached chip or fletching. The world models retain the intact bolt's shaft thickness and head size and measure about 65% of its complete length.
 
-Use `tools/sync-icons.ps1` for these independently authored images. The model exporter
-does not rewrite icons. Static validation verifies that all ten runtime icons are
-32×32, retain alpha and remain mutually distinct.
+Use `tools/prepare-icon-masters.ps1` with PowerShell 7 to rebuild pixel masters from
+the retained ImageGen originals, then `tools/sync-icons.ps1` to install them using
+nearest-neighbor sampling. The model exporter does not rewrite icons. Static
+validation verifies that all ten runtime icons are 32×32, retain alpha and remain
+mutually distinct. See [the icon review](ICON-REFRESH-2026-09-18.md).
 
 Loose bolts now have tapered carved shafts, slim shaped fletching, ridged hemp wraps,
 a necked forged bodkin or a faceted lenticular stone point. The two lower vanes are
