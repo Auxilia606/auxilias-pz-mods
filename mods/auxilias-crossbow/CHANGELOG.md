@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Slimmed both broken-bolt icons to match the intact bolt family's shaft and head thickness; retained the short fragments and checked the final native 32px sprites side by side.
+- Curved all three braced prods to remove the near-T empty silhouette; solved the loaded curves against the existing nut with conserved measured string and limb lengths. Extended only the fore-end by 20 mm in model space.
+- Lengthened both canonical bolts and the crafting shaft by 20 mm, updated matching broken fragments, and retained shared full-size loaded meshes with about 30 mm point overhang. Refreshed eight affected icons against the revised models.
+- Added direct mesh-ring mechanical measurements and four adversarial validation cases; retained the before/after review and all sixteen source/FBX audit results in docs/DESIGN-REFRESH-2026-09-19.md.
+
 - Replaced all ten item icons with vanilla-style pixel sprites matched to the current models; retained full-resolution ImageGen originals and prompts, added reproducible palette/framing preparation, and preserved sharp native 32px output with nearest-neighbor synchronization.
 - Preserved condition and selected bolt material when upgrading an unloaded Crossbow, and blocked loaded weapons from upgrade inputs so their bolt cannot be consumed unnoticed.
 - Added five-item Bolt Shaft, Metal Bolt, and Stone Bolt batch recipes at unchanged per-item material cost, with modest time and XP savings.

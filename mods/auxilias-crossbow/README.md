@@ -77,6 +77,8 @@ missing release for the current tagged version without replacing an existing rel
 
 ## Verification status
 
+The latest [crossbow and linked-item design review](docs/DESIGN-REFRESH-2026-09-19.md) shows the revised braced/loaded silhouettes, matched bolt lengths, independent icons and measured asset checks. The new dimensions still need an in-game pose and placement review; older client checks below do not validate this revision.
+
 The 0.1.0 package and earlier post-release development milestones were loaded by the installed Project Zomboid 42.20.2 server or client without an Auxilia-related registry, script, model, or Lua error. Both ammunition registries, all earlier items, and the original eleven recipes were accepted exactly once. The project owner completed the final single-player integration procedure on 2026-08-17, covering ammunition switching and preservation, crafting, firing, recovery, balance, loot, and English/Korean presentation. On 2026-08-23, the project owner also passed the Build 42.20.3 client, existing-save, and multiplayer compatibility checks, including aimed-firearm targeting, Metal/Stone Bolt behavior, muzzle-light suppression, vanilla firearm lighting, and remote shot synchronization. The asset pipeline round-trips separate Metal and Stone Bolt models plus fixed-length relaxed/cocked states for all three crossbows. It also validates ten dedicated hand-painted item icons independently from the 3D models. See `docs/SMOKE-TEST.md` and `docs/TESTING.md`.
 
 ## License

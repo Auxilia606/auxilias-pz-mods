@@ -1,0 +1,198 @@
+{
+  "target": {
+    "releaseLine": "42.20",
+    "testedBuild": "42.20.4"
+  },
+  "items": [
+    {
+      "name": "AuxiliaImprovisedCrossbow",
+      "changed": true,
+      "runtimeSize": [
+        32,
+        32
+      ],
+      "bounds": [
+        2,
+        5,
+        30,
+        27
+      ],
+      "colorsIncludingTransparency": 12,
+      "opaquePixels": 159,
+      "runtime_sha256": "ecefd686d11a369cfb0e45cb907f5ffe6ea5f76cf322d715cc0d621efb4a5fbb",
+      "master_sha256": "d9bcae3b249d1b0b09a53e388881686de9f9bbf33f4e82a704ba8aac9b35112e",
+      "generated_sha256": "3f57279efd885f1080e9928cb8493e6b85bce174208b2566dee8f6eb4a5d9080"
+    },
+    {
+      "name": "AuxiliaReinforcedCrossbow",
+      "changed": true,
+      "runtimeSize": [
+        32,
+        32
+      ],
+      "bounds": [
+        2,
+        4,
+        30,
+        28
+      ],
+      "colorsIncludingTransparency": 16,
+      "opaquePixels": 152,
+      "runtime_sha256": "8f094fd64d38af09443d3445c8b6d47f26b0f7798f6510c98b46ea44ca139d9e",
+      "master_sha256": "d61341e4a22ee4fc62c739468be537f45d197277bbdbe23ce90867b347763f1a",
+      "generated_sha256": "c63d6147307952b0167f6632d394d74734d885b1d1bfcaf9db041bc0ce2d0344"
+    },
+    {
+      "name": "AuxiliaHeavyArbalest",
+      "changed": true,
+      "runtimeSize": [
+        32,
+        32
+      ],
+      "bounds": [
+        2,
+        4,
+        30,
+        27
+      ],
+      "colorsIncludingTransparency": 21,
+      "opaquePixels": 168,
+      "runtime_sha256": "7bc091c50307289ab747370c310ed21839d461fc556bc769cdd46ac7a6e0d079",
+      "master_sha256": "d6e6bc6842cbf3af741402972247d2c797505ab01c7cd7112fb8665f24cb15ea",
+      "generated_sha256": "eeb200708a8cc8a957102746ef4913ea159035be09ac1948973b0a6e0104b844"
+    },
+    {
+      "name": "AuxiliaCrossbowBolt",
+      "changed": true,
+      "runtimeSize": [
+        32,
+        32
+      ],
+      "bounds": [
+        2,
+        3,
+        30,
+        28
+      ],
+      "colorsIncludingTransparency": 19,
+      "opaquePixels": 90,
+      "runtime_sha256": "f341db4c88679c7867ad039c2efa0ac1b92a086fec172f619a431f4b24a75209",
+      "master_sha256": "ec73d30ad4466eec6d70eca83e0d5cba3452795e199ca9e589cad8d688669b0c",
+      "generated_sha256": "9f2d6a540f3e4d1a964f3deed622e73360e02541ef3ab77584e282f06fa9cbf3"
+    },
+    {
+      "name": "AuxiliaStoneCrossbowBolt",
+      "changed": true,
+      "runtimeSize": [
+        32,
+        32
+      ],
+      "bounds": [
+        2,
+        5,
+        30,
+        27
+      ],
+      "colorsIncludingTransparency": 19,
+      "opaquePixels": 70,
+      "runtime_sha256": "c7cd9918033ab49075801c1bfbab8e49959864e1101f049cfee58e5a5cf9c9bf",
+      "master_sha256": "0f982914687527f064972b1fd0319fbc48f051a042a649030f318117f0e395cb",
+      "generated_sha256": "55cbf5fb2e7d583504aadb629598fcb7931baf0cb65ffaf90b70c3ed84d099ab"
+    },
+    {
+      "name": "AuxiliaBrokenBolt",
+      "changed": true,
+      "runtimeSize": [
+        32,
+        32
+      ],
+      "bounds": [
+        7,
+        8,
+        25,
+        24
+      ],
+      "colorsIncludingTransparency": 16,
+      "opaquePixels": 42,
+      "runtime_sha256": "2ce0fe7aa3db4cd5171abefba0725e7126784fbe1e81a72a1e21c9c755b24d97",
+      "master_sha256": "95a0159035cafd8eaba61c590bda51a9cb3361b6cac7a1f746675a1a0984626b",
+      "generated_sha256": "ee9c5f05f349355480ccb064d3a699a1977c5f0723c1070dec70f32e3ab869b8"
+    },
+    {
+      "name": "AuxiliaBrokenStoneBolt",
+      "changed": true,
+      "runtimeSize": [
+        32,
+        32
+      ],
+      "bounds": [
+        7,
+        7,
+        26,
+        25
+      ],
+      "colorsIncludingTransparency": 19,
+      "opaquePixels": 54,
+      "runtime_sha256": "01231e7a9a6cc93ec512a9127f85c2b0403c36e1d5139c06927d136a879e8675",
+      "master_sha256": "d8c9c1667f6c4831029274eda51b1db7a2fd78b187d735c89b946125bdec4343",
+      "generated_sha256": "812af90f310e7b83ab2026988ea17f64ab8168e3f14f77b6c7f6552718675bd6"
+    },
+    {
+      "name": "AuxiliaBoltShaft",
+      "changed": true,
+      "runtimeSize": [
+        32,
+        32
+      ],
+      "bounds": [
+        3,
+        5,
+        29,
+        27
+      ],
+      "colorsIncludingTransparency": 9,
+      "opaquePixels": 57,
+      "runtime_sha256": "db214c609cb6f5210e0d6d8e1ce0512b706aa45abb9d5b319b6f30f238b57334",
+      "master_sha256": "858c745edb072168d0a14a8ac0eb4f63bba99c33cffd24532d83818150c894b0",
+      "generated_sha256": "693f540a5cfd4b07a334342e8eec5c699ed5bdee722da76c48b10ccbef9873f5"
+    },
+    {
+      "name": "AuxiliaBoltHead",
+      "changed": false,
+      "runtimeSize": [
+        32,
+        32
+      ],
+      "bounds": [
+        5,
+        8,
+        27,
+        24
+      ],
+      "colorsIncludingTransparency": 14,
+      "opaquePixels": 130,
+      "runtime_sha256": "4032690a06c09d77d8e1b2f8fd9be7701ea84759d3c50927df1967b02c9f22d6",
+      "master_sha256": "a968d9071a625621c9b9ede3d7442186d0ccfed3c5ae1b6c86882fd953a30d01",
+      "generated_sha256": "9267f8c15d94350d7ec859f8c4a08f6ab8d00249a4f2b854e845ea6ae92dbbc1"
+    },
+    {
+      "name": "AuxiliaStoneBoltHead",
+      "changed": false,
+      "runtimeSize": [
+        32,
+        32
+      ],
+      "bounds": [
+        5,
+        7,
+        27,
+        26
+      ],
+      "colorsIncludingTransparency": 15,
+      "opaquePixels": 183,
+      "runtime_sha256": "af72e6d94e3dc38adef824224f0e24def4e7c35ecefd63ddb306748f74568fbf",
+      "master_sha256": "b077f7f3eaea0e804fb1b5ae69ddde368883811ea85645c5510444dd0d3a78d0",
+      "generated_sha256": "d831463437617036aad72b4b103da5bbe726049bf347e53f1578d328f6c0e72f"
+    }
+  ]
+}

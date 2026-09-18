@@ -8,4 +8,6 @@ Run `tools/prepare-icon-masters.ps1` with PowerShell 7 to frame the generated ar
 
 The style follows vanilla's small pixel clusters, muted materials and restrained highlights. Crossbows depict the actual relaxed models, including wooden stocks, tier-specific prods and the long underside trigger. Metal bolts have brown fletching and gray bodkins; Stone bolts have light fletching and knapped points. Broken bolts depict only the recoverable head-side fragment, at about two thirds of the intact icon's span, with an integral compact fracture and no detached chip or fletching.
 
-See `../../docs/ICON-REFRESH-2026-09-18.md` for the reference audit, preview and validation scope.
+Eight icons were refreshed for the braced-crossbow and longer-bolt revision; the two head icons retain their existing artwork. See `../../docs/DESIGN-REFRESH-2026-09-19.md` for the current preview and measured scope, and `../../docs/ICON-REFRESH-2026-09-18.md` for the original vanilla-style audit.
+
+Both broken-bolt icons were subsequently narrowed after native-size review. Their pre-edit generated inputs are retained in `generated/history/2026-09-19-before-slimming/`; the current prompt entries record the edit and those input snapshots.

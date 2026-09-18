@@ -1,0 +1,1061 @@
+{
+  "authoring_schema": 2,
+  "source_sha256": "c56f98c136cfa86d1992fcc1eda9cc93f70452b3a35ab84d73d3cd66829b4e02",
+  "target": {
+    "releaseLine": "42.20",
+    "testedBuild": "42.20.4"
+  },
+  "coordinate_system": "X width, Y forward, Z up; action at origin",
+  "assets": {
+    "AuxiliaImprovisedCrossbow": {
+      "single_mesh": true,
+      "vertices": 1110,
+      "triangles": 2100,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.2421606332063675,
+        0.3410000205039978,
+        0.059382811188697815
+      ],
+      "bounds_min": [
+        -0.12108031660318375,
+        -0.052000001072883606,
+        -0.021882811561226845
+      ],
+      "bounds_max": [
+        0.12108031660318375,
+        0.289000004529953,
+        0.03750000149011612
+      ],
+      "fbx_round_trip_dimensions": [
+        0.2421606332063675,
+        0.3410000205039978,
+        0.059382833540439606
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.001"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 2.60770320892334e-08,
+      "authoring_parts": 30,
+      "fbx_sha256": "f7ed18566f9528bb08e6a11551e9e795cdc710e7aeeeae4a8695b89a4eb43e50"
+    },
+    "AuxiliaImprovisedCrossbowCocked": {
+      "single_mesh": true,
+      "vertices": 1538,
+      "triangles": 2920,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.21261988580226898,
+        0.36399996280670166,
+        0.06278281658887863
+      ],
+      "bounds_min": [
+        -0.10630994290113449,
+        -0.052000001072883606,
+        -0.021882811561226845
+      ],
+      "bounds_max": [
+        0.10630994290113449,
+        0.31199997663497925,
+        0.04090000316500664
+      ],
+      "fbx_round_trip_dimensions": [
+        0.21261988580226898,
+        0.36399996280670166,
+        0.06278283149003983
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.002"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 2.7277565095573664e-08,
+      "authoring_parts": 39,
+      "fbx_sha256": "ff4d3b02299447ddc3e137035ef15f602ff5cfc160ea8e6708492209840defab"
+    },
+    "AuxiliaImprovisedCrossbowCockedStoneBolt": {
+      "single_mesh": true,
+      "vertices": 1726,
+      "triangles": 3296,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.21261988580226898,
+        0.36400139331817627,
+        0.06288281083106995
+      ],
+      "bounds_min": [
+        -0.10630994290113449,
+        -0.052000001072883606,
+        -0.021882811561226845
+      ],
+      "bounds_max": [
+        0.10630994290113449,
+        0.31200137734413147,
+        0.04100000113248825
+      ],
+      "fbx_round_trip_dimensions": [
+        0.21261988580226898,
+        0.36400139331817627,
+        0.06288282573223114
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.003"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 2.7276026770550743e-08,
+      "authoring_parts": 39,
+      "fbx_sha256": "48b5714dcec327946667dc07bd1d2cb1e3a70713a55d1c33fee05ffcfbd445c5"
+    },
+    "AuxiliaReinforcedCrossbow": {
+      "single_mesh": true,
+      "vertices": 1448,
+      "triangles": 2696,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.2700909972190857,
+        0.3410000205039978,
+        0.06013280153274536
+      ],
+      "bounds_min": [
+        -0.13504549860954285,
+        -0.052000001072883606,
+        -0.02188279666006565
+      ],
+      "bounds_max": [
+        0.13504549860954285,
+        0.289000004529953,
+        0.03825000301003456
+      ],
+      "fbx_round_trip_dimensions": [
+        0.2700909972190857,
+        0.3410000205039978,
+        0.06013282388448715
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.004"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 2.9802322387695312e-08,
+      "authoring_parts": 50,
+      "fbx_sha256": "9a7aa6c38ee1dc3664d9fbae84c62a6d0c4b5811e17597cbb8675684309e4fa3"
+    },
+    "AuxiliaReinforcedCrossbowCocked": {
+      "single_mesh": true,
+      "vertices": 1876,
+      "triangles": 3516,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.24560514092445374,
+        0.36400002241134644,
+        0.06278280168771744
+      ],
+      "bounds_min": [
+        -0.12280257046222687,
+        -0.052000001072883606,
+        -0.02188279666006565
+      ],
+      "bounds_max": [
+        0.12280257046222687,
+        0.312000036239624,
+        0.04090000316500664
+      ],
+      "fbx_round_trip_dimensions": [
+        0.24560514092445374,
+        0.36400002241134644,
+        0.06278281658887863
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.005"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 2.7277565095573664e-08,
+      "authoring_parts": 59,
+      "fbx_sha256": "4e77091de97da8114b6f8e9399ca6e8a47c6e9060c5f52253b796d376ca65532"
+    },
+    "AuxiliaReinforcedCrossbowCockedStoneBolt": {
+      "single_mesh": true,
+      "vertices": 2064,
+      "triangles": 3892,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.24560514092445374,
+        0.36400145292282104,
+        0.06288279592990875
+      ],
+      "bounds_min": [
+        -0.12280257046222687,
+        -0.052000001072883606,
+        -0.02188279666006565
+      ],
+      "bounds_max": [
+        0.12280257046222687,
+        0.31200143694877625,
+        0.04100000113248825
+      ],
+      "fbx_round_trip_dimensions": [
+        0.24560514092445374,
+        0.36400145292282104,
+        0.06288281083106995
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.006"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 2.727603209962126e-08,
+      "authoring_parts": 59,
+      "fbx_sha256": "d6c5583243715d3960ff3cc1111b0696e9ec1d4586f21bcf85d77f3838cc7f06"
+    },
+    "AuxiliaHeavyArbalest": {
+      "single_mesh": true,
+      "vertices": 1532,
+      "triangles": 2860,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.30324646830558777,
+        0.34200000762939453,
+        0.061382755637168884
+      ],
+      "bounds_min": [
+        -0.15162323415279388,
+        -0.052000001072883606,
+        -0.02188275381922722
+      ],
+      "bounds_max": [
+        0.15162323415279388,
+        0.2900000214576721,
+        0.039500001817941666
+      ],
+      "fbx_round_trip_dimensions": [
+        0.30324646830558777,
+        0.34200000762939453,
+        0.061382777988910675
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.007"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 2.9802322387695312e-08,
+      "authoring_parts": 51,
+      "fbx_sha256": "b388cb6d66c808e8639a30225e3a5852bd13126a94d58522df578d1e4ee15e40"
+    },
+    "AuxiliaHeavyArbalestCocked": {
+      "single_mesh": true,
+      "vertices": 1960,
+      "triangles": 3680,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.2833310067653656,
+        0.3639999032020569,
+        0.06278275698423386
+      ],
+      "bounds_min": [
+        -0.1416655033826828,
+        -0.052000001072883606,
+        -0.02188275381922722
+      ],
+      "bounds_max": [
+        0.1416655033826828,
+        0.3119999170303345,
+        0.04090000316500664
+      ],
+      "fbx_round_trip_dimensions": [
+        0.2833310067653656,
+        0.3639999032020569,
+        0.06278277188539505
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.008"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 2.7277565095573664e-08,
+      "authoring_parts": 60,
+      "fbx_sha256": "45173c43defd4853d8b86215eb1a8c756c72092f23e4bde8c4d28fbea94ebbfb"
+    },
+    "AuxiliaHeavyArbalestCockedStoneBolt": {
+      "single_mesh": true,
+      "vertices": 2148,
+      "triangles": 4056,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.2833310067653656,
+        0.3640013337135315,
+        0.06288275122642517
+      ],
+      "bounds_min": [
+        -0.1416655033826828,
+        -0.052000001072883606,
+        -0.02188275381922722
+      ],
+      "bounds_max": [
+        0.1416655033826828,
+        0.3120013177394867,
+        0.04100000113248825
+      ],
+      "fbx_round_trip_dimensions": [
+        0.2833310067653656,
+        0.3640013337135315,
+        0.06288276612758636
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.009"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 2.7276021441480225e-08,
+      "authoring_parts": 60,
+      "fbx_sha256": "89c13bac87808756734bd346a3a4eb21ef4856417ab509c3e1dc85c3ed442a5a"
+    },
+    "AuxiliaCrossbowBolt": {
+      "single_mesh": true,
+      "vertices": 420,
+      "triangles": 804,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.012811332941055298,
+        0.14464551210403442,
+        0.011700000613927841
+      ],
+      "bounds_min": [
+        -0.006405666470527649,
+        -0.054899998009204865,
+        -0.004800000227987766
+      ],
+      "bounds_max": [
+        0.006405666470527649,
+        0.08974550664424896,
+        0.006899999920278788
+      ],
+      "fbx_round_trip_dimensions": [
+        0.012811332941055298,
+        0.14464551210403442,
+        0.01169999036937952
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.010"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 7.84580134194357e-09,
+      "authoring_parts": 9,
+      "fbx_sha256": "7e0bfc8758f77acf0e068c67cc8c0321d6890f7c911c676281c36072cd3046f3"
+    },
+    "AuxiliaStoneCrossbowBolt": {
+      "single_mesh": true,
+      "vertices": 608,
+      "triangles": 1180,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.012924974784255028,
+        0.14464688301086426,
+        0.01360000018030405
+      ],
+      "bounds_min": [
+        -0.006462487392127514,
+        -0.054899998009204865,
+        -0.006599999964237213
+      ],
+      "bounds_max": [
+        0.006462487392127514,
+        0.08974689245223999,
+        0.007000000216066837
+      ],
+      "fbx_round_trip_dimensions": [
+        0.012924974784255028,
+        0.14464688301086426,
+        0.01359998993575573
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.011"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 7.84592213420865e-09,
+      "authoring_parts": 9,
+      "fbx_sha256": "ca689afdcc16a404344abcef30efc1b7e50cb1c2eb5f9d7f8b949034dff00131"
+    },
+    "AuxiliaBrokenBolt": {
+      "single_mesh": true,
+      "vertices": 115,
+      "triangles": 218,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.009600000455975533,
+        0.0974310040473938,
+        0.009600000455975533
+      ],
+      "bounds_min": [
+        -0.004800000227987766,
+        -0.0487155020236969,
+        -0.004800000227987766
+      ],
+      "bounds_max": [
+        0.004800000227987766,
+        0.0487155020236969,
+        0.004800000227987766
+      ],
+      "fbx_round_trip_dimensions": [
+        0.009600000455975533,
+        0.0974310040473938,
+        0.009600000455975533
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.012"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 4.258844388260741e-09,
+      "authoring_parts": 3,
+      "fbx_sha256": "3616a594661d4fb63b464939a190e986473fb26cd6388c246937cce21e6433b4"
+    },
+    "AuxiliaBrokenStoneBolt": {
+      "single_mesh": true,
+      "vertices": 285,
+      "triangles": 558,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.006562289781868458,
+        0.09743238985538483,
+        0.013100000098347664
+      ],
+      "bounds_min": [
+        -0.003281144890934229,
+        -0.04871619492769241,
+        -0.006599999964237213
+      ],
+      "bounds_max": [
+        0.003281144890934229,
+        0.04871619492769241,
+        0.006500000134110451
+      ],
+      "fbx_round_trip_dimensions": [
+        0.006562290713191032,
+        0.09743238985538483,
+        0.013100000098347664
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.013"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 4.25890522848249e-09,
+      "authoring_parts": 3,
+      "fbx_sha256": "624dc56e842c6810100dae1d7cb7600788d49b093b74a4e5c8cdd01ea6017b63"
+    },
+    "AuxiliaBoltShaft": {
+      "single_mesh": true,
+      "vertices": 50,
+      "triangles": 96,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.0050096772611141205,
+        0.1145000010728836,
+        0.0052320449613034725
+      ],
+      "bounds_min": [
+        -0.0024867141619324684,
+        -0.0572500005364418,
+        -0.0026420450303703547
+      ],
+      "bounds_max": [
+        0.002522963099181652,
+        0.0572500005364418,
+        0.002589999930933118
+      ],
+      "fbx_round_trip_dimensions": [
+        0.0050096772611141205,
+        0.1145000010728836,
+        0.0052320449613034725
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.014"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 5.005858838558197e-09,
+      "authoring_parts": 1,
+      "fbx_sha256": "90f8fba82cdd93b4494e08165276295ed6fb3cea43fe483e19971558def3550d"
+    },
+    "AuxiliaBoltHead": {
+      "single_mesh": true,
+      "vertices": 74,
+      "triangles": 140,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.009600000455975533,
+        0.036445505917072296,
+        0.009600000455975533
+      ],
+      "bounds_min": [
+        -0.004800000227987766,
+        -0.018222756683826447,
+        -0.004800000227987766
+      ],
+      "bounds_max": [
+        0.004800000227987766,
+        0.01822274923324585,
+        0.004800000227987766
+      ],
+      "fbx_round_trip_dimensions": [
+        0.009600000455975533,
+        0.036445505917072296,
+        0.009600000455975533
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.015"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 1.6298145055770874e-09,
+      "authoring_parts": 2,
+      "fbx_sha256": "53ae6629c2e2e2edbf908b94b8fde545ea4b62e0c2e1c0e542cb6f64e31743d2"
+    },
+    "AuxiliaStoneBoltHead": {
+      "single_mesh": true,
+      "vertices": 44,
+      "triangles": 84,
+      "materials": [
+        "Game atlas - matte preview"
+      ],
+      "uv_layers": 1,
+      "collapsed_uv_triangles": 0,
+      "dimensions": [
+        0.004000000189989805,
+        0.0289468914270401,
+        0.013100000098347664
+      ],
+      "bounds_min": [
+        -0.0020000000949949026,
+        -0.01447344571352005,
+        -0.006599999964237213
+      ],
+      "bounds_max": [
+        0.0020000000949949026,
+        0.01447344571352005,
+        0.006500000134110451
+      ],
+      "fbx_round_trip_dimensions": [
+        0.004000000189989805,
+        0.0289468914270401,
+        0.013100000098347664
+      ],
+      "fbx_uv_layers": 1,
+      "fbx_materials": [
+        "Game atlas - matte preview.016"
+      ],
+      "fbx_geometry_and_uv_match": true,
+      "fbx_maximum_coordinate_uv_delta": 1.2653088576897176e-09,
+      "authoring_parts": 1,
+      "fbx_sha256": "7818947fa00f051baa24d08c2c7361af5be8765a54a30a2410667e332e167c7b"
+    }
+  },
+  "crossbow_physics": {
+    "AuxiliaImprovisedCrossbow": {
+      "relaxed_model": "AuxiliaImprovisedCrossbow",
+      "cocked_model": "AuxiliaImprovisedCrossbowCocked",
+      "string_length": 0.24052479874646393,
+      "string_length_delta": 7.744087870964478e-09,
+      "limb_arc_length": 0.12499997508660352,
+      "sampled_limb_length_delta": 3.228224823570436e-08,
+      "relaxed_tip_half_span": 0.12026240676641464,
+      "cocked_tip_half_span": 0.10465303063392639,
+      "relaxed_tip_y": 0.2560000419616699,
+      "cocked_tip_y": 0.22540642321109772,
+      "catch_y": 0.1661544847255287,
+      "prod_root_y": 0.28200000524520874,
+      "brace_depth": 0.02599996328353882,
+      "prod_tip_rise": 0.01599999889731407,
+      "fore_end_overhang": 0.006999999284744263,
+      "power_axis_above_fore_end": 0.004000002518296242,
+      "power_stroke": 0.08984555723614121,
+      "string_radius": 0.0012,
+      "power_axis_z": 0.034,
+      "prod_root_z": 0.018,
+      "maximum_string_tip_center_offset": 2.1400163496054816e-08,
+      "minimum_string_tip_vertical_clearance": 0.002299997955560684,
+      "loaded_bolt_axis_offset": 1.8477439855946187e-09,
+      "string_nock_contact_gap": 9.60773850039974e-09,
+      "states": {
+        "relaxed": {
+          "string_length": 0.24052479874646393,
+          "left_limb_length": 0.12499997508660352,
+          "right_limb_length": 0.12499997508660352,
+          "tip_half_span": 0.12026240676641464,
+          "tip_y": 0.2560000419616699,
+          "root_y": 0.28200000524520874,
+          "brace_depth": 0.02599996328353882,
+          "prod_tip_rise": 0.01599999889731407,
+          "fore_end_overhang": 0.006999999284744263,
+          "power_axis_above_fore_end": 0.004000002518296242,
+          "endpoint_gap": 8.33000234328132e-09,
+          "tip_clearance": 0.002299997955560684,
+          "string_points": [
+            [
+              -0.12026239931583405,
+              0.2560000419616699,
+              0.03400000184774399
+            ],
+            [
+              0.12026239931583405,
+              0.2560000419616699,
+              0.03400000184774399
+            ]
+          ]
+        },
+        "metal_loaded": {
+          "string_length": 0.24052479100237606,
+          "left_limb_length": 0.12500000736885175,
+          "right_limb_length": 0.12500000736885175,
+          "tip_half_span": 0.10465303063392639,
+          "tip_y": 0.22540642321109772,
+          "root_y": 0.28200000524520874,
+          "brace_depth": 0.05659358203411102,
+          "prod_tip_rise": 0.01599999889731407,
+          "fore_end_overhang": 0.006999999284744263,
+          "power_axis_above_fore_end": 0.004000002518296242,
+          "endpoint_gap": 2.1400163496054816e-08,
+          "tip_clearance": 0.002299997955560684,
+          "string_points": [
+            [
+              -0.1046530157327652,
+              0.22540640830993652,
+              0.03400000184774399
+            ],
+            [
+              0.0,
+              0.16615448892116547,
+              0.03400000184774399
+            ],
+            [
+              0.1046530157327652,
+              0.22540640830993652,
+              0.03400000184774399
+            ]
+          ]
+        },
+        "stone_loaded": {
+          "string_length": 0.24052479100237606,
+          "left_limb_length": 0.12500000736885175,
+          "right_limb_length": 0.12500000736885175,
+          "tip_half_span": 0.10465303063392639,
+          "tip_y": 0.22540642321109772,
+          "root_y": 0.28200000524520874,
+          "brace_depth": 0.05659358203411102,
+          "prod_tip_rise": 0.01599999889731407,
+          "fore_end_overhang": 0.006999999284744263,
+          "power_axis_above_fore_end": 0.004000002518296242,
+          "endpoint_gap": 2.1400163496054816e-08,
+          "tip_clearance": 0.002299997955560684,
+          "string_points": [
+            [
+              -0.1046530157327652,
+              0.22540640830993652,
+              0.03400000184774399
+            ],
+            [
+              0.0,
+              0.16615448892116547,
+              0.03400000184774399
+            ],
+            [
+              0.1046530157327652,
+              0.22540640830993652,
+              0.03400000184774399
+            ]
+          ]
+        }
+      },
+      "metal_bolt_channel_clearance": 0.000257665291428566,
+      "metal_world_loaded_dimension_delta": 2.9802322387695312e-08,
+      "metal_loaded_point_overhang": 0.02999997663497922,
+      "metal_loaded_bolt_scale": 1.0,
+      "stone_bolt_channel_clearance": 0.0002879071980714798,
+      "stone_world_loaded_dimension_delta": 9.313225746154785e-10,
+      "stone_loaded_point_overhang": 0.03000137734413144,
+      "stone_loaded_bolt_scale": 1.0
+    },
+    "AuxiliaReinforcedCrossbow": {
+      "relaxed_model": "AuxiliaReinforcedCrossbow",
+      "cocked_model": "AuxiliaReinforcedCrossbowCocked",
+      "string_length": 0.2681035639679305,
+      "string_length_delta": 2.6053065260711605e-08,
+      "limb_arc_length": 0.1399999741461156,
+      "sampled_limb_length_delta": 3.1410143125354395e-08,
+      "relaxed_tip_half_span": 0.13405176997184753,
+      "cocked_tip_half_span": 0.12107965350151062,
+      "relaxed_tip_y": 0.2500000298023224,
+      "cocked_tip_y": 0.22353366017341614,
+      "catch_y": 0.16600456473184735,
+      "prod_root_y": 0.28200000524520874,
+      "brace_depth": 0.03199997544288635,
+      "prod_tip_rise": 0.01600000262260437,
+      "fore_end_overhang": 0.006999999284744263,
+      "power_axis_above_fore_end": 0.004000002518296242,
+      "power_stroke": 0.08399546507047503,
+      "string_radius": 0.00135,
+      "power_axis_z": 0.034,
+      "prod_root_z": 0.018,
+      "maximum_string_tip_center_offset": 1.4901161193847656e-08,
+      "minimum_string_tip_vertical_clearance": 0.002900000661611557,
+      "loaded_bolt_axis_offset": 1.8477439855946187e-09,
+      "string_nock_contact_gap": 1.0793935366609081e-08,
+      "states": {
+        "relaxed": {
+          "string_length": 0.2681035639679305,
+          "left_limb_length": 0.1399999741461156,
+          "right_limb_length": 0.1399999741461156,
+          "tip_half_span": 0.13405176997184753,
+          "tip_y": 0.2500000298023224,
+          "root_y": 0.28200000524520874,
+          "brace_depth": 0.03199997544288635,
+          "prod_tip_rise": 0.01600000262260437,
+          "fore_end_overhang": 0.006999999284744263,
+          "power_axis_above_fore_end": 0.004000002518296242,
+          "endpoint_gap": 1.4901161193847656e-08,
+          "tip_clearance": 0.002900000661611557,
+          "string_points": [
+            [
+              -0.13405178487300873,
+              0.2500000298023224,
+              0.03400000184774399
+            ],
+            [
+              0.13405178487300873,
+              0.2500000298023224,
+              0.03400000184774399
+            ]
+          ]
+        },
+        "metal_loaded": {
+          "string_length": 0.26810353791486524,
+          "left_limb_length": 0.14000000555625872,
+          "right_limb_length": 0.14000000555625872,
+          "tip_half_span": 0.12107965350151062,
+          "tip_y": 0.22353366017341614,
+          "root_y": 0.28200000524520874,
+          "brace_depth": 0.0584663450717926,
+          "prod_tip_rise": 0.01600000262260437,
+          "fore_end_overhang": 0.006999999284744263,
+          "power_axis_above_fore_end": 0.004000002518296242,
+          "endpoint_gap": 1.4901161193847656e-08,
+          "tip_clearance": 0.002900000661611557,
+          "string_points": [
+            [
+              -0.12107965350151062,
+              0.22353364527225494,
+              0.03400000184774399
+            ],
+            [
+              0.0,
+              0.16600456833839417,
+              0.03400000184774399
+            ],
+            [
+              0.12107965350151062,
+              0.22353364527225494,
+              0.03400000184774399
+            ]
+          ]
+        },
+        "stone_loaded": {
+          "string_length": 0.26810353791486524,
+          "left_limb_length": 0.14000000555625872,
+          "right_limb_length": 0.14000000555625872,
+          "tip_half_span": 0.12107965350151062,
+          "tip_y": 0.22353366017341614,
+          "root_y": 0.28200000524520874,
+          "brace_depth": 0.0584663450717926,
+          "prod_tip_rise": 0.01600000262260437,
+          "fore_end_overhang": 0.006999999284744263,
+          "power_axis_above_fore_end": 0.004000002518296242,
+          "endpoint_gap": 1.4901161193847656e-08,
+          "tip_clearance": 0.002900000661611557,
+          "string_points": [
+            [
+              -0.12107965350151062,
+              0.22353364527225494,
+              0.03400000184774399
+            ],
+            [
+              0.0,
+              0.16600456833839417,
+              0.03400000184774399
+            ],
+            [
+              0.12107965350151062,
+              0.22353364527225494,
+              0.03400000184774399
+            ]
+          ]
+        }
+      },
+      "metal_bolt_channel_clearance": 0.000257665291428566,
+      "metal_world_loaded_dimension_delta": 2.9802322387695312e-08,
+      "metal_loaded_point_overhang": 0.030000036239623995,
+      "metal_loaded_bolt_scale": 1.0,
+      "stone_bolt_channel_clearance": 0.0002879071980714798,
+      "stone_world_loaded_dimension_delta": 9.313225746154785e-10,
+      "stone_loaded_point_overhang": 0.030001436948776217,
+      "stone_loaded_bolt_scale": 1.0
+    },
+    "AuxiliaHeavyArbalest": {
+      "relaxed_model": "AuxiliaHeavyArbalest",
+      "cocked_model": "AuxiliaHeavyArbalestCocked",
+      "string_length": 0.30073807146352727,
+      "string_length_delta": 2.7871108976285086e-08,
+      "limb_arc_length": 0.15750001478155892,
+      "sampled_limb_length_delta": 2.1374752801062158e-08,
+      "relaxed_tip_half_span": 0.15036903321743011,
+      "cocked_tip_half_span": 0.1397358924150467,
+      "relaxed_tip_y": 0.24399998784065247,
+      "cocked_tip_y": 0.22129473090171814,
+      "catch_y": 0.16575444269184736,
+      "prod_root_y": 0.28200000524520874,
+      "brace_depth": 0.038000017404556274,
+      "prod_tip_rise": 0.01600000262260437,
+      "fore_end_overhang": 0.008000016212463379,
+      "power_axis_above_fore_end": 0.004000002518296242,
+      "power_stroke": 0.0782455451488051,
+      "string_radius": 0.0016,
+      "power_axis_z": 0.034,
+      "prod_root_z": 0.018,
+      "maximum_string_tip_center_offset": 1.4901161193847656e-08,
+      "minimum_string_tip_vertical_clearance": 0.003899998962879181,
+      "loaded_bolt_axis_offset": 1.8477439855946187e-09,
+      "string_nock_contact_gap": 7.963224922568138e-09,
+      "states": {
+        "relaxed": {
+          "string_length": 0.30073807146352727,
+          "left_limb_length": 0.15750001478155892,
+          "right_limb_length": 0.15750001478155892,
+          "tip_half_span": 0.15036903321743011,
+          "tip_y": 0.24399998784065247,
+          "root_y": 0.28200000524520874,
+          "brace_depth": 0.038000017404556274,
+          "prod_tip_rise": 0.01600000262260437,
+          "fore_end_overhang": 0.008000016212463379,
+          "power_axis_above_fore_end": 0.004000002518296242,
+          "endpoint_gap": 1.4901161193847656e-08,
+          "tip_clearance": 0.003899998962879181,
+          "string_points": [
+            [
+              -0.15036903321743011,
+              0.24400000274181366,
+              0.03400000184774399
+            ],
+            [
+              0.15036903321743011,
+              0.24400000274181366,
+              0.03400000184774399
+            ]
+          ]
+        },
+        "metal_loaded": {
+          "string_length": 0.3007380435924183,
+          "left_limb_length": 0.15749999340680612,
+          "right_limb_length": 0.15749999340680612,
+          "tip_half_span": 0.1397358924150467,
+          "tip_y": 0.22129473090171814,
+          "root_y": 0.28200000524520874,
+          "brace_depth": 0.0607052743434906,
+          "prod_tip_rise": 0.01600000262260437,
+          "fore_end_overhang": 0.008000016212463379,
+          "power_axis_above_fore_end": 0.004000002518296242,
+          "endpoint_gap": 1.4901161193847656e-08,
+          "tip_clearance": 0.003899998962879181,
+          "string_points": [
+            [
+              -0.1397358924150467,
+              0.22129471600055695,
+              0.03400000184774399
+            ],
+            [
+              0.0,
+              0.16575443744659424,
+              0.03400000184774399
+            ],
+            [
+              0.1397358924150467,
+              0.22129471600055695,
+              0.03400000184774399
+            ]
+          ]
+        },
+        "stone_loaded": {
+          "string_length": 0.3007380435924183,
+          "left_limb_length": 0.15749999340680612,
+          "right_limb_length": 0.15749999340680612,
+          "tip_half_span": 0.1397358924150467,
+          "tip_y": 0.22129473090171814,
+          "root_y": 0.28200000524520874,
+          "brace_depth": 0.0607052743434906,
+          "prod_tip_rise": 0.01600000262260437,
+          "fore_end_overhang": 0.008000016212463379,
+          "power_axis_above_fore_end": 0.004000002518296242,
+          "endpoint_gap": 1.4901161193847656e-08,
+          "tip_clearance": 0.003899998962879181,
+          "string_points": [
+            [
+              -0.1397358924150467,
+              0.22129471600055695,
+              0.03400000184774399
+            ],
+            [
+              0.0,
+              0.16575443744659424,
+              0.03400000184774399
+            ],
+            [
+              0.1397358924150467,
+              0.22129471600055695,
+              0.03400000184774399
+            ]
+          ]
+        }
+      },
+      "metal_bolt_channel_clearance": 0.000257665291428566,
+      "metal_world_loaded_dimension_delta": 2.9802322387695312e-08,
+      "metal_loaded_point_overhang": 0.029999917030334444,
+      "metal_loaded_bolt_scale": 1.0,
+      "stone_bolt_channel_clearance": 0.0002245735377073288,
+      "stone_world_loaded_dimension_delta": 9.313225746154785e-10,
+      "stone_loaded_point_overhang": 0.030001317739486666,
+      "stone_loaded_bolt_scale": 1.0
+    }
+  },
+  "bolt_family": {
+    "AuxiliaBrokenBolt": {
+      "canonical_asset": "AuxiliaCrossbowBolt",
+      "shared_parts": [
+        "HeadSocket",
+        "BodkinPoint"
+      ],
+      "translation_only": true,
+      "dimensions": [
+        0.009600000455975533,
+        0.0974310040473938,
+        0.009600000455975533
+      ]
+    },
+    "AuxiliaBrokenStoneBolt": {
+      "canonical_asset": "AuxiliaStoneCrossbowBolt",
+      "shared_parts": [
+        "HeadBinding",
+        "ChippedPoint"
+      ],
+      "translation_only": true,
+      "dimensions": [
+        0.006562289781868458,
+        0.09743238985538483,
+        0.013100000098347664
+      ]
+    },
+    "AuxiliaBoltShaft": {
+      "canonical_asset": "AuxiliaCrossbowBolt",
+      "shared_parts": [
+        "Shaft"
+      ],
+      "translation_only": true,
+      "dimensions": [
+        0.0050096772611141205,
+        0.1145000010728836,
+        0.0052320449613034725
+      ]
+    },
+    "AuxiliaBoltHead": {
+      "canonical_asset": "AuxiliaCrossbowBolt",
+      "shared_parts": [
+        "HeadSocket",
+        "BodkinPoint"
+      ],
+      "translation_only": true,
+      "dimensions": [
+        0.009600000455975533,
+        0.036445505917072296,
+        0.009600000455975533
+      ]
+    },
+    "AuxiliaStoneBoltHead": {
+      "canonical_asset": "AuxiliaStoneCrossbowBolt",
+      "shared_parts": [
+        "ChippedPoint"
+      ],
+      "translation_only": true,
+      "dimensions": [
+        0.004000000189989805,
+        0.0289468914270401,
+        0.013100000098347664
+      ]
+    }
+  },
+  "runtime_client_test": "not performed by exporter",
+  "atlas_sha256": "d48c67dc414022bdfaec612e1549f9996f561e5d845869783aa6c23d68d5348e",
+  "source_unchanged_by_export": true
+}

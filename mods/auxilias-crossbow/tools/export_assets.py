@@ -53,6 +53,96 @@ def model_parts(collection):
     return {obj['part']: obj for obj in collection.all_objects if obj.type == 'MESH' and 'part' in obj}
 
 
+def mechanical_rings(obj):
+    """Measure the authored mesh itself, using its editable cross-section rings."""
+    groups = json.loads(obj.data['mechanical_rings'])
+    if sorted(i for group in groups for i in group) != list(range(len(obj.data.vertices))):
+        raise RuntimeError(f'{obj.name}: mechanical rings must cover every vertex once')
+    rings = [[obj.matrix_world @ obj.data.vertices[i].co for i in group] for group in groups]
+    return rings, [sum(points, Vector()) / len(points) for points in rings]
+
+
+def path_length(points):
+    return sum((b-a).length for a, b in zip(points, points[1:]))
+
+
+def measure_mechanics(collections):
+    """Remeasure all nine states rather than trusting stored length properties."""
+    result = {}
+    for base in TIERS:
+        states = {}
+        for suffix in STATES:
+            coll = collections[base+suffix]
+            parts = model_parts(coll)
+            lr, left = mechanical_rings(parts['Limb_L'])
+            rr, right = mechanical_rings(parts['Limb_R'])
+            sr, string = mechanical_rings(parts['String'])
+            if len(string) != (3 if suffix else 2):
+                raise RuntimeError(f'{coll.name}: invalid string path')
+            endpoint_gap = max((string[0]-left[-1]).length, (string[-1]-right[-1]).length)
+            radius = float(coll['string_radius'])
+            tip_clearance = min(min(v.z for v in sr[0])-min(v.z for v in lr[-1]),
+                                max(v.z for v in lr[-1])-max(v.z for v in sr[0]),
+                                min(v.z for v in sr[-1])-min(v.z for v in rr[-1]),
+                                max(v.z for v in rr[-1])-max(v.z for v in sr[-1]))
+            radius_error = max(abs((v-c).length-radius) for ring,c in zip(sr,string) for v in ring)
+            mirror_error = max((Vector((-a.x,a.y,a.z))-b).length for a,b in zip(left,right))
+            axis_error = max(abs(p.z-float(coll['power_axis_z'])) for p in string)
+            catch_error = abs(string[1].y-float(coll['catch_y'])) if suffix else 0.0
+            root = (left[0]+right[0])/2
+            if (endpoint_gap > 1e-6 or tip_clearance < .0005 or radius_error > 1e-6
+                    or mirror_error > 1e-6 or axis_error > 1e-6 or catch_error > 1e-6):
+                raise RuntimeError(f'{coll.name}: invalid measured nock, string, symmetry or power axis')
+            if abs(root.y-float(coll['prod_root_y'])) > 1e-6 or abs(root.z-float(coll['prod_root_z'])) > 1e-6:
+                raise RuntimeError(f'{coll.name}: prod root moved from its measured joint')
+            _, tiller_hi = bounds([parts['Tiller']])
+            tip_rise = right[-1].z-root.z
+            fore_end_overhang = tiller_hi.y-root.y
+            axis_above_fore_end = string[-1].z-tiller_hi.z
+            if not (.010 <= tip_rise <= .020 and .004 <= fore_end_overhang <= .010
+                    and .002 <= axis_above_fore_end <= .008):
+                raise RuntimeError(f'{coll.name}: invalid embedded prod or fore-end clearance')
+            states[suffix] = {'string_length':path_length(string),
+                'left_limb_length':path_length(left), 'right_limb_length':path_length(right),
+                'tip_half_span':right[-1].x, 'tip_y':right[-1].y,
+                'root_y':root.y, 'brace_depth':root.y-right[-1].y,
+                'prod_tip_rise':tip_rise, 'fore_end_overhang':fore_end_overhang,
+                'power_axis_above_fore_end':axis_above_fore_end,
+                'endpoint_gap':endpoint_gap, 'tip_clearance':tip_clearance,
+                'string_points':[list(p) for p in string]}
+        relaxed, cocked, stone = (states[s] for s in STATES)
+        string_delta = max(abs(s['string_length']-relaxed['string_length']) for s in states.values())
+        limb_delta = max(abs(s[k]-relaxed['left_limb_length']) for s in states.values()
+                         for k in ('left_limb_length','right_limb_length'))
+        if string_delta > 1e-5 or limb_delta > .0002:
+            raise RuntimeError(f'{base}: actual mesh fails string/limb length conservation')
+        if not (.020 <= relaxed['brace_depth'] <= .045
+                and cocked['tip_y'] < relaxed['tip_y']-.008
+                and cocked['tip_half_span'] < relaxed['tip_half_span']
+                and abs(stone['tip_half_span']-cocked['tip_half_span']) < 1e-6):
+            raise RuntimeError(f'{base}: braced silhouette or cocked tip motion is invalid')
+        catch = float(collections[base]['catch_y'])
+        result[base] = {'relaxed_model':base, 'cocked_model':base+'Cocked',
+            'string_length':relaxed['string_length'], 'string_length_delta':string_delta,
+            'limb_arc_length':relaxed['left_limb_length'], 'sampled_limb_length_delta':limb_delta,
+            'relaxed_tip_half_span':relaxed['tip_half_span'], 'cocked_tip_half_span':cocked['tip_half_span'],
+            'relaxed_tip_y':relaxed['tip_y'], 'cocked_tip_y':cocked['tip_y'], 'catch_y':catch,
+            'prod_root_y':relaxed['root_y'], 'brace_depth':relaxed['brace_depth'],
+            'prod_tip_rise':relaxed['prod_tip_rise'],
+            'fore_end_overhang':relaxed['fore_end_overhang'],
+            'power_axis_above_fore_end':relaxed['power_axis_above_fore_end'],
+            'power_stroke':relaxed['tip_y']-catch,
+            'string_radius':float(collections[base]['string_radius']),
+            'power_axis_z':float(collections[base]['power_axis_z']),
+            'prod_root_z':float(collections[base]['prod_root_z']),
+            'maximum_string_tip_center_offset':max(s['endpoint_gap'] for s in states.values()),
+            'minimum_string_tip_vertical_clearance':min(s['tip_clearance'] for s in states.values()),
+            'loaded_bolt_axis_offset':0.0, 'string_nock_contact_gap':0.0,
+            'states':{label:states[suffix] for label,suffix in
+                      zip(('relaxed','metal_loaded','stone_loaded'), STATES)}}
+    return result
+
+
 def validate_authoring(collections):
     scene = bpy.context.scene
     if scene.get('authoring_schema') != 2:
@@ -64,7 +154,15 @@ def validate_authoring(collections):
     if hashlib.sha256(atlas.packed_file.data).hexdigest() != sha256(external_atlas):
         raise RuntimeError('Packed atlas differs from the authoring PNG; reload and repack the current bake.')
     depsgraph = bpy.context.evaluated_depsgraph_get()
-    physics = json.loads(scene['mechanical_reference'])
+    if scene.get('mechanical_revision') != 2:
+        raise RuntimeError('Expected remeasured braced crossbows, mechanical revision 2.')
+    physics = measure_mechanics(collections)
+    reference_physics = json.loads(scene['mechanical_reference'])
+    for base in TIERS:
+        for key in ('string_length','limb_arc_length','relaxed_tip_half_span','cocked_tip_half_span',
+                    'relaxed_tip_y','cocked_tip_y','catch_y','prod_root_y','brace_depth'):
+            if abs(physics[base][key]-reference_physics[base][key]) > 1e-6:
+                raise RuntimeError(f'{base}: remeasure the edited {key} reference before export')
     for base in TIERS:
         reference = model_parts(collections[base])
         for suffix in STATES:
@@ -75,9 +173,7 @@ def validate_authoring(collections):
                     raise RuntimeError(f'{base + suffix}: missing editable part {required}')
             for role in ('Limb_L', 'Limb_R', 'String'):
                 obj = parts[role]
-                # The source retains the measured limb/string cages unchanged.
-                # A future geometry edit must deliberately remeasure the mechanical
-                # reference, rather than silently accepting stale custom properties.
+                # Every edit must update both the measured reference and fingerprint.
                 if geometry_fingerprint(obj.data) != obj.get('mechanical_geometry_sha256'):
                     raise RuntimeError(f'{obj.name}: remeasure the edited limb/string reference before export')
                 if (obj.location.length > 1e-8 or max(abs(s - 1) for s in obj.scale) > 1e-8
@@ -115,7 +211,7 @@ def validate_authoring(collections):
                 radius = float(collections[base + suffix]['string_radius'])
                 contact_gap = abs(nock_lo.y - catch_y - radius)
                 axis_delta = abs(translations[0].z - float(collections[base + suffix]['power_axis_z']))
-                overhang = hi.y - .262
+                overhang = hi.y - float(collections[base + suffix]['prod_root_y'])
                 if contact_gap > 1e-6 or axis_delta > 1e-6 or not .027 <= overhang <= .033:
                     raise RuntimeError(f'{base + suffix}: bolt/string contact or point overhang changed')
                 # Check the underside up to the fore-end, including edge crossings
@@ -251,7 +347,9 @@ def mesh_audit(obj):
     lo, hi = bounds([obj])
     dimensions = hi - lo
     is_bolt = any(obj.name.startswith(n + '_') for n in SMALL_ASSETS)
-    if not is_bolt and not (.22 < dimensions.x < .34 and .31 < dimensions.y < .355 and .04 < dimensions.z < .09):
+    # The September 18 silhouette revision extends only the fore-end by 0.020 m.
+    # Cocked limbs move inward farther; the hand section and rear origin stay fixed.
+    if not is_bolt and not (.20 < dimensions.x < .34 and .33 < dimensions.y < .38 and .04 < dimensions.z < .09):
         raise RuntimeError(f'{obj.name}: unexpected weapon envelope {tuple(dimensions)}')
     return {'single_mesh': True, 'vertices': len(mesh.vertices), 'triangles': len(mesh.loop_triangles),
             'materials': [m.name for m in mesh.materials], 'uv_layers': len(mesh.uv_layers),
