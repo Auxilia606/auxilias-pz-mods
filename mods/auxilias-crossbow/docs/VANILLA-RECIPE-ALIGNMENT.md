@@ -14,7 +14,7 @@ Build 42.20.2 does not provide a vanilla bow, crossbow, arrow, or bolt crafting 
 | `MakeSawbladePlank` | 600 | Woodwork 3 / 30 XP | Drill, wrench, screwdriver, fasteners, leather | Multi-tool surface-built two-handed weapon |
 | `MakeSawbladeWeapon` | 600 | Woodwork 5 / 50 XP | Saw, chisel, drill, mallet, fasteners | Higher-tier complex wooden weapon assembly |
 | `ForgeSpearHead` | 400 | Blacksmith 4 / 45 XP | Advanced Forge, 3 Charcoal, Steel Bar Quarter | Forged steel projectile/weapon head |
-| `MakeStoneBlade` | 230 | Flint Knapping 1 / 20 XP | Chipped Stone + knapping tool | Finished sharp stone component |
+| `MakeStoneBlade` | 230 | Flint Knapping 1 / 20 XP | Sharp Flint Flake (`Base.SharpedStone`) + knapping tool | Finished sharp stone component |
 | `Forge_Nails_From_Piece` | 200 | Blacksmith 1 / 20 XP | Primitive Forge, 1 Charcoal, metal piece → 2 Nails | Batch of two very small forged parts |
 | `Forge_Fishing_Hooks` | 200 | Blacksmith 3 / 20 XP | Primitive Forge, Charcoal, wire → 4 hooks | Small precision-forged parts |
 | `AssembleSpear` | 100 | Maintenance 1 / 10 XP | Head + shaft + hand tools | Final head-to-shaft weapon assembly |
@@ -50,7 +50,7 @@ The following table records the original Build 42.20.2 balance pass. The current
 - Crossbow consumes the Light Crossbow and adds one Metal Bar, two Wire, one Rope, and four Screws. Its Screwdriver, Pliers, metal drill, and file/whetstone match the added fastener and metal-fitting operations.
 - Heavy Crossbow consumes the standard Crossbow at an **Advanced Forge** with four Charcoal and one Steel Bar Half. A Ball-peen Hammer and Tongs handle forging; the metal drill, file, wrench, and screwdriver handle final fitting. Two Nuts/Bolts and four Screws replace the rope, leather, oversized mechanisms, and decorative hardware used by the previous design.
 - Both completed Bolt recipes continue to consume one vanilla-tagged Feather and one Twine. Build 42 supplies Chicken and Turkey Feathers through animal butchering.
-- Stone and Metal Bolt Heads keep their existing raw-material yields: one Chipped Stone or one Iron/Steel Piece produces two heads. That matches the batch scale of vanilla small forged parts while completed ammunition remains one-at-a-time.
+- At the 42.20.2 pass, one Sharp Flint Flake (`Base.SharpedStone`) or one Iron/Steel Piece produced two heads. That matched the batch scale of vanilla small forged parts while completed ammunition remained one-at-a-time.
 
 ## Cross-recipe compatibility audit
 
@@ -77,6 +77,10 @@ The installed Build 42.20.4 scripts confirm that vanilla `AssembleBlade`, `Assem
 | Assemble 5 Metal or Stone Bolts | 450 / Maintenance 20 each | Five shafts, matching heads, feathers, and Twine uses yield five bolts |
 
 The single-bolt recipes retain their original IDs and values. Both Crossbow upgrades explicitly accept `Base.HandDrill` or `Base.StoneDrill`; the latter has only the vanilla `base:drillwoodpoor` tag and therefore cannot enter through the original `base:drillmetal` input. The three new batch recipes bring the total to fourteen without changing existing item IDs.
+
+## Stone-head yield adjustment
+
+`KnappBoltHeads` now makes four Stone Bolt Heads from one Sharp Flint Flake (`Base.SharpedStone`) instead of two. Its Flint Knapping 2 gate, 230 time, and 20 XP are unchanged. The extra yield lowers the flake cost of starting a Stone Bolt supply, while each finished bolt still needs one head, shaft, fletching material, and Twine use. The metal-head recipes and the Stone Bolt recovery chance are unchanged.
 
 ## Strip fletching alternative
 

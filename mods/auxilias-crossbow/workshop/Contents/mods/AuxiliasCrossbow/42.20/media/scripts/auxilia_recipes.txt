@@ -164,7 +164,7 @@ module AuxiliasCrossbow
         }
         outputs
         {
-            item 2 AuxiliasCrossbow.StoneBoltHead,
+            item 4 AuxiliasCrossbow.StoneBoltHead,
         }
     }
 

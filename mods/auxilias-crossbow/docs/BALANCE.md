@@ -20,7 +20,7 @@ Bolts can be assembled individually or in batches of five. Each finished bolt us
 
 1. Carve one vanilla Small Handle into one Bolt Shaft, or five Small Handles into five shafts in one batch.
 2. Produce one of two distinct Bolt Head materials:
-   - **Stone:** Knapp one Chipped Stone into two Stone Bolt Heads with a knapping tool at Flint Knapping 2.
+   - **Stone:** Knapp one Sharp Flint Flake (`Base.SharpedStone`) into four Stone Bolt Heads with a knapping tool at Flint Knapping 2.
    - **Metal:** Shape one Nail into one Metal Bolt Head with a hammer and file or whetstone at Maintenance 1, or forge one Iron/Steel Piece plus Charcoal into two heads with a smithing hammer and tongs at a Primitive Forge at Blacksmith 2.
 3. Assemble each shaft with one matching head, one Twine use, and one Chicken Feather, Turkey Feather, clean Denim Strip, or clean Leather Strip into a Stone or Metal Crossbow Bolt. The five-bolt recipes consume five of each component.
 
@@ -30,7 +30,7 @@ Crossbow Bolts intentionally do not carry vanilla's `base:ammo` item tag. Build 
 
 A broken bolt cannot be turned directly into another complete bolt. Pliers pull a Metal Bolt Head from its broken shaft, while a sharp knife cuts the bindings and damaged wood away from a Stone Bolt Head. The player must supply a new shaft, fletching material, and binding before either recovered head can be fired again. Metal bolts have a 70% intact recovery chance, while the easier-to-source Stone Bolts have a 45% intact recovery chance. Both materials use the crossbow's weapon damage because Build 42 applies projectile damage from the weapon rather than the loose ammunition item.
 
-An unloaded crossbow defaults to Metal Bolts. Its inventory context menu shows the current ammunition material and can switch it between Metal and Stone Bolts; normal reload and unload actions then use the selected material. The two advanced head paths make component pairs because a suitable stone or metal piece has enough stock for more than one small head. Both single and five-bolt assembly paths retain the same per-bolt material cost.
+An unloaded crossbow defaults to Metal Bolts. Its inventory context menu shows the current ammunition material and can switch it between Metal and Stone Bolts; normal reload and unload actions then use the selected material. The stone knapping path now yields four heads per Sharp Flint Flake to reduce the cost of starting a Stone Bolt supply; the metal forging path still yields two heads per piece. Both single and five-bolt assembly paths retain the same per-bolt material cost.
 
 The mod has fourteen recipes in total. Bolt recipes remain available when their Carving, Maintenance, Flint Knapping, or Blacksmith requirements are met. No magazine, schematic, or other recipe item is required. The Heavy Crossbow is the only learned recipe: it auto-unlocks at Maintenance 4 and Blacksmith 6, above its crafting requirement of Maintenance 4 and Blacksmith 4.
 

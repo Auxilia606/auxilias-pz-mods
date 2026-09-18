@@ -498,7 +498,7 @@ $vanillaAlignedRecipeChecks = @(
     @{ Recipe = 'CarveBoltShaft'; Patterns = @('time\s*=\s*100', 'xpAward\s*=\s*Carving:10') },
     @{ Recipe = 'CarveBoltShaftBatch'; Patterns = @('time\s*=\s*450', 'SkillRequired\s*=\s*Carving:2', 'xpAward\s*=\s*Carving:40', 'item\s+5\s+\[Base\.SmallHandle\]', 'item\s+5\s+AuxiliasCrossbow\.BoltShaft') },
     @{ Recipe = 'ShapeBoltHead'; Patterns = @('time\s*=\s*100', 'xpAward\s*=\s*Maintenance:5') },
-    @{ Recipe = 'KnappBoltHeads'; Patterns = @('time\s*=\s*230', 'xpAward\s*=\s*FlintKnapping:20') },
+    @{ Recipe = 'KnappBoltHeads'; Patterns = @('time\s*=\s*230', 'xpAward\s*=\s*FlintKnapping:20', 'item\s+1\s+\[Base\.SharpedStone\]', 'item\s+4\s+AuxiliasCrossbow\.StoneBoltHead') },
     @{ Recipe = 'ForgeBoltHeads'; Patterns = @('time\s*=\s*200', 'xpAward\s*=\s*Blacksmith:20') },
     @{ Recipe = 'MakeStandardBolts'; Patterns = @('time\s*=\s*100', 'Tags\s*=\s*InHandCraft;Survivalist', 'SkillRequired\s*=\s*Maintenance:1', 'timedAction\s*=\s*MakingJewellery', 'xpAward\s*=\s*Maintenance:5') },
     @{ Recipe = 'MakeStandardBoltsBatch'; Patterns = @('time\s*=\s*450', 'SkillRequired\s*=\s*Maintenance:1', 'xpAward\s*=\s*Maintenance:20', 'item\s+5\s+\[AuxiliasCrossbow\.BoltShaft\]', 'item\s+5\s+\[AuxiliasCrossbow\.BoltHead\]', 'item\s+5\s+\[Base\.ChickenFeather;Base\.TurkeyFeather;Base\.DenimStrips;Base\.LeatherStrips\]', 'item\s+5\s+\[Base\.Twine\]', 'item\s+5\s+Base\.AuxiliasCrossbowBolt') },

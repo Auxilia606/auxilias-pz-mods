@@ -63,7 +63,7 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - A Small Handle can be carved into exactly one Bolt Shaft.
 - Five Small Handles can be carved into exactly five Bolt Shafts with the batch recipe, consuming no extra material.
 - One Nail can be shaped into exactly one Metal Bolt Head.
-- One Chipped Stone can be knapped into exactly two Stone Bolt Heads at Flint Knapping 2.
+- One Sharp Flint Flake (`Base.SharpedStone`) can be knapped into exactly four Stone Bolt Heads at Flint Knapping 2.
 - One Iron or Steel Piece plus Charcoal can be forged into exactly two Metal Bolt Heads at a Primitive Forge with Blacksmith 2.
 - The forging recipe is unavailable away from a Primitive Forge.
 - The Heavy Crossbow recipe is unavailable away from an Advanced Forge and consumes one Crossbow, four Charcoal, and one Steel Bar Half.
