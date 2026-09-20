@@ -248,3 +248,23 @@ file-content audit. See [the bolt-family review](BOLT-FAMILY-REVIEW-2026-09-17.m
 
 This is an offline asset check. The updated bolts and new crafting props have not yet
 been rechecked in a client; the September 16 client evidence covers the earlier assets.
+
+## 2026-09-20 — 0.2.1 release-candidate interactive acceptance
+
+The project owner tested the audited 0.2.1 candidate on Project Zomboid 42.20.4.
+Clean load and registration, all refreshed model/state transitions, ranged combat and
+firearm-effect suppression, tiered reload behavior, every changed crafting path,
+existing-save persistence, icons, and English/Korean presentation passed. Exact reload
+durations and the mixed-fletching resolution were not recorded, but their acceptance
+sections were reported as passed.
+
+One required check failed. A bolt did not remain in a hit zombie's body inventory, and
+animal recovery could not be confirmed; the tester observed that the animal lifecycle
+may not expose a persistent target inventory suitable for this design. The current
+server handler adds the intact or broken result to `hitObject:getInventory()` during
+`OnWeaponHitXp`, so target-to-corpse transfer and animal loot persistence now require a
+separate implementation investigation.
+
+The complete report is in `RELEASE-TEST-0.2.1.md`. Version 0.2.1 remains a release
+candidate and must not be tagged until recovery is corrected or explicitly redesigned,
+then retested on both zombie and supported animal targets.

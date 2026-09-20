@@ -31,7 +31,8 @@ For balance observations, record the raw counts rather than only the conclusion:
 
 ## 0.2.1 release gate
 
-A 0.2.1 release is warranted only when at least one accepted fix exists. Before tagging:
+Version 0.2.1 is the current release candidate. Complete the focused procedure in
+`docs/RELEASE-TEST-0.2.1.md` and the following release steps before tagging:
 
 1. Run `tools/validate.ps1` and build a fresh audited package with `tools/package.ps1`.
 2. Repeat every affected check in `docs/TESTING.md` and the adjacent reload, recovery,
@@ -40,5 +41,5 @@ A 0.2.1 release is warranted only when at least one accepted fix exists. Before 
 4. Record the result in `docs/SMOKE-TEST.md` and `CHANGELOG.md`.
 5. Keep the existing internal item IDs unchanged for save compatibility.
 
-If no accepted fix is found, 0.2.0 remains current; the project does not create a
-version bump merely to end the observation period.
+Version 0.2.0 remains the last accepted release until these gates pass and the 0.2.1
+smoke-test result is recorded.

@@ -2,7 +2,7 @@
 
 > 이 프로젝트는 [Auxilia Project Zomboid 모노레포](../../README.md)의 독립 배포 모드다.
 
-Current version: **0.2.0**
+Current version: **0.2.1**
 
 An original crossbow mod for Project Zomboid 42.20.
 
@@ -50,7 +50,8 @@ future support is not needlessly blocked. Dedicated multiplayer implementation,
 empirical testing, and an official multiplayer-support claim are the lowest
 development priority and are deferred until the single-player work is complete.
 
-See `docs/TESTING.md` for installation and the debug test-kit workflow.
+See `docs/TESTING.md` for installation and the debug test-kit workflow. The focused
+0.2.1 release-candidate pass is in `docs/RELEASE-TEST-0.2.1.md`.
 
 Post-release bug and balance reports follow the evidence and release gates in
 `docs/STABILIZATION.md`. The next feature release is scoped in `docs/ROADMAP.md`.
@@ -71,7 +72,7 @@ Crafting times, tools, workstations, materials, skill gates, and XP awards are c
 From the monorepo root, run `tools/package.ps1 -Mod auxilias-crossbow` to validate the mod and create a versioned release ZIP plus a SHA-256 checksum in `dist/auxilias-crossbow`. The ZIP contains `workshop.txt`, `preview.png`, and `Contents` at its root, ready to extract into a Project Zomboid Workshop folder.
 
 GitHub Actions repeats validation and package auditing for every change to `master` and
-for every pull request. A namespaced semantic-version tag such as `auxilias-crossbow/v0.2.0` creates a
+for every pull request. A namespaced semantic-version tag such as `auxilias-crossbow/v0.2.1` creates a
 GitHub release from the audited ZIP and checksum. A `master` update also backfills a
 missing release for the current tagged version without replacing an existing release.
 

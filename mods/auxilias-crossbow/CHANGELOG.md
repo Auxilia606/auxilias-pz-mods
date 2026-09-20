@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+## 0.2.1 — Release candidate (2026-09-20)
+
+- Added a focused 42.20.4 release-candidate checklist covering the refreshed models, changed crafting paths, combat effects, persistence, and localization.
 - Let the existing single and five-bolt Metal/Stone assembly recipes accept clean Denim or Leather Strips in the feather input slot; recipe and bolt IDs remain intact.
 - Increased Stone Bolt Head knapping yield from two to four per Sharp Flint Flake, keeping the skill, time, and XP requirements unchanged.
 - Slimmed both broken-bolt icons to match the intact bolt family's shaft and head thickness; retained the short fragments and checked the final native 32px sprites side by side.

@@ -1,9 +1,12 @@
 # Roadmap
 
-## Current release: 0.2.0
+## Current development version: 0.2.1 release candidate
 
-The current release is the complete single-player baseline for Project Zomboid 42.20.
-Post-release defects and balance evidence are handled under `docs/STABILIZATION.md`.
+Version 0.2.0 remains the last accepted single-player baseline for Project Zomboid
+42.20. Version 0.2.1 consolidates the subsequent fixes, crafting adjustments, and
+asset refresh as a release candidate. It must pass `docs/RELEASE-TEST-0.2.1.md`
+before tagging. Post-release defects and balance evidence are handled under
+`docs/STABILIZATION.md`.
 
 ## 0.3.0: maintenance and field longevity
 
