@@ -91,6 +91,93 @@ module AuxiliasCrossbow
         }
     }
 
+    craftRecipe RepairLightCrossbow
+    {
+        time = 300,
+        AllowBatchCraft = false,
+        Tags = AnySurfaceCraft,
+        category = Repair,
+        SkillRequired = Woodwork:2;Carving:2;Maintenance:1,
+        timedAction = CraftWeapon2H,
+        xpAward = Woodwork:10;Carving:5;Maintenance:5,
+        OnTest = AuxiliaCrossbowCrafting.canRepairItem,
+        OnCreate = RecipeCodeOnCreate.genericBetterFixing,
+        Tooltip = Tooltip_Recipe_CanFailAndDamage,
+        inputs
+        {
+            item 1 tags[base:saw;base:smallsaw;base:crudesaw] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
+            item 1 tags[base:hammer] mode:keep flags[Prop1;MayDegradeVeryLight],
+            item 1 [AuxiliasCrossbow.ImprovisedCrossbow] mode:keep flags[Prop2;IsDamaged],
+            item 1 [Base.WoodenStick2],
+            item 1 [Base.Twine],
+            item 2 [Base.Nails],
+        }
+        outputs
+        {
+        }
+    }
+
+    craftRecipe RepairCrossbow
+    {
+        time = 450,
+        AllowBatchCraft = false,
+        Tags = AnySurfaceCraft,
+        category = Repair,
+        SkillRequired = Woodwork:4;Carving:3;Maintenance:3,
+        timedAction = CraftWeapon2H,
+        xpAward = Woodwork:10;Carving:5;Maintenance:10,
+        OnTest = AuxiliaCrossbowCrafting.canRepairItem,
+        OnCreate = RecipeCodeOnCreate.genericBetterFixing,
+        Tooltip = Tooltip_Recipe_CanFailAndDamage,
+        inputs
+        {
+            item 1 tags[base:hammer] mode:keep flags[Prop1;MayDegradeLight],
+            item 1 tags[base:sharpknife] mode:keep flags[IsNotDull;MayDegradeLight],
+            item 1 tags[base:screwdriver] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:pliers] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:file;base:whetstone] mode:keep flags[MayDegradeLight],
+            item 1 [AuxiliasCrossbow.ReinforcedCrossbow] mode:keep flags[Prop2;IsDamaged],
+            item 1 [Base.WoodenStick2],
+            item 1 [Base.IronPiece],
+            item 1 [Base.Wire],
+            item 2 [Base.Screws],
+        }
+        outputs
+        {
+        }
+    }
+
+    craftRecipe RepairHeavyCrossbow
+    {
+        time = 600,
+        AllowBatchCraft = false,
+        Tags = AdvancedForge,
+        category = Repair,
+        SkillRequired = Maintenance:4;Blacksmith:4,
+        timedAction = HammerMetalStanding,
+        xpAward = Maintenance:10;Blacksmith:20,
+        OnTest = AuxiliaCrossbowCrafting.canRepairItem,
+        OnCreate = RecipeCodeOnCreate.genericEvenBetterFixing,
+        Tooltip = Tooltip_Recipe_CanFailAndDamage,
+        inputs
+        {
+            item 2 tags[base:charcoal],
+            item 1 tags[base:ballpeenhammer] mode:keep flags[Prop1;MayDegradeLight],
+            item 1 tags[base:tongs] mode:keep flags[Prop2;MayDegradeLight],
+            item 1 tags[base:file;base:whetstone] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:wrench] mode:keep flags[MayDegradeLight],
+            item 1 tags[base:screwdriver] mode:keep flags[MayDegradeLight],
+            item 1 [AuxiliasCrossbow.HeavyArbalest] mode:keep flags[IsDamaged],
+            item 1 [Base.SteelPiece],
+            item 1 [Base.NutsBolts],
+            item 2 [Base.Screws],
+        }
+        outputs
+        {
+        }
+    }
+
     craftRecipe CarveBoltShaft
     {
         time = 100,

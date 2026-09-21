@@ -20,7 +20,7 @@ The final local path must contain:
 
 ## Spawn the test kit
 
-In debug mode, right-click any inventory item and choose **Auxilia's Crossbow: Spawn Test Kit**. The kit contains all three crossbows, 30 Metal Bolts, 30 Stone Bolts, Twigs, and a Sapling for dropped-model comparison.
+In debug mode, right-click any inventory item and choose **Auxilia's Crossbow: Spawn Test Kit**. The kit contains full-condition and damaged examples of all three crossbows, 30 Metal Bolts, 30 Stone Bolts, Twigs, and a Sapling for dropped-model comparison.
 
 Console/full-type IDs retain their pre-redesign names for save compatibility. They display as Light Crossbow, Crossbow, and Heavy Crossbow respectively:
 
@@ -71,6 +71,11 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - Crossbow construction consumes one Light Crossbow and requires both a Screwdriver and Pliers for its screws and wire.
 - Hand Drill and Stone Drill each satisfy the drill input for both Crossbow upgrades.
 - Upgrading a partially damaged, unloaded Crossbow preserves its condition fraction and selected Metal or Stone Bolt type. A Crossbow with a loaded bolt is not a valid upgrade input.
+- A damaged, unloaded Light Crossbow can be repaired on any surface with a Wooden Stick, one Twine use, and two Nails at Woodwork 2, Carving 2, and Maintenance 1.
+- A damaged, unloaded Crossbow can be repaired on any surface with a Wooden Stick, an Iron Piece, one Wire use, and two Screws at Woodwork 4, Carving 3, and Maintenance 3.
+- A damaged, unloaded Heavy Crossbow can be repaired only at an Advanced Forge with two Charcoal, one Steel Piece, one Nuts and Bolts, and two Screws at Maintenance 4 and Blacksmith 4.
+- A loaded or fully undamaged Crossbow is not a valid repair target. Repairing an unloaded weapon preserves its selected Metal or Stone ammunition type, favorite state, and inventory identity.
+- Repeated successful repairs consume each recipe's full material package, increment the repair count, and eventually return the weapon to maximum condition. Record the first, second, and third condition gains to confirm Build 42's diminishing repair efficiency; a failed attempt consumes materials and removes one condition point.
 - One Bolt Shaft, one matching Bolt Head, one Twine use, and one Chicken Feather, Turkey Feather, clean Denim Strip, or clean Leather Strip assemble exactly one bolt of that material through the same recipe.
 - Five shafts, five matching heads, five Twine uses, and five of one fletching material assemble exactly five bolts in the existing batch recipe. A partially used Twine spool supplies only its remaining uses; batch crafting does not duplicate Twine or bolts.
 - Cut denim clothing and leather clothing with a sharp knife or scissors; verify each clean strip can replace the feather for both Metal and Stone Bolts. Check whether a batch can combine different eligible fletching items without extra output or incorrect consumption.
@@ -81,7 +86,7 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - Both recovery recipes use the compact small-parts action rather than hammering the intact head or displaying a full-size spear prop.
 - In a sufficiently large recovery sample, Metal Bolts approach 70% intact and Stone Bolts approach 45% intact.
 - Crafting recipes unlock only when every listed skill requirement is met.
-- Debug recipe-time and XP checks match the current section of `docs/VANILLA-RECIPE-ALIGNMENT.md`: `time = 600` for Light Crossbow and Crossbow, 900 for Heavy Crossbow, 450 for five-item batches, 230 for knapping, 200 for small forging, 100 for single-item carving/assembly, and 60 for salvage with no XP.
+- Debug recipe-time and XP checks match the current section of `docs/VANILLA-RECIPE-ALIGNMENT.md`: `time = 600` for Light Crossbow and Crossbow construction, 900 for Heavy Crossbow construction, 300/450/600 for Light/standard/Heavy repair, 450 for five-item batches, 230 for knapping, 200 for small forging, 100 for single-item carving/assembly, and 60 for salvage with no XP.
 - Survivor bags and barricaded/safehouse distributions very rarely contain a crossbow.
 - Item names and recipe names change correctly between English and Korean.
 - All ten dedicated mod icons have no black box, clipped edge, or missing texture and remain distinct from the 3D model textures.

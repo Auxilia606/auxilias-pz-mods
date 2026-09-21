@@ -5,8 +5,21 @@ local upgradeInputs = {
     ["AuxiliasCrossbow.ReinforcedCrossbow"] = true,
 }
 
+local repairInputs = {
+    ["AuxiliasCrossbow.ImprovisedCrossbow"] = true,
+    ["AuxiliasCrossbow.ReinforcedCrossbow"] = true,
+    ["AuxiliasCrossbow.HeavyArbalest"] = true,
+}
+
 function AuxiliaCrossbowCrafting.canUseUpgradeItem(item)
     if upgradeInputs[item:getFullType()] then
+        return item:getCurrentAmmoCount() == 0
+    end
+    return true
+end
+
+function AuxiliaCrossbowCrafting.canRepairItem(item)
+    if repairInputs[item:getFullType()] then
         return item:getCurrentAmmoCount() == 0
     end
     return true

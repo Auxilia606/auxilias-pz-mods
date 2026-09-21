@@ -85,3 +85,15 @@ The single-bolt recipes retain their original IDs and values. Both Crossbow upgr
 ## Strip fletching alternative
 
 The installed Build 42.20.4 `RipDenimClothing` recipe cuts denim or leather clothing with scissors or a sharp knife and produces `Base.DenimStrips` or `Base.LeatherStrips`. Both are normal material items in `media/scripts/generated/items/normal.txt`. Vanilla recipes use a bracketed list of item IDs as alternative inputs, including multi-item strip inputs. The four existing Auxilia assembly recipes now use that syntax to accept `Base.ChickenFeather`, `Base.TurkeyFeather`, `Base.DenimStrips`, or `Base.LeatherStrips` in one fletching slot. The explicit item list excludes dirty strips and Duct Tape. It also narrows the prior `base:feather` input to the two verified vanilla feather IDs, so mod-added feathers need explicit compatibility. Component counts, skill gates, timing, XP, published recipe/bolt IDs, and 70%/45% intact recovery rates are unchanged. Mixed fletching items in one five-bolt craft still require an in-game check.
+
+## Build 42.20.4 repair alignment
+
+The installed weapon catalog contains three relevant maintenance patterns. Most wooden and composite melee weapons expose broad tape and glue tags; scrap-metal weapons use an epoxy tag; firearms consume another same or compatible firearm through legacy `fixing` definitions. Blades additionally separate sharpness from structural condition, and handled tools can preserve their head while replacing a shaft. A Crossbow should not accept every generic adhesive and is too expensive to cannibalize routinely, so Auxilia uses three explicit repair recipes while calling the native generic repair callbacks.
+
+| Auxilia repair | Time / XP | Inputs and workspace | Native condition behavior |
+| --- | --- | --- | --- |
+| Light Crossbow | 300 / Woodwork 10, Carving 5, Maintenance 5 | Any surface; Wooden Stick, Twine use, two Nails; woodworking tools | `genericBetterFixing` |
+| Crossbow | 450 / Woodwork 10, Carving 5, Maintenance 10 | Any surface; Wooden Stick, Iron Piece, Wire use, two Screws; fitting tools | `genericBetterFixing` |
+| Heavy Crossbow | 600 / Maintenance 10, Blacksmith 20 | Advanced Forge; two Charcoal, Steel Piece, Nuts and Bolts, two Screws; blacksmith tools | `genericEvenBetterFixing` |
+
+Each damaged Crossbow is a kept recipe input rather than a consumed-and-recreated output. This preserves its identity and selected ammunition. `AuxiliaCrossbowCrafting.canRepairItem` rejects loaded targets because Build 42's normal crafting input checks do not inspect firearm ammunition. The native callbacks record every attempt, reduce later repair efficiency, increase later failure risk, and guarantee at least one condition point on success. Repeated successful repairs can therefore reach the original maximum condition, but their effective material cost rises. The general engine findings and formulas are recorded in `shared/knowledge/BUILD-42-WEAPON-REPAIR.md`.

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added tier-specific repair recipes for all three Crossbows. Light and standard repairs use woodworking and fitting materials on an ordinary surface, while Heavy repairs require an Advanced Forge and blacksmith supplies.
+- Reused Build 42's native repeated-repair calculations so successive repairs become less material-efficient but can still restore a Crossbow completely, and rejected loaded Crossbows from every repair input.
 ## 0.2.1 — Release candidate (2026-09-20)
 
 - Added a focused 42.20.4 release-candidate checklist covering the refreshed models, changed crafting paths, combat effects, persistence, and localization.

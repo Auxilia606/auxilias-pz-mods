@@ -65,7 +65,7 @@ complete mod rather than an early playable milestone.
 
 ## Recipe balance
 
-Crafting times, tools, workstations, materials, skill gates, and XP awards are calibrated against installed vanilla recipes. The [vanilla recipe alignment report](docs/VANILLA-RECIPE-ALIGNMENT.md) records the original calibration and current adjustments. Bolts can be assembled singly or in batches of five; the Heavy Crossbow recipe auto-unlocks at Maintenance 4 and Blacksmith 6.
+Crafting times, tools, workstations, materials, skill gates, XP awards, and repairs are calibrated against installed vanilla recipes. The [vanilla recipe alignment report](docs/VANILLA-RECIPE-ALIGNMENT.md) records the original calibration and current adjustments. Bolts can be assembled singly or in batches of five; the Heavy Crossbow recipe auto-unlocks at Maintenance 4 and Blacksmith 6. Each unloaded Crossbow tier has its own repair recipe. Repeated repairs use Build 42's diminishing material efficiency but can still restore the weapon completely; the Heavy Crossbow must be repaired at an Advanced Forge.
 
 ## Package
 

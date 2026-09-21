@@ -12,6 +12,18 @@ local function spawnTestKit(playerIndex)
     inventory:AddItem("AuxiliasCrossbow.ImprovisedCrossbow")
     inventory:AddItem("AuxiliasCrossbow.ReinforcedCrossbow")
     inventory:AddItem("AuxiliasCrossbow.HeavyArbalest")
+
+    local damagedCrossbows = {
+        { type = "AuxiliasCrossbow.ImprovisedCrossbow", condition = 2 },
+        { type = "AuxiliasCrossbow.ReinforcedCrossbow", condition = 3 },
+        { type = "AuxiliasCrossbow.HeavyArbalest", condition = 4 },
+    }
+    for _, sample in ipairs(damagedCrossbows) do
+        local item = inventory:AddItem(sample.type)
+        item:setCondition(sample.condition)
+        item:syncItemFields()
+    end
+
     inventory:AddItem("Base.Twigs")
     inventory:AddItem("Base.Sapling")
     for _ = 1, 30 do

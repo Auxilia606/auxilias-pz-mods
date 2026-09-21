@@ -120,6 +120,9 @@ $expectedEnglishRecipeNames = @{
     CarveBoltShaftBatch = 'Carve 5 Crossbow Bolt Shafts'
     MakeStandardBoltsBatch = 'Assemble 5 Metal Crossbow Bolts'
     MakeStoneBoltBatch = 'Assemble 5 Stone Crossbow Bolts'
+    RepairLightCrossbow = 'Repair Light Crossbow'
+    RepairCrossbow = 'Repair Crossbow'
+    RepairHeavyCrossbow = 'Repair Heavy Crossbow'
 }
 foreach ($recipeName in $expectedEnglishRecipeNames.Keys) {
     if ($englishRecipes.$recipeName -ne $expectedEnglishRecipeNames[$recipeName]) {
@@ -443,7 +446,7 @@ function Get-CraftRecipeBlock {
     throw "Recipe closing brace not found: $Name"
 }
 
-foreach ($recipeName in @('MakeLightCrossbow', 'MakeCrossbow', 'MakeHeavyCrossbow', 'CarveBoltShaft', 'CarveBoltShaftBatch', 'ShapeBoltHead', 'KnappBoltHeads', 'ForgeBoltHeads', 'MakeStandardBolts', 'MakeStandardBoltsBatch', 'MakeStoneBolt', 'MakeStoneBoltBatch', 'SalvageBrokenBolts', 'SalvageBrokenStoneBolt')) {
+foreach ($recipeName in @('MakeLightCrossbow', 'MakeCrossbow', 'MakeHeavyCrossbow', 'RepairLightCrossbow', 'RepairCrossbow', 'RepairHeavyCrossbow', 'CarveBoltShaft', 'CarveBoltShaftBatch', 'ShapeBoltHead', 'KnappBoltHeads', 'ForgeBoltHeads', 'MakeStandardBolts', 'MakeStandardBoltsBatch', 'MakeStoneBolt', 'MakeStoneBoltBatch', 'SalvageBrokenBolts', 'SalvageBrokenStoneBolt')) {
     if ($recipesText -notmatch [regex]::Escape("craftRecipe $recipeName")) {
         throw "Recipe definition not found: $recipeName"
     }
@@ -495,6 +498,9 @@ $vanillaAlignedRecipeChecks = @(
     @{ Recipe = 'MakeLightCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:20;Carving:10;Maintenance:5', 'item\s+1\s+\[Base\.Plank\]') },
     @{ Recipe = 'MakeCrossbow'; Patterns = @('time\s*=\s*600', 'xpAward\s*=\s*Woodwork:40;Carving:15;Maintenance:10', 'OnTest\s*=\s*AuxiliaCrossbowCrafting\.canUseUpgradeItem', 'OnCreate\s*=\s*AuxiliaCrossbowCrafting\.finishUpgrade', 'item\s+1\s+\[AuxiliasCrossbow\.ImprovisedCrossbow\]\s+flags\[Prop2;InheritCondition\]', 'item\s+1\s+\[Base\.MetalBar\]', 'item\s+1\s+\[Base\.HandDrill;Base\.StoneDrill\]', 'tags\[base:screwdriver\]', 'tags\[base:pliers\]') },
     @{ Recipe = 'MakeHeavyCrossbow'; Patterns = @('time\s*=\s*900', 'Tags\s*=\s*AdvancedForge', 'NeedToBeLearn\s*=\s*true', 'AutoLearnAll\s*=\s*Maintenance:4;Blacksmith:6', 'timedAction\s*=\s*HammerMetalStanding', 'xpAward\s*=\s*Maintenance:10;Blacksmith:45', 'OnTest\s*=\s*AuxiliaCrossbowCrafting\.canUseUpgradeItem', 'OnCreate\s*=\s*AuxiliaCrossbowCrafting\.finishUpgrade', 'item\s+4\s+tags\[base:charcoal\]', 'item\s+1\s+\[AuxiliasCrossbow\.ReinforcedCrossbow\]\s+flags\[InheritCondition\]', 'item\s+1\s+\[Base\.SteelBarHalf\]', 'item\s+1\s+\[Base\.HandDrill;Base\.StoneDrill\]', 'tags\[base:ballpeenhammer\]', 'tags\[base:tongs\]') },
+    @{ Recipe = 'RepairLightCrossbow'; Patterns = @('time\s*=\s*300', 'AllowBatchCraft\s*=\s*false', 'Tags\s*=\s*AnySurfaceCraft', 'category\s*=\s*Repair', 'SkillRequired\s*=\s*Woodwork:2;Carving:2;Maintenance:1', 'xpAward\s*=\s*Woodwork:10;Carving:5;Maintenance:5', 'OnTest\s*=\s*AuxiliaCrossbowCrafting\.canRepairItem', 'OnCreate\s*=\s*RecipeCodeOnCreate\.genericBetterFixing', 'Tooltip\s*=\s*Tooltip_Recipe_CanFailAndDamage', 'item\s+1\s+\[AuxiliasCrossbow\.ImprovisedCrossbow\]\s+mode:keep\s+flags\[Prop2;IsDamaged\]', 'item\s+1\s+\[Base\.WoodenStick2\]', 'item\s+1\s+\[Base\.Twine\]', 'item\s+2\s+\[Base\.Nails\]') },
+    @{ Recipe = 'RepairCrossbow'; Patterns = @('time\s*=\s*450', 'AllowBatchCraft\s*=\s*false', 'Tags\s*=\s*AnySurfaceCraft', 'category\s*=\s*Repair', 'SkillRequired\s*=\s*Woodwork:4;Carving:3;Maintenance:3', 'xpAward\s*=\s*Woodwork:10;Carving:5;Maintenance:10', 'OnTest\s*=\s*AuxiliaCrossbowCrafting\.canRepairItem', 'OnCreate\s*=\s*RecipeCodeOnCreate\.genericBetterFixing', 'item\s+1\s+\[AuxiliasCrossbow\.ReinforcedCrossbow\]\s+mode:keep\s+flags\[Prop2;IsDamaged\]', 'item\s+1\s+\[Base\.WoodenStick2\]', 'item\s+1\s+\[Base\.IronPiece\]', 'item\s+1\s+\[Base\.Wire\]', 'item\s+2\s+\[Base\.Screws\]') },
+    @{ Recipe = 'RepairHeavyCrossbow'; Patterns = @('time\s*=\s*600', 'AllowBatchCraft\s*=\s*false', 'Tags\s*=\s*AdvancedForge', 'category\s*=\s*Repair', 'SkillRequired\s*=\s*Maintenance:4;Blacksmith:4', 'xpAward\s*=\s*Maintenance:10;Blacksmith:20', 'OnTest\s*=\s*AuxiliaCrossbowCrafting\.canRepairItem', 'OnCreate\s*=\s*RecipeCodeOnCreate\.genericEvenBetterFixing', 'item\s+2\s+tags\[base:charcoal\]', 'item\s+1\s+\[AuxiliasCrossbow\.HeavyArbalest\]\s+mode:keep\s+flags\[IsDamaged\]', 'item\s+1\s+\[Base\.SteelPiece\]', 'item\s+1\s+\[Base\.NutsBolts\]', 'item\s+2\s+\[Base\.Screws\]') },
     @{ Recipe = 'CarveBoltShaft'; Patterns = @('time\s*=\s*100', 'xpAward\s*=\s*Carving:10') },
     @{ Recipe = 'CarveBoltShaftBatch'; Patterns = @('time\s*=\s*450', 'SkillRequired\s*=\s*Carving:2', 'xpAward\s*=\s*Carving:40', 'item\s+5\s+\[Base\.SmallHandle\]', 'item\s+5\s+AuxiliasCrossbow\.BoltShaft') },
     @{ Recipe = 'ShapeBoltHead'; Patterns = @('time\s*=\s*100', 'xpAward\s*=\s*Maintenance:5') },
@@ -549,8 +555,16 @@ if (([regex]::Matches($recipesText, 'NeedToBeLearn\s*=\s*true')).Count -ne 1) {
     throw 'Only the Heavy Crossbow may require advanced recipe learning.'
 }
 
+if (([regex]::Matches($recipesText, '\bcraftRecipe\s+')).Count -ne 17) {
+    throw 'Auxilia Crossbow must define exactly seventeen crafting and repair recipes.'
+}
+
+if ($itemsText -match 'base:repairwith(?:tape|glue|epoxy)') {
+    throw 'Crossbows must use their tier-specific repair recipes rather than vanilla catch-all repair tags.'
+}
+
 $craftingLuaText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\shared\AuxiliaCrossbow_Crafting.lua') -Raw
-foreach ($stateCheck in @('function AuxiliaCrossbowCrafting.canUseUpgradeItem', 'getCurrentAmmoCount() == 0', 'function AuxiliaCrossbowCrafting.finishUpgrade', 'getAllConsumedItems()', 'getFirstCreatedItem()', 'setAmmoType(ammoType)', 'syncItemFields()')) {
+foreach ($stateCheck in @('function AuxiliaCrossbowCrafting.canUseUpgradeItem', 'function AuxiliaCrossbowCrafting.canRepairItem', '["AuxiliasCrossbow.HeavyArbalest"] = true', 'getCurrentAmmoCount() == 0', 'function AuxiliaCrossbowCrafting.finishUpgrade', 'getAllConsumedItems()', 'getFirstCreatedItem()', 'setAmmoType(ammoType)', 'syncItemFields()')) {
     if ($craftingLuaText -notmatch [regex]::Escape($stateCheck)) {
         throw "Crossbow upgrade state handling is missing: $stateCheck"
     }
@@ -637,7 +651,7 @@ foreach ($lootCheck in @('OnPreDistributionMerge', 'SafehouseArmor', 'BagsAndCon
 }
 
 $testKitText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\client\AuxiliaCrossbow_TestKit.lua') -Raw
-foreach ($testKitCheck in @('isDebugEnabled', 'AuxiliasStoneCrossbowBolt', 'ContextMenu_AuxiliaCrossbow_TestKit')) {
+foreach ($testKitCheck in @('isDebugEnabled', 'AuxiliasStoneCrossbowBolt', 'ContextMenu_AuxiliaCrossbow_TestKit', 'condition = 2', 'condition = 3', 'condition = 4', 'item:setCondition(sample.condition)', 'item:syncItemFields()')) {
     if ($testKitText -notmatch [regex]::Escape($testKitCheck)) {
         throw "Debug test-kit integration is missing: $testKitCheck"
     }
