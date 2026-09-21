@@ -268,3 +268,68 @@ separate implementation investigation.
 The complete report is in `RELEASE-TEST-0.2.1.md`. Version 0.2.1 remains a release
 candidate and must not be tagged until recovery is corrected or explicitly redesigned,
 then retested on both zombie and supported animal targets.
+
+### 2026-09-20 recovery implementation awaiting live retest
+
+The failed target-inventory handler has been replaced. `OnHitZombie` now uses the
+engine's coarse `Head`, `Torso_Upper`, and `Torso_Lower` result to select a random
+free Human attachment location, attaches the actual rolled recovery item, and lets
+the native zombie death path transfer it into corpse loot. Each item also selects
+one of two embedded transforms so the single available head anchor does not always
+show an identical angle. Full visual regions retain additional results through
+`addItemToSpawnAtDeath`.
+
+Non-zombie character hits use `OnWeaponHitCharacter`. Their results remain in that
+target's ModData and are created beside its body from authoritative
+`OnCharacterDeath`; this avoids relying on the absent animal corpse container.
+Static validation covers the new event, model, fallback, and synchronization
+contracts. The visual offsets, corpse counts, animal death-site drop, and remote
+client result remain unchecked until the procedure in `docs/TESTING.md` is run.
+
+The first live visual check confirmed that attachment rendering worked but found a
+fixed air gap between the Bolt and the torso. A first negative-offset correction was
+then shown by follow-up screenshots to move in the wrong attachment-space direction;
+the same screenshots also exposed a frontal upper-torso hit using a rear knife anchor.
+The next correction used positive item-side penetration offsets aligned with vanilla
+embedded props, removed both rear anchors from the upper-body pool, and kept a
+slightly shallower value for broken fragments. A third set of screenshots still showed
+the Bolt displaced from the body. An initial FBX comparison used imported world-space
+bounds to identify opposite point directions and compensated with an inverse half-turn.
+
+A fourth screenshot isolated two broken-Bolt alternate poses at `Knife Stomach` and
+`Stomach`. The actual fragments were the short black marks below the arms; the green
+marks on the trousers were clothing damage. Their corrected axes still exposed an air
+gap because the earlier per-length offsets (`0.085`/`0.090`) did not use the item-origin
+registration expected by the Human attachment pair. The character and item transforms
+are multiplied directly in 42.20.4, and vanilla embedded blade models use the same
+`0 0.15 0` item offset for short and long meshes. All Bolt variants now use that exact
+offset; positional randomness comes from the engine slots, while the two model variants
+change only angle. Debug builds log the reported region, chosen slot, and model variant.
+Head, shoulder, and both abdominal placements still require a fresh front/side-camera
+retest.
+
+A fifth screenshot showed that the inverse-half-turn build reached the body but exposed
+the point while burying the tail, making the Bolt look pasted sideways across the torso.
+The earlier comparison had missed that the vanilla FBX keeps its long mesh axis locally
+on Z behind a node transform, whereas the Bolt's baked FBX keeps it directly on Y; the
+engine applies that mesh transform separately from the item attachment. The Bolt poses
+therefore retain the original attachment rotations (`-90 0 -90` and alternate
+`-83 8 -101`) so the point faces inward and the tail faces outward, while keeping the
+now-verified `0 0.15 0` registration offset that removed the air gap. This combined
+orientation and offset still requires a fresh live retest.
+
+That retest still showed the Bolt lying against the zombie rather than penetrating it.
+The visual feature is therefore removed instead of receiving another attachment-space
+calibration. Zombie hits now roll the same Metal/Stone intact-or-broken result and add
+the real item only to `addItemToSpawnAtDeath`, so it is invisible while the zombie is
+alive and becomes ordinary corpse loot on death. All Bolt-side Human attachment blocks,
+alternate embedded models, `setAttachedItem`, and attached-item synchronization calls
+were removed. This decision supersedes the visual-attachment implementation history
+above.
+
+The project owner then tested candidate ZIP SHA-256
+`64cbd2f2c39a04d6d7a96111dfd72ea775667b48d7a4d92635d70fa4fcf86b3c` and reported
+that all focused zombie checks passed: living zombies showed no Bolt, killed zombies
+provided the expected intact-or-broken result in corpse inventory, and no recovery item
+was missing or duplicated. Animal death-site recovery and a remote multiplayer-client
+observation remain unrecorded in this release-candidate pass.

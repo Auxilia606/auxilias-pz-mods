@@ -12,7 +12,7 @@ The first playable test build adds three non-modern, craftable crossbows:
 - Crossbow — a sturdier wood-and-iron hunting weapon.
 - Heavy Crossbow — a slow, powerful compact crossbow with a dark hardwood tiller, steel prod, and reinforced iron fittings.
 
-All three use recoverable Metal or Stone Bolts. An unloaded crossbow can switch ammunition material from its inventory context menu, after which the normal reload and unload controls use that material. Metal Bolts have a 70% intact recovery chance; easier-to-source Stone Bolts have a 45% intact recovery chance. Both can be fletched with vanilla Chicken or Turkey Feathers, or with clean Denim or Leather Strips cut from clothing.
+All three use recoverable Metal or Stone Bolts. An unloaded crossbow can switch ammunition material from its inventory context menu, after which the normal reload and unload controls use that material. Metal Bolts have a 70% intact recovery chance; easier-to-source Stone Bolts have a 45% intact recovery chance. Each zombie hit queues one rolled intact or broken result without rendering a Bolt on the living zombie; the result appears in the corpse inventory after death. Animal hits stay bound to that target and drop their recovery beside the carcass at death because Build 42 animal corpses do not expose the same Human inventory contract. Both bolt materials can be fletched with vanilla Chicken or Turkey Feathers, or with clean Denim or Leather Strips cut from clothing.
 
 ## Repository layout
 
@@ -78,7 +78,7 @@ missing release for the current tagged version without replacing an existing rel
 
 ## Verification status
 
-The latest [crossbow and linked-item design review](docs/DESIGN-REFRESH-2026-09-19.md) shows the revised braced/loaded silhouettes, matched bolt lengths, independent icons and measured asset checks. The new dimensions still need an in-game pose and placement review; older client checks below do not validate this revision.
+The latest [crossbow and linked-item design review](docs/DESIGN-REFRESH-2026-09-19.md) shows the revised braced/loaded silhouettes, matched bolt lengths, independent icons and measured asset checks. The project owner has also passed the focused zombie-recovery retest for the non-visual corpse-loot design: no live attachment, exactly one recovery result per successful hit, and no missing or duplicate item. Animal death-site recovery and remote multiplayer observation remain unrecorded for this release candidate.
 
 The 0.1.0 package and earlier post-release development milestones were loaded by the installed Project Zomboid 42.20.2 server or client without an Auxilia-related registry, script, model, or Lua error. Both ammunition registries, all earlier items, and the original eleven recipes were accepted exactly once. The project owner completed the final single-player integration procedure on 2026-08-17, covering ammunition switching and preservation, crafting, firing, recovery, balance, loot, and English/Korean presentation. On 2026-08-23, the project owner also passed the Build 42.20.3 client, existing-save, and multiplayer compatibility checks, including aimed-firearm targeting, Metal/Stone Bolt behavior, muzzle-light suppression, vanilla firearm lighting, and remote shot synchronization. The asset pipeline round-trips separate Metal and Stone Bolt models plus fixed-length relaxed/cocked states for all three crossbows. It also validates ten dedicated hand-painted item icons independently from the 3D models. See `docs/SMOKE-TEST.md` and `docs/TESTING.md`.
 

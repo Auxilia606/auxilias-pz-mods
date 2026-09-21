@@ -135,6 +135,23 @@ if ($modelsText -notmatch '(?m)^\s*module\s+Base\s*$') {
     throw 'Weapon model scripts must be declared in module Base for WeaponSprite lookup.'
 }
 
+foreach ($removedEmbeddedToken in @(
+    'AuxiliaCrossbowBoltEmbeddedAlt',
+    'AuxiliaStoneCrossbowBoltEmbeddedAlt',
+    'AuxiliaBrokenBoltEmbeddedAlt',
+    'AuxiliaBrokenStoneBoltEmbeddedAlt',
+    'attachment knife_head',
+    'attachment knife_shoulder',
+    'attachment knife_stomach',
+    'attachment stomach',
+    'attachment knife_in_back',
+    'attachment meatcleaver_in_back'
+)) {
+    if ($modelsText.Contains($removedEmbeddedToken)) {
+        throw "Removed live-zombie Bolt attachment remains in model scripts: $removedEmbeddedToken"
+    }
+}
+
 foreach ($modelName in $modelNames) {
     $modelBlockPattern = "(?s)model\s+$([regex]::Escape($modelName))\s*\{.*?mesh\s*=\s*weapons/2handed/$([regex]::Escape($modelName)),.*?texture\s*=\s*weapons/2handed/AuxiliaCrossbowAtlas,.*?scale\s*=\s*0\.01,"
     if ($modelsText -notmatch $modelBlockPattern) {
@@ -585,10 +602,38 @@ foreach ($selectionCheck in @('setAmmoType', 'syncItemFields', 'ContextMenu_Auxi
 }
 
 $recoveryText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\server\AuxiliaCrossbow_Recovery.lua') -Raw
-foreach ($recoveryCheck in @('AuxiliasStoneCrossbowBolt', 'BrokenStoneBolt', 'intactChance = isStoneBolt and 45 or 70')) {
+foreach ($recoveryCheck in @(
+    '["auxiliascrossbow:bolt"]',
+    '["auxiliascrossbow:stonebolt"]',
+    'intactChance = 70',
+    'intactChance = 45',
+    'AuxiliasStoneCrossbowBolt',
+    'BrokenStoneBolt',
+    'zombie:addItemToSpawnAtDeath',
+    'PENDING_RECOVERY_KEY',
+    'square:AddWorldInventoryItem',
+    'Events.OnHitZombie.Add',
+    'Events.OnWeaponHitCharacter.Add',
+    'Events.OnCharacterDeath.Add'
+)) {
     if ($recoveryText -notmatch [regex]::Escape($recoveryCheck)) {
         throw "Material-specific bolt recovery is missing: $recoveryCheck"
     }
+}
+foreach ($removedRecoveryToken in @(
+    'zombie:setAttachedItem',
+    'sendAttachedItem',
+    'setStaticModel',
+    'attachmentSlotsByBodyPart',
+    'EmbeddedAlt',
+    'EventAttachItem'
+)) {
+    if ($recoveryText.Contains($removedRecoveryToken)) {
+        throw "Removed live-zombie Bolt attachment remains in recovery code: $removedRecoveryToken"
+    }
+}
+if ($recoveryText -match [regex]::Escape('Events.OnWeaponHitXp.Add')) {
+    throw 'Bolt recovery must not use the single-player-only OnWeaponHitXp callback.'
 }
 
 $reloadText = Get-Content -LiteralPath (Join-Path $versionRoot 'media\lua\shared\AuxiliaCrossbow_Reload.lua') -Raw

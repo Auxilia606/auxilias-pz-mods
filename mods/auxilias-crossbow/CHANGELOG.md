@@ -4,6 +4,11 @@
 
 - Added tier-specific repair recipes for all three Crossbows. Light and standard repairs use woodworking and fitting materials on an ordinary surface, while Heavy repairs require an Advanced Forge and blacksmith supplies.
 - Reused Build 42's native repeated-repair calculations so successive repairs become less material-efficient but can still restore a Crossbow completely, and rejected loaded Crossbows from every repair input.
+- Replaced the `OnWeaponHitXp` target-inventory recovery hook with authoritative character-hit handling. Each zombie hit now queues one actual intact or broken recovery item through the native death-spawn list, which transfers it into the corpse inventory without displaying a Bolt on the living zombie.
+- Added target-bound death-site recovery for animals and other non-zombie characters whose corpses do not expose the Human loot contract.
+- Removed the attempted live-zombie Bolt attachments, alternate embedded models, attachment transforms, and synchronization calls after repeated client screenshots showed that the available Human weapon anchors could not present the projectile as naturally embedded.
+- Passed the focused live zombie-recovery retest: no Bolt renders on a living zombie, each successful hit yields one corpse-inventory result after death, and no recovery item was missing or duplicated.
+
 ## 0.2.1 — Release candidate (2026-09-20)
 
 - Added a focused 42.20.4 release-candidate checklist covering the refreshed models, changed crafting paths, combat effects, persistence, and localization.

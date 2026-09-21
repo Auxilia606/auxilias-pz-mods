@@ -72,12 +72,28 @@ Bolts.
   the order and approximate duration below.
 - [x] Repeat the timing comparison at Reloading 5. The intended fastest-to-slowest order
   is Light, standard, Heavy.
-- [ ] A hit zombie and a hit animal receive exactly one intact or broken bolt matching the
-  selected material; a miss does not create a duplicate inventory item.
+- [x] A hit zombie queues exactly one intact or broken bolt matching the selected material;
+  a miss creates no recovery item.
+- [ ] A hit animal creates exactly one target-bound recovery result per successful hit.
 
   **Observed failure:** no recoverable bolt remained in the zombie's body inventory.
   Animal recovery could not be confirmed and appears incompatible with the current
   target-inventory approach. This remains the sole required 0.2.1 retest blocker.
+
+  **Implementation response:** recovery no longer writes to the live
+  target inventory. A zombie hit now queues the actual recovery item through the native
+  death-spawn list, so it appears in corpse loot without rendering on the living zombie.
+  Animal results remain target-bound until death and then drop beside the carcass. Run
+  the remaining focused checks below before release.
+
+  - [x] Across the reported zombie-hit test, no Bolt is displayed on a living zombie and a
+    miss creates no recovery result.
+  - [x] Killing and looting those zombies yields exactly one result per successful hit,
+    with no missing or duplicate recovery items.
+  - [ ] A hit animal creates no immediate loose item; after death, exactly one result
+    per hit appears beside that animal's carcass.
+  - [ ] A second multiplayer client also sees no live attachment, and the server
+    produces no duplicate recovery item.
 
 Reloading 0 results:
 
@@ -165,20 +181,22 @@ the wrong material, or a grossly incorrect probability.
 - Date: 2026-09-20
 - Tester: project owner
 - Game build: 42.20.4
-- Candidate ZIP SHA-256: `a149748225ad398f19d2e28d486d58e4ef50eb633fce6531e51f1905cfc3fcf5`
+- Candidate ZIP SHA-256: `64cbd2f2c39a04d6d7a96111dfd72ea775667b48d7a4d92635d70fa4fcf86b3c`
 - New-save name:
 - Existing-save copy:
 - Other enabled mods: none / list
 - Reload order at level 0: passed; exact durations not recorded
 - Reload order at level 5: passed; exact durations not recorded
 - Required checks passed: clean load/registration, model/state transitions, combat
-  targeting/effects/reload, crafting, existing-save persistence, presentation/localization
-- Required checks failed: recovered bolt did not remain in a hit zombie's body inventory;
-  animal recovery was not confirmable with the current design
+  targeting/effects/reload, crafting, existing-save persistence, presentation/localization;
+  focused zombie recovery retest passed with no live attachment, exactly one corpse item
+  per successful hit, and no missing or duplicate result
+- Required checks remaining: animal death-site recovery and second-client multiplayer
+  observation were not included in the reported focused zombie result
 - Relevant log path:
 - Screenshot/evidence paths:
-- Final decision: **RETEST** after recovery handling is corrected or deliberately
-  redesigned and documented
+- Final decision: **RETEST** only the remaining animal and multiplayer recovery checks;
+  the redesigned zombie corpse-recovery path is **PASS**
 
 After a complete pass, summarize the result in `docs/SMOKE-TEST.md`, replace the
 release-candidate heading in `CHANGELOG.md` with the release date, and create the

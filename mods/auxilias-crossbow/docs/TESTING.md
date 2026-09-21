@@ -59,7 +59,11 @@ Console/full-type IDs retain their pre-redesign names for save compatibility. Th
 - The three range limits are visibly different.
 - Reload order is Light Crossbow, Crossbow, then Heavy Crossbow from fastest to slowest.
 - Firing is dramatically quieter than a pistol.
-- After hits, zombie and animal corpses contain an intact or broken bolt matching the loaded material.
+- Hit standing zombies repeatedly with both Bolt materials. No successful hit may display a Bolt on the living zombie.
+- Kill each hit zombie and loot the corpse. It contains exactly one matching recovery result per successful hit, and looting does not leave a duplicate Bolt on the ground or in the corpse.
+- Miss a zombie and verify that no recovery item is created. Repeat with an ordinary non-crossbow weapon and verify that it never creates a Bolt.
+- Hit and kill a supported animal with both Bolt materials. Exactly one matching recovery item per hit appears beside that animal's carcass only when it dies.
+- In multiplayer, confirm that neither client displays a Bolt on the living zombie and that the corpse receives the recovery items without client/server duplication.
 - A Small Handle can be carved into exactly one Bolt Shaft.
 - Five Small Handles can be carved into exactly five Bolt Shafts with the batch recipe, consuming no extra material.
 - One Nail can be shaped into exactly one Metal Bolt Head.
