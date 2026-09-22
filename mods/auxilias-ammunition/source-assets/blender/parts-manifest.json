@@ -1,0 +1,219 @@
+{
+  "target": {
+    "releaseLine": "42.20",
+    "testedBuild": "42.20.4"
+  },
+  "source_sha256": "78b3ee2d5ee2c569e4e784f2282a0e48d39aa96dfb2ef27d21fe217e0274b6a7",
+  "atlas_sha256": "98ed6dab86cb50776d172643793c25b3f3af86cc162516786bf35ee4e1eeac75",
+  "assets": {
+    "SmallPistolBody": {
+      "triangles": 408,
+      "vertices": 208,
+      "bounds_min": [
+        -0.018882162868976593,
+        -0.017733747139573097,
+        0.0
+      ],
+      "bounds_max": [
+        0.018882161006331444,
+        0.017733747139573097,
+        0.013199999928474426
+      ],
+      "dimensions": [
+        0.037764325737953186,
+        0.035467494279146194,
+        0.013199999928474426
+      ],
+      "degenerate_triangles": 0,
+      "collapsed_uv_triangles": 0,
+      "fbx_max_coordinate_uv_delta": 1.862645149230957e-09,
+      "fbx_geometry_uv_winding_match": true,
+      "fbx_sha256": "5110476725ea621035a8e9c2f62c608fd19674ac596ee1b6a9ac0336b62b238c",
+      "materials": 1,
+      "uv_layers": 1
+    },
+    "HeavyPistolBody": {
+      "triangles": 408,
+      "vertices": 208,
+      "bounds_min": [
+        -0.022405441850423813,
+        -0.025128647685050964,
+        0.0
+      ],
+      "bounds_max": [
+        0.022405441850423813,
+        0.025128647685050964,
+        0.01759999990463257
+      ],
+      "dimensions": [
+        0.044810883700847626,
+        0.05025729537010193,
+        0.01759999990463257
+      ],
+      "degenerate_triangles": 0,
+      "collapsed_uv_triangles": 0,
+      "fbx_max_coordinate_uv_delta": 2.3283064365386963e-09,
+      "fbx_geometry_uv_winding_match": true,
+      "fbx_sha256": "cdc24776d60bdc8a1c9cfed316a514da67a8c38fb607e6d49c582655f00fb614",
+      "materials": 1,
+      "uv_layers": 1
+    },
+    "RifleBody": {
+      "triangles": 408,
+      "vertices": 208,
+      "bounds_min": [
+        -0.021717287600040436,
+        -0.028797270730137825,
+        0.0
+      ],
+      "bounds_max": [
+        0.021717287600040436,
+        0.028797270730137825,
+        0.014299999922513962
+      ],
+      "dimensions": [
+        0.04343457520008087,
+        0.05759454146027565,
+        0.014299999922513962
+      ],
+      "degenerate_triangles": 0,
+      "collapsed_uv_triangles": 0,
+      "fbx_max_coordinate_uv_delta": 2.7939677238464355e-09,
+      "fbx_geometry_uv_winding_match": true,
+      "fbx_sha256": "44755b909b8917d41824d79792eb32bab65fef91f84503d8c0f2546e0b47395b",
+      "materials": 1,
+      "uv_layers": 1
+    },
+    "ShotgunBody": {
+      "triangles": 312,
+      "vertices": 164,
+      "bounds_min": [
+        -0.024871017783880234,
+        -0.023485003039240837,
+        0.0
+      ],
+      "bounds_max": [
+        0.024871017783880234,
+        0.023485003039240837,
+        0.02199999988079071
+      ],
+      "dimensions": [
+        0.04974203556776047,
+        0.046970006078481674,
+        0.02199999988079071
+      ],
+      "degenerate_triangles": 0,
+      "collapsed_uv_triangles": 0,
+      "fbx_max_coordinate_uv_delta": 2.3283064365386963e-09,
+      "fbx_geometry_uv_winding_match": true,
+      "fbx_sha256": "c81ec00fe7b8fec1aa12b1d47b51a123d6befcb357a3b99c8a495a6acba7d99b",
+      "materials": 1,
+      "uv_layers": 1
+    },
+    "MineralSalts": {
+      "triangles": 236,
+      "vertices": 128,
+      "bounds_min": [
+        -0.03676268830895424,
+        -0.028888588771224022,
+        0.0
+      ],
+      "bounds_max": [
+        0.03676268830895424,
+        0.028888588771224022,
+        0.013760017231106758
+      ],
+      "dimensions": [
+        0.07352537661790848,
+        0.057777177542448044,
+        0.013760017231106758
+      ],
+      "degenerate_triangles": 0,
+      "collapsed_uv_triangles": 0,
+      "fbx_max_coordinate_uv_delta": 3.725290298461914e-09,
+      "fbx_geometry_uv_winding_match": true,
+      "fbx_sha256": "992b399ba2f8ee2c75bd97728c846f18bf5dcc5db40cf1f19f4fbff55b541e8b",
+      "materials": 1,
+      "uv_layers": 1
+    },
+    "CarbonPowder": {
+      "triangles": 236,
+      "vertices": 128,
+      "bounds_min": [
+        -0.038154665380716324,
+        -0.028974788263440132,
+        0.0
+      ],
+      "bounds_max": [
+        0.038154665380716324,
+        0.02897479012608528,
+        0.013740895316004753
+      ],
+      "dimensions": [
+        0.07630933076143265,
+        0.05794958025217056,
+        0.013740895316004753
+      ],
+      "degenerate_triangles": 0,
+      "collapsed_uv_triangles": 0,
+      "fbx_max_coordinate_uv_delta": 3.725290298461914e-09,
+      "fbx_geometry_uv_winding_match": true,
+      "fbx_sha256": "ff6dc6503f861360d63794589a985d89b45c01812aedc98a1933968ea1abcfc8",
+      "materials": 1,
+      "uv_layers": 1
+    },
+    "NitrogenousMix": {
+      "triangles": 440,
+      "vertices": 224,
+      "bounds_min": [
+        -0.04600000008940697,
+        -0.04600000008940697,
+        0.0
+      ],
+      "bounds_max": [
+        0.04600000008940697,
+        0.04600000008940697,
+        0.033836811780929565
+      ],
+      "dimensions": [
+        0.09200000017881393,
+        0.09200000017881393,
+        0.033836811780929565
+      ],
+      "degenerate_triangles": 0,
+      "collapsed_uv_triangles": 0,
+      "fbx_max_coordinate_uv_delta": 4.02144805499034e-09,
+      "fbx_geometry_uv_winding_match": true,
+      "fbx_sha256": "07de2f8ee081ca25d4be5142e9ad16498773e4c94a28f9dfa8dd6efb8c42327a",
+      "materials": 1,
+      "uv_layers": 1
+    },
+    "SurvivalPropellant": {
+      "triangles": 390,
+      "vertices": 204,
+      "bounds_min": [
+        -0.02630000002682209,
+        -0.02654999867081642,
+        0.0
+      ],
+      "bounds_max": [
+        0.02630000002682209,
+        0.02654999867081642,
+        0.0729999989271164
+      ],
+      "dimensions": [
+        0.05260000005364418,
+        0.05309999734163284,
+        0.0729999989271164
+      ],
+      "degenerate_triangles": 0,
+      "collapsed_uv_triangles": 0,
+      "fbx_max_coordinate_uv_delta": 2.3283064365386963e-09,
+      "fbx_geometry_uv_winding_match": true,
+      "fbx_sha256": "89d77a20f290a97b8aecdb6ecfc9d01c6e4ae64419ae8af92fa95db3801a0634",
+      "materials": 1,
+      "uv_layers": 1
+    }
+  },
+  "source_unchanged": true
+}

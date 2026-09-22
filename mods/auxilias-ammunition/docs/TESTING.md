@@ -1,5 +1,37 @@
 # Testing
 
+## September 22 authored-asset candidate
+
+The press .blend was edited directly, eight new world props were authored, and
+nine icons now derive from the model renders. See `MODELING.md` and
+`reports/ASSET-REFRESH-2026-09-22.md`. This supersedes the former body/powder
+placeholder-art decision and the older press tooling descriptions below.
+The upper tool is now octagonal. The existing bed/anchor/face IDs are retained.
+
+The new acceptance pass must compare all four body families and all four material
+items on light/dark floors, drop and Place Item rotations, and actual game scale.
+Check each loose casing/tip/shot for ground contact, the mixture bowl for visible
+contents, and field powder for its jar. Compare 32px inventory and world identity.
+Recheck the press on different tables in all four directions, then pick up,
+replace and save/reload. Prior client/menu tests do not cover these revised assets.
+
+### World-orientation correction after user feedback
+
+The user's client screenshot showed the new props sideways, and the user reported
+that +90 degrees on the placement UI's Y axis made them look natural. Inspection
+of the installed `ItemModelRenderer` confirms that `worldYRotation` maps to its
+Z rotation, while the `world` attachment is inverted. All eight attachments now
+use `rotate = 0 -90 -90`, equivalent to that extra placement rotation, and
+`offset = 0 0 -0.0004` for renderer-Y clearance. Scale and FBX geometry are unchanged.
+
+After restarting, test fresh drops with placement X/Y rotations at zero. Previously
+manually corrected items may still retain Y=90 and need that manual rotation reset
+to zero. Check the jar upright, bowl opening upward, powder mounds flat and body
+pieces resting on the floor. After local redeployment, the user confirmed that
+the correction was applied successfully in the running game. This is user-reported
+acceptance of the orientation fix; the broader placement/save/reload checks above
+and crafting/multiplayer checks remain separate.
+
 ## Automated release checks
 
 `tools/validate.ps1` verifies metadata/version alignment, required files, balanced scripts,
@@ -251,9 +283,9 @@ supported.
    after reconnect.
 7. Have two players use and recover the press sequentially, reconnect, and verify the
    workstation and inventory state stay synchronized.
-8. Confirm new press, body, carbon-powder, and nitrogenous-mix inventory icons are
-   distinguishable at 32 px. Inspect dropped body and powder models and decide whether
-   their vanilla placeholders are acceptable before publication.
+8. Confirm all nine dedicated inventory icons are distinguishable at 32 px.
+   Inspect all eight authored body/material world models using the September 22
+   acceptance pass above; their former vanilla placeholders have been replaced.
 
 ## Historical v1.0.0 manual acceptance matrix
 

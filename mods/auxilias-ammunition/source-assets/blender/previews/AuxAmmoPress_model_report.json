@@ -1,23 +1,23 @@
 {
-  "asset": "Auxilia's Ammunition / manual tabletop ammunition press",
-  "concept_reference": "source-assets/concepts/press-redesign-02-center-lever.png",
-  "units": "metres",
+  "asset": "Authored tabletop press",
+  "source_sha256": "c60b988fada9f4d4f7b2f66540eedce58f5ff116d982a6abdaa0acc2048a85e6",
+  "press_mesh_objects": 38,
   "press_bounds_min": [
-    -0.1615,
-    -0.164,
-    0.004
+    -0.1615000069141388,
+    -0.164000004529953,
+    0.0040000006556510925
   ],
   "press_bounds_max": [
-    0.1615,
-    0.1615,
-    0.43892
+    0.1615000069141388,
+    0.1615000069141388,
+    0.43892085552215576
   ],
   "press_dimensions": [
-    0.323,
-    0.3255,
-    0.43492
+    0.3230000138282776,
+    0.3255000114440918,
+    0.43492085486650467
   ],
-  "press_mesh_objects": 38,
+  "units": "metres",
   "preview_worktop_in_prop_collection": false,
   "runtime_assets_written": false
 }

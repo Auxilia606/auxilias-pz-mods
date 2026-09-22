@@ -27,8 +27,8 @@ if (-not (Test-Path -LiteralPath $runtimeRoot -PathType Container)) {
 }
 
 $icons = @(Get-ChildItem -LiteralPath $sourceRoot -Filter 'Item_AuxAmmo*.png' -File)
-if ($icons.Count -ne 7) {
-    throw "Expected 7 dedicated icon masters, found $($icons.Count)."
+if ($icons.Count -ne 9) {
+    throw "Expected 9 dedicated icon masters, found $($icons.Count)."
 }
 
 foreach ($icon in $icons) {
@@ -48,7 +48,7 @@ foreach ($icon in $icons) {
             try {
                 $graphics.CompositingMode = [System.Drawing.Drawing2D.CompositingMode]::SourceCopy
                 $graphics.CompositingQuality = [System.Drawing.Drawing2D.CompositingQuality]::HighQuality
-                $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+                $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::NearestNeighbor
                 $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
                 $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
                 $graphics.Clear([System.Drawing.Color]::Transparent)

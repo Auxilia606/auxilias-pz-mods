@@ -87,12 +87,22 @@ menus while unpaused. Inspect any new icon in a graphical client.
 
 ## Asset and deployment traps
 
-The press art is generated from `source-assets/blender` and `tools/build-press-*`;
-edit the generator/source, not only the packed runtime output. All four faces
+The editable `.blend` files in `source-assets/blender` are now authoritative.
+Edit those meshes/materials directly (Blender API edits are permitted); do not
+regenerate the press from its former geometry script. `generate_ammo_press.py`
+is now a render-only compatibility entry point. See `docs/MODELING.md` for the
+eight new parts, source-preserving export and shared icon pipeline. All four faces
 must share one camera scale and bed anchor. Face offsets plus
 `IgnoreSurfaceSnap` are both needed for the observed tabletop rotation. The
-128x128 icon master is synchronized to the 32x32 runtime texture by
+128x128 pixel master is synchronized with nearest-neighbor sampling to the 32x32 runtime texture by
 `tools/sync-icons.ps1`; the right-click menu reuses that runtime image.
+
+The first parts deployment appeared sideways in the user's client. The default
+world attachment is now `rotate = 0 -90 -90`, equivalent to the user's successful
+placement-UI Y+90 correction, with `offset = 0 0 -0.0004`. Do not restore the
+borrowed crossbow `0 -90 0` setting. Placement UI Y is renderer Z and attachments
+are inverted; see the shared asset note. Existing manually rotated items retain
+their own rotation and should be reset before evaluating this corrected default.
 
 One observed “obsolete recipe / missing nitrogenous mix” report came from an
 older user-local Workshop copy, not the then-current repository source. After

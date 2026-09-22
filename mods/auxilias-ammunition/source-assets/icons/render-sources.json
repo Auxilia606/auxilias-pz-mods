@@ -1,0 +1,128 @@
+{
+  "AuxAmmoSmallPistolBody": {
+    "render": "source-assets\\blender\\previews\\parts\\SmallPistolBody_iso.png",
+    "bounds": [
+      2,
+      2,
+      30,
+      30
+    ],
+    "visible_colors": 20,
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "AuxAmmoHeavyPistolBody": {
+    "render": "source-assets\\blender\\previews\\parts\\HeavyPistolBody_iso.png",
+    "bounds": [
+      2,
+      8,
+      30,
+      24
+    ],
+    "visible_colors": 19,
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "AuxAmmoRifleBody": {
+    "render": "source-assets\\blender\\previews\\parts\\RifleBody_iso.png",
+    "bounds": [
+      3,
+      2,
+      29,
+      30
+    ],
+    "visible_colors": 19,
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "AuxAmmoShotgunBody": {
+    "render": "source-assets\\blender\\previews\\parts\\ShotgunBody_iso.png",
+    "bounds": [
+      2,
+      6,
+      30,
+      26
+    ],
+    "visible_colors": 19,
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "AuxAmmoMineralSalts": {
+    "render": "source-assets\\blender\\previews\\parts\\MineralSalts_iso.png",
+    "bounds": [
+      2,
+      7,
+      30,
+      25
+    ],
+    "visible_colors": 20,
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "AuxAmmoCarbonPowder": {
+    "render": "source-assets\\blender\\previews\\parts\\CarbonPowder_iso.png",
+    "bounds": [
+      2,
+      7,
+      30,
+      25
+    ],
+    "visible_colors": 21,
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "AuxAmmoNitrogenousMix": {
+    "render": "source-assets\\blender\\previews\\parts\\NitrogenousMix_iso.png",
+    "bounds": [
+      2,
+      5,
+      30,
+      27
+    ],
+    "visible_colors": 22,
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "AuxAmmoSurvivalPropellant": {
+    "render": "source-assets\\blender\\previews\\parts\\SurvivalPropellant_iso.png",
+    "bounds": [
+      7,
+      2,
+      25,
+      30
+    ],
+    "visible_colors": 23,
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  "AuxAmmoPress": {
+    "render": "source-assets\\tiles\\renders\\press_south.png",
+    "bounds": [
+      3,
+      2,
+      28,
+      30
+    ],
+    "visible_colors": 23,
+    "alpha": [
+      0,
+      255
+    ]
+  }
+}

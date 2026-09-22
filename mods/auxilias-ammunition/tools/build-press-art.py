@@ -1,9 +1,9 @@
 """Fit the four Blender press views onto Project Zomboid tabletop tiles.
 
 Run ``source-assets/blender/render_runtime_press.py`` in Blender first. This
-script writes the editable 128x256 source tiles and a 128px item icon, then
-copies the 32px icon into the installable mod. ``build-press-tiles.py`` packs
-the source tiles for the game.
+script writes the editable 128x256 source tiles. ``build-press-tiles.py`` packs
+the source tiles for the game. ``build-icons.py`` and ``sync-icons.ps1`` own
+the single inventory-icon derivative pipeline.
 """
 
 import json
@@ -16,10 +16,6 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "source-assets"
 TILES = SOURCE / "tiles"
 RENDERS = TILES / "renders"
-REPO = ROOT.parents[1]
-CONFIG = json.loads((REPO / "config" / "project-zomboid.json").read_text(encoding="utf-8"))
-RELEASE_LINE = CONFIG["target"]["releaseLine"]
-TEXTURES = ROOT / "workshop" / "Contents" / "mods" / "AuxiliasAmmunition" / RELEASE_LINE / "media" / "textures"
 
 DIRECTIONS = ("south", "east", "north", "west")
 PIXEL_SCALE = 0.16  # One scale for every orientation; never fit each view separately.
@@ -34,15 +30,8 @@ def source_render(direction: str) -> Image.Image:
     return image
 
 
-def fit(image: Image.Image, width: int, height: int) -> Image.Image:
-    result = image.copy()
-    result.thumbnail((width, height), Image.Resampling.LANCZOS)
-    return result
-
-
 def main() -> None:
     TILES.mkdir(parents=True, exist_ok=True)
-    TEXTURES.mkdir(parents=True, exist_ok=True)
     anchors = json.loads((RENDERS / "press_anchors.json").read_text(encoding="utf-8"))
     render_size = tuple(anchors["render_size"])
     bed_boxes = [anchors["faces"][direction]["bed_bbox_px"] for direction in DIRECTIONS]
@@ -53,13 +42,11 @@ def main() -> None:
             max(bed_heights) - min(bed_heights) > 0.25 or
             max(bed_bottoms) - min(bed_bottoms) > 0.25):
         raise ValueError("Press bed footprint or contact height differs between directions")
-    source_images = []
     tiles = []
     for index, direction in enumerate(DIRECTIONS):
         source = source_render(direction)
         if source.size != render_size:
             raise ValueError(f"Inconsistent render size for {direction}: {source.size}")
-        source_images.append(source)
         anchor_x, anchor_y = anchors["faces"][direction]["anchor_px"]
         sprite = source.resize(
             (round(source.width * PIXEL_SCALE), round(source.height * PIXEL_SCALE)),
@@ -90,14 +77,8 @@ def main() -> None:
         preview.paste(cropped, (x, 28), cropped)
     preview.save(TILES / "press_four_faces_preview.png")
 
-    icon_source = source_images[0]
-    icon = fit(icon_source.crop(icon_source.getchannel("A").getbbox()), 116, 116)
-    master = Image.new("RGBA", (128, 128))
-    master.alpha_composite(icon, ((128 - icon.width) // 2, (128 - icon.height) // 2))
-    master.save(SOURCE / "icons" / "Item_AuxAmmoPress.png")
-    master.resize((32, 32), Image.Resampling.LANCZOS).save(TEXTURES / "Item_AuxAmmoPress.png")
     print(
-        "Built four tabletop tiles and icon; projected bed "
+        "Built four tabletop tiles; projected bed "
         f"{bed_widths[0]:.2f}x{bed_heights[0]:.2f}px across all faces"
     )
 

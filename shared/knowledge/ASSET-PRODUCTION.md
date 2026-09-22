@@ -46,6 +46,18 @@ default asset conventions for this monorepo.
   and backpack replacement transforms. In Build 42.20, `Rifle` suits narrow long guns while
   `Shovel` includes the axial roll needed to keep a broad head or prod close to the back.
 
+### Loose world-item rotation axes (Build 42.20.4 inspection)
+
+`ItemModelRenderer.renderMain` maps saved `worldXRotation`, `worldZRotation`,
+`worldYRotation` to renderer X, Y, Z respectively. Thus placement UI Y is renderer
+Z, not the Y component in a model's `world` attachment. Its `init` method applies
+the inverse of `translation(offset) * rotateXYZ(attachment angles)` before the
+mesh transform. For an attachment `(0,-90,0)`, the equivalent of placement Y+90
+is `(0,-90,-90)`, not simply adding 90 to the attachment's Y value. A source/FBX
+round trip does not verify this game presentation transform. These findings came
+from the installed `ItemModelRenderer` and `ModelInstanceRenderData` bytecode
+while correcting sideways ammunition props after user-provided client evidence.
+
 ## Moveable tile furniture
 
 - Build 42's furniture cursor reads the placed sprite's tile properties, not an entity's

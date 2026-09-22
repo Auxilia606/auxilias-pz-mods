@@ -2,6 +2,21 @@
 
 ## 1.1.0 (release candidate)
 
+- Corrected the eight new props' default world orientation after a client screenshot
+  showed them on their sides. The attachment now includes the equivalent of the
+  placement UI's +90-degree Y correction, with floor clearance on the corrected axis.
+  The user confirmed the corrected orientation after local redeployment.
+- Added eight authored world models for cartridge bodies, mineral/carbon powders,
+  the mixture bowl and a labelled field-powder jar, replacing shared scrap and
+  finished-ammunition placeholders. Nine crisp inventory icons now derive from
+  the same editable Blender assets. Complete ammunition still uses vanilla items.
+- Refined the existing press's grip/ram contrast and octagonal upper tooling while
+  retaining its bed, camera scale and four-direction tabletop anchor.
+- Made the Blender files authoritative: exporters evaluate temporary copies and
+  audit FBX geometry/UV round trips without rebuilding or saving the source.
+  Static validation also checks source/export hashes and pixel-master consistency.
+  Broader placement, save/reload and revised-art acceptance checks remain open.
+
 - Open the placed tabletop press's CraftBench window with one left click, like
   the vanilla furnace. This also works when the click picker selects the table
   beneath the press; the icon-bearing right-click option remains available.

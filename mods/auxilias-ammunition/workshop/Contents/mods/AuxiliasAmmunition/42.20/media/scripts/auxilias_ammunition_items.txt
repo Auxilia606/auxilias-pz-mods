@@ -26,7 +26,7 @@ module AuxiliasAmmunition
         ItemType = base:normal,
         Weight = 0.018,
         Icon = AuxAmmoSmallPistolBody,
-        WorldStaticModel = Base.BrassScrap,
+        WorldStaticModel = AuxiliasAmmunition.AuxAmmoSmallPistolBody,
         Tooltip = Tooltip_item_AuxAmmo_SmallPistolBody,
     }
 
@@ -36,7 +36,7 @@ module AuxiliasAmmunition
         ItemType = base:normal,
         Weight = 0.027,
         Icon = AuxAmmoHeavyPistolBody,
-        WorldStaticModel = Base.BrassScrap,
+        WorldStaticModel = AuxiliasAmmunition.AuxAmmoHeavyPistolBody,
         Tooltip = Tooltip_item_AuxAmmo_HeavyPistolBody,
     }
 
@@ -46,7 +46,7 @@ module AuxiliasAmmunition
         ItemType = base:normal,
         Weight = 0.04,
         Icon = AuxAmmoRifleBody,
-        WorldStaticModel = Base.BrassScrap,
+        WorldStaticModel = AuxiliasAmmunition.AuxAmmoRifleBody,
         Tooltip = Tooltip_item_AuxAmmo_RifleBody,
     }
 
@@ -56,7 +56,7 @@ module AuxiliasAmmunition
         ItemType = base:normal,
         Weight = 0.055,
         Icon = AuxAmmoShotgunBody,
-        WorldStaticModel = Base.ShotGunShells,
+        WorldStaticModel = AuxiliasAmmunition.AuxAmmoShotgunBody,
         Tooltip = Tooltip_item_AuxAmmo_ShotgunBody,
     }
 
@@ -65,8 +65,8 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.01,
-        Icon = Limestone,
-        WorldStaticModel = Base.LimestoneCrushed,
+        Icon = AuxAmmoMineralSalts,
+        WorldStaticModel = AuxiliasAmmunition.AuxAmmoMineralSalts,
         Tooltip = Tooltip_item_AuxAmmo_MineralSalts,
     }
 
@@ -76,7 +76,7 @@ module AuxiliasAmmunition
         ItemType = base:normal,
         Weight = 0.01,
         Icon = AuxAmmoCarbonPowder,
-        WorldStaticModel = Base.GunPowder,
+        WorldStaticModel = AuxiliasAmmunition.AuxAmmoCarbonPowder,
         Tooltip = Tooltip_item_AuxAmmo_CarbonPowder,
     }
 
@@ -86,7 +86,7 @@ module AuxiliasAmmunition
         ItemType = base:normal,
         Weight = 0.08,
         Icon = AuxAmmoNitrogenousMix,
-        WorldStaticModel = Base.LimestoneCrushed,
+        WorldStaticModel = AuxiliasAmmunition.AuxAmmoNitrogenousMix,
         Tooltip = Tooltip_item_AuxAmmo_NitrogenousMix,
     }
 
@@ -95,8 +95,8 @@ module AuxiliasAmmunition
         DisplayCategory = Material,
         ItemType = base:normal,
         Weight = 0.003,
-        Icon = GunpowderJar,
-        WorldStaticModel = Base.GunPowder,
+        Icon = AuxAmmoSurvivalPropellant,
+        WorldStaticModel = AuxiliasAmmunition.AuxAmmoSurvivalPropellant,
         Tooltip = Tooltip_item_AuxAmmo_Propellant,
     }
 

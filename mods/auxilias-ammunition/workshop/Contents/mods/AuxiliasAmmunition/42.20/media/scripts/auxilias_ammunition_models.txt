@@ -1,0 +1,91 @@
+module AuxiliasAmmunition
+{
+    model AuxAmmoSmallPistolBody
+    {
+        mesh = WorldItems/AuxAmmoSmallPistolBody,
+        texture = WorldItems/AuxAmmoPartsAtlas,
+        scale = 0.01,
+        attachment world
+        {
+            offset = 0.0 0.0 -0.0004,
+            rotate = 0.0 -90.0 -90.0,
+        }
+    }
+    model AuxAmmoHeavyPistolBody
+    {
+        mesh = WorldItems/AuxAmmoHeavyPistolBody,
+        texture = WorldItems/AuxAmmoPartsAtlas,
+        scale = 0.01,
+        attachment world
+        {
+            offset = 0.0 0.0 -0.0004,
+            rotate = 0.0 -90.0 -90.0,
+        }
+    }
+    model AuxAmmoRifleBody
+    {
+        mesh = WorldItems/AuxAmmoRifleBody,
+        texture = WorldItems/AuxAmmoPartsAtlas,
+        scale = 0.01,
+        attachment world
+        {
+            offset = 0.0 0.0 -0.0004,
+            rotate = 0.0 -90.0 -90.0,
+        }
+    }
+    model AuxAmmoShotgunBody
+    {
+        mesh = WorldItems/AuxAmmoShotgunBody,
+        texture = WorldItems/AuxAmmoPartsAtlas,
+        scale = 0.01,
+        attachment world
+        {
+            offset = 0.0 0.0 -0.0004,
+            rotate = 0.0 -90.0 -90.0,
+        }
+    }
+    model AuxAmmoMineralSalts
+    {
+        mesh = WorldItems/AuxAmmoMineralSalts,
+        texture = WorldItems/AuxAmmoPartsAtlas,
+        scale = 0.01,
+        attachment world
+        {
+            offset = 0.0 0.0 -0.0004,
+            rotate = 0.0 -90.0 -90.0,
+        }
+    }
+    model AuxAmmoCarbonPowder
+    {
+        mesh = WorldItems/AuxAmmoCarbonPowder,
+        texture = WorldItems/AuxAmmoPartsAtlas,
+        scale = 0.01,
+        attachment world
+        {
+            offset = 0.0 0.0 -0.0004,
+            rotate = 0.0 -90.0 -90.0,
+        }
+    }
+    model AuxAmmoNitrogenousMix
+    {
+        mesh = WorldItems/AuxAmmoNitrogenousMix,
+        texture = WorldItems/AuxAmmoPartsAtlas,
+        scale = 0.01,
+        attachment world
+        {
+            offset = 0.0 0.0 -0.0004,
+            rotate = 0.0 -90.0 -90.0,
+        }
+    }
+    model AuxAmmoSurvivalPropellant
+    {
+        mesh = WorldItems/AuxAmmoSurvivalPropellant,
+        texture = WorldItems/AuxAmmoPartsAtlas,
+        scale = 0.01,
+        attachment world
+        {
+            offset = 0.0 0.0 -0.0004,
+            rotate = 0.0 -90.0 -90.0,
+        }
+    }
+}

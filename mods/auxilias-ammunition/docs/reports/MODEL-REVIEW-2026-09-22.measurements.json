@@ -1,0 +1,1332 @@
+{
+  "target": {
+    "releaseLine": "42.20",
+    "testedBuild": "42.20.4"
+  },
+  "inventory": {
+    "Mov_AmmoPress": {
+      "Icon": "AuxAmmoPress",
+      "WorldStaticModel": null,
+      "StaticModel": null,
+      "WorldObjectSprite": "auxammo_press_01_0"
+    },
+    "SmallPistolBody": {
+      "Icon": "AuxAmmoSmallPistolBody",
+      "WorldStaticModel": "Base.BrassScrap",
+      "StaticModel": null,
+      "WorldObjectSprite": null
+    },
+    "HeavyPistolBody": {
+      "Icon": "AuxAmmoHeavyPistolBody",
+      "WorldStaticModel": "Base.BrassScrap",
+      "StaticModel": null,
+      "WorldObjectSprite": null
+    },
+    "RifleBody": {
+      "Icon": "AuxAmmoRifleBody",
+      "WorldStaticModel": "Base.BrassScrap",
+      "StaticModel": null,
+      "WorldObjectSprite": null
+    },
+    "ShotgunBody": {
+      "Icon": "AuxAmmoShotgunBody",
+      "WorldStaticModel": "Base.ShotGunShells",
+      "StaticModel": null,
+      "WorldObjectSprite": null
+    },
+    "MineralSalts": {
+      "Icon": "Limestone",
+      "WorldStaticModel": "Base.LimestoneCrushed",
+      "StaticModel": null,
+      "WorldObjectSprite": null
+    },
+    "CarbonPowder": {
+      "Icon": "AuxAmmoCarbonPowder",
+      "WorldStaticModel": "Base.GunPowder",
+      "StaticModel": null,
+      "WorldObjectSprite": null
+    },
+    "NitrogenousMix": {
+      "Icon": "AuxAmmoNitrogenousMix",
+      "WorldStaticModel": "Base.LimestoneCrushed",
+      "StaticModel": null,
+      "WorldObjectSprite": null
+    },
+    "SurvivalPropellant": {
+      "Icon": "GunpowderJar",
+      "WorldStaticModel": "Base.GunPowder",
+      "StaticModel": null,
+      "WorldObjectSprite": null
+    },
+    "AmmunitionManual1": {
+      "Icon": "Magazine_Armory1",
+      "WorldStaticModel": "Base.MagazineGround",
+      "StaticModel": "Base.Magazine",
+      "WorldObjectSprite": null
+    },
+    "AmmunitionManual2": {
+      "Icon": "Magazine_Armory2",
+      "WorldStaticModel": "Base.MagazineGround",
+      "StaticModel": "Base.Magazine",
+      "WorldObjectSprite": null
+    },
+    "AmmunitionManual3": {
+      "Icon": "Magazine_Metalworking2",
+      "WorldStaticModel": "Base.MagazineGround",
+      "StaticModel": "Base.Magazine",
+      "WorldObjectSprite": null
+    }
+  },
+  "final_ammunition": {
+    "Bullets9mm": {
+      "Icon": "PistolAmmo",
+      "WorldStaticModel": "9mmRounds"
+    },
+    "Bullets38": {
+      "Icon": "PistolAmmo",
+      "WorldStaticModel": "38SpecialBullets"
+    },
+    "Bullets357": {
+      "Icon": "PistolAmmo",
+      "WorldStaticModel": "38SpecialBullets"
+    },
+    "Bullets45": {
+      "Icon": "PistolAmmo",
+      "WorldStaticModel": "9mmRounds"
+    },
+    "Bullets44": {
+      "Icon": "PistolAmmo",
+      "WorldStaticModel": "9mmRounds"
+    },
+    "556Bullets": {
+      "Icon": "RifleAmmo308loose",
+      "WorldStaticModel": "RifleAmmo"
+    },
+    "3030Bullets": {
+      "Icon": "RifleAmmo308loose",
+      "WorldStaticModel": "RifleAmmo"
+    },
+    "308Bullets": {
+      "Icon": "RifleAmmo308loose",
+      "WorldStaticModel": "RifleAmmo"
+    },
+    "ShotgunShells": {
+      "Icon": "ShotgunAmmo",
+      "WorldStaticModel": "ShotGunShells"
+    }
+  },
+  "icon_stats": {
+    "Mov_AmmoPress": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        2,
+        1,
+        30,
+        31
+      ],
+      "partial_alpha_pixels": 148,
+      "visible_pixels": 485,
+      "opaque_pixels": 337
+    },
+    "SmallPistolBody": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        8,
+        5,
+        31,
+        32
+      ],
+      "partial_alpha_pixels": 231,
+      "visible_pixels": 277,
+      "opaque_pixels": 46
+    },
+    "HeavyPistolBody": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        4,
+        5,
+        24,
+        32
+      ],
+      "partial_alpha_pixels": 234,
+      "visible_pixels": 299,
+      "opaque_pixels": 65
+    },
+    "RifleBody": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        9,
+        4,
+        31,
+        32
+      ],
+      "partial_alpha_pixels": 208,
+      "visible_pixels": 248,
+      "opaque_pixels": 40
+    },
+    "ShotgunBody": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        8,
+        6,
+        32,
+        32
+      ],
+      "partial_alpha_pixels": 231,
+      "visible_pixels": 331,
+      "opaque_pixels": 100
+    },
+    "MineralSalts": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        2,
+        2,
+        30,
+        31
+      ],
+      "partial_alpha_pixels": 0,
+      "visible_pixels": 601,
+      "opaque_pixels": 601
+    },
+    "CarbonPowder": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        4,
+        13,
+        28,
+        30
+      ],
+      "partial_alpha_pixels": 228,
+      "visible_pixels": 282,
+      "opaque_pixels": 54
+    },
+    "NitrogenousMix": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        5,
+        13,
+        28,
+        30
+      ],
+      "partial_alpha_pixels": 233,
+      "visible_pixels": 292,
+      "opaque_pixels": 59
+    },
+    "SurvivalPropellant": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        6,
+        0,
+        27,
+        32
+      ],
+      "partial_alpha_pixels": 0,
+      "visible_pixels": 618,
+      "opaque_pixels": 618
+    },
+    "AmmunitionManual1": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        0,
+        1,
+        32,
+        32
+      ],
+      "partial_alpha_pixels": 0,
+      "visible_pixels": 607,
+      "opaque_pixels": 607
+    },
+    "AmmunitionManual2": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        0,
+        1,
+        32,
+        32
+      ],
+      "partial_alpha_pixels": 0,
+      "visible_pixels": 607,
+      "opaque_pixels": 607
+    },
+    "AmmunitionManual3": {
+      "size": [
+        32,
+        32
+      ],
+      "alpha_bbox": [
+        0,
+        1,
+        32,
+        32
+      ],
+      "partial_alpha_pixels": 0,
+      "visible_pixels": 607,
+      "opaque_pixels": 607
+    }
+  },
+  "tiles": {
+    "south": {
+      "bbox": [
+        40,
+        130,
+        89,
+        185
+      ],
+      "matches_source_visible_pixels_and_alpha": true,
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "east": {
+      "bbox": [
+        40,
+        130,
+        89,
+        185
+      ],
+      "matches_source_visible_pixels_and_alpha": true,
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "north": {
+      "bbox": [
+        40,
+        130,
+        89,
+        185
+      ],
+      "matches_source_visible_pixels_and_alpha": true,
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "west": {
+      "bbox": [
+        40,
+        130,
+        89,
+        185
+      ],
+      "matches_source_visible_pixels_and_alpha": true,
+      "alpha_values": [
+        0,
+        255
+      ]
+    }
+  },
+  "vanilla_models": {
+    "38SpecialBullets": {
+      "mesh": "WorldItems/38SpecialBullets",
+      "texture": "WorldItems/BulletRound",
+      "scale": "0.8",
+      "mesh_exists": true,
+      "explicit_texture_exists": true
+    },
+    "9mmRounds": {
+      "mesh": "WorldItems/9mmRounds",
+      "texture": "WorldItems/BulletRound",
+      "scale": "0.8",
+      "mesh_exists": true,
+      "explicit_texture_exists": true
+    },
+    "BrassScrap": {
+      "mesh": "WorldItems/Fragments_Brass",
+      "texture": null,
+      "scale": "0.1",
+      "mesh_exists": true,
+      "explicit_texture_exists": null,
+      "mesh_named_texture_exists": true
+    },
+    "GunPowder": {
+      "mesh": "WorldItems/GunPowder",
+      "texture": "WorldItems/Gunpowder",
+      "scale": "0.4",
+      "mesh_exists": true,
+      "explicit_texture_exists": true
+    },
+    "LimestoneCrushed": {
+      "mesh": "WorldItems/Limestone_Pile",
+      "texture": "WorldItems/Limestone",
+      "scale": "0.075",
+      "mesh_exists": true,
+      "explicit_texture_exists": true
+    },
+    "MagazineGround": {
+      "mesh": "WorldItems/MagazineOpen",
+      "texture": "WorldItems/MagazineOpen1",
+      "scale": "0.4",
+      "mesh_exists": true,
+      "explicit_texture_exists": true
+    },
+    "RifleAmmo": {
+      "mesh": "WorldItems/RifleAmmo",
+      "texture": "WorldItems/BulletRound",
+      "scale": "0.6",
+      "mesh_exists": true,
+      "explicit_texture_exists": true
+    },
+    "ShotGunShells": {
+      "mesh": "WorldItems/ShotGunShells",
+      "texture": "WorldItems/ShotGunShells",
+      "scale": "0.6",
+      "mesh_exists": true,
+      "explicit_texture_exists": true
+    }
+  },
+  "blend_sha256": "2a7dfdad19300dd9d48192f53aacd709f10f0e63c3e4b84703f333f5a99415c5",
+  "press_source_geometry": {
+    "source_sha256": "2a7dfdad19300dd9d48192f53aacd709f10f0e63c3e4b84703f333f5a99415c5",
+    "source_unchanged": true,
+    "mesh_count": 38,
+    "evaluated_dimensions": [
+      0.3230000138282776,
+      0.3255000114440918,
+      0.43492085486650467
+    ],
+    "triangles": 5532,
+    "parts": [
+      {
+        "name": "Solid weathered oak press bed",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          -0.1615000069141388,
+          -0.1615000069141388,
+          0.0040000006556510925
+        ],
+        "bounds_max": [
+          0.1615000069141388,
+          0.1615000069141388,
+          0.07000000029802322
+        ],
+        "materials": [
+          "01 / dark-stained oak bed"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Bed corner through-bolt head",
+        "vertices": 72,
+        "triangles": 140,
+        "bounds_min": [
+          -0.14800000190734863,
+          -0.14800000190734863,
+          0.07049999386072159
+        ],
+        "bounds_max": [
+          -0.13600000739097595,
+          -0.13600000739097595,
+          0.07349999994039536
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Bed corner through-bolt slot",
+        "vertices": 8,
+        "triangles": 12,
+        "bounds_min": [
+          -0.14525000751018524,
+          -0.14242500066757202,
+          0.0734499990940094
+        ],
+        "bounds_max": [
+          -0.13875000178813934,
+          -0.14157500863075256,
+          0.07385000586509705
+        ],
+        "materials": [
+          "07 / die recess"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Bed corner through-bolt head.001",
+        "vertices": 72,
+        "triangles": 140,
+        "bounds_min": [
+          -0.14800000190734863,
+          0.13600000739097595,
+          0.07049999386072159
+        ],
+        "bounds_max": [
+          -0.13600000739097595,
+          0.14800000190734863,
+          0.07349999994039536
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Bed corner through-bolt slot.001",
+        "vertices": 8,
+        "triangles": 12,
+        "bounds_min": [
+          -0.14525000751018524,
+          0.14157500863075256,
+          0.0734499990940094
+        ],
+        "bounds_max": [
+          -0.13875000178813934,
+          0.14242500066757202,
+          0.07385000586509705
+        ],
+        "materials": [
+          "07 / die recess"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Bed corner through-bolt head.002",
+        "vertices": 72,
+        "triangles": 140,
+        "bounds_min": [
+          0.13600000739097595,
+          -0.14800000190734863,
+          0.07049999386072159
+        ],
+        "bounds_max": [
+          0.14800000190734863,
+          -0.13600000739097595,
+          0.07349999994039536
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Bed corner through-bolt slot.002",
+        "vertices": 8,
+        "triangles": 12,
+        "bounds_min": [
+          0.13875000178813934,
+          -0.14242500066757202,
+          0.0734499990940094
+        ],
+        "bounds_max": [
+          0.14525000751018524,
+          -0.14157500863075256,
+          0.07385000586509705
+        ],
+        "materials": [
+          "07 / die recess"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Bed corner through-bolt head.003",
+        "vertices": 72,
+        "triangles": 140,
+        "bounds_min": [
+          0.13600000739097595,
+          0.13600000739097595,
+          0.07049999386072159
+        ],
+        "bounds_max": [
+          0.14800000190734863,
+          0.14800000190734863,
+          0.07349999994039536
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Bed corner through-bolt slot.003",
+        "vertices": 8,
+        "triangles": 12,
+        "bounds_min": [
+          0.13875000178813934,
+          0.14157500863075256,
+          0.0734499990940094
+        ],
+        "bounds_max": [
+          0.14525000751018524,
+          0.14242500066757202,
+          0.07385000586509705
+        ],
+        "materials": [
+          "07 / die recess"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Centered front iron inset",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          -0.0215000007301569,
+          -0.164000004529953,
+          0.026499997824430466
+        ],
+        "bounds_max": [
+          0.0215000007301569,
+          -0.15799999237060547,
+          0.045499999076128006
+        ],
+        "materials": [
+          "04 / rough blacksmith-forged iron"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Paired dark oak upright",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          -0.12950000166893005,
+          -0.03700000047683716,
+          0.06299999356269836
+        ],
+        "bounds_max": [
+          -0.08049999922513962,
+          0.03700000047683716,
+          0.3610000014305115
+        ],
+        "materials": [
+          "02 / dark-stained oak buttress"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Inner upright iron strap",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          -0.08550000190734863,
+          -0.03849999979138374,
+          0.07400000095367432
+        ],
+        "bounds_max": [
+          -0.07250000536441803,
+          0.03849999979138374,
+          0.3479999899864197
+        ],
+        "materials": [
+          "04 / rough blacksmith-forged iron"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Forged upright foot",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          -0.1394999921321869,
+          -0.0430000014603138,
+          0.06200000271201134
+        ],
+        "bounds_max": [
+          -0.07050000131130219,
+          0.0430000014603138,
+          0.07999999821186066
+        ],
+        "materials": [
+          "05 / rubbed iron edges"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Forged upright crown",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          -0.1394999921321869,
+          -0.042500000447034836,
+          0.34200000762939453
+        ],
+        "bounds_max": [
+          -0.07050000131130219,
+          0.042500000447034836,
+          0.3659999966621399
+        ],
+        "materials": [
+          "05 / rubbed iron edges"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Upright front through-pin",
+        "vertices": 72,
+        "triangles": 140,
+        "bounds_min": [
+          -0.11049999296665192,
+          -0.04075000062584877,
+          0.08949999511241913
+        ],
+        "bounds_max": [
+          -0.09950000047683716,
+          -0.03725000098347664,
+          0.10050000250339508
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Upright front through-pin.001",
+        "vertices": 72,
+        "triangles": 140,
+        "bounds_min": [
+          -0.11049999296665192,
+          -0.04075000062584877,
+          0.3165000081062317
+        ],
+        "bounds_max": [
+          -0.09950000047683716,
+          -0.03725000098347664,
+          0.32749998569488525
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Paired dark oak upright.001",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          0.08049999922513962,
+          -0.03700000047683716,
+          0.06299999356269836
+        ],
+        "bounds_max": [
+          0.12950000166893005,
+          0.03700000047683716,
+          0.3610000014305115
+        ],
+        "materials": [
+          "02 / dark-stained oak buttress"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Inner upright iron strap.001",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          0.07250000536441803,
+          -0.03849999979138374,
+          0.07400000095367432
+        ],
+        "bounds_max": [
+          0.08550000190734863,
+          0.03849999979138374,
+          0.3479999899864197
+        ],
+        "materials": [
+          "04 / rough blacksmith-forged iron"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Forged upright foot.001",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          0.07050000131130219,
+          -0.0430000014603138,
+          0.06200000271201134
+        ],
+        "bounds_max": [
+          0.1394999921321869,
+          0.0430000014603138,
+          0.07999999821186066
+        ],
+        "materials": [
+          "05 / rubbed iron edges"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Forged upright crown.001",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          0.07050000131130219,
+          -0.042500000447034836,
+          0.34200000762939453
+        ],
+        "bounds_max": [
+          0.1394999921321869,
+          0.042500000447034836,
+          0.3659999966621399
+        ],
+        "materials": [
+          "05 / rubbed iron edges"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Upright front through-pin.002",
+        "vertices": 72,
+        "triangles": 140,
+        "bounds_min": [
+          0.09950000047683716,
+          -0.04075000062584877,
+          0.08949999511241913
+        ],
+        "bounds_max": [
+          0.11049999296665192,
+          -0.03725000098347664,
+          0.10050000250339508
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Upright front through-pin.003",
+        "vertices": 72,
+        "triangles": 140,
+        "bounds_min": [
+          0.09950000047683716,
+          -0.04075000062584877,
+          0.3165000081062317
+        ],
+        "bounds_max": [
+          0.11049999296665192,
+          -0.03725000098347664,
+          0.32749998569488525
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Symmetric forged iron arch",
+        "vertices": 208,
+        "triangles": 412,
+        "bounds_min": [
+          -0.13699999451637268,
+          -0.029999999329447746,
+          0.34027281403541565
+        ],
+        "bounds_max": [
+          0.13699999451637268,
+          0.029999999329447746,
+          0.43892085552215576
+        ],
+        "materials": [
+          "04 / rough blacksmith-forged iron"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Arch front pin",
+        "vertices": 72,
+        "triangles": 140,
+        "bounds_min": [
+          -0.11349999904632568,
+          -0.03375000134110451,
+          0.35450002551078796
+        ],
+        "bounds_max": [
+          -0.10250000655651093,
+          -0.030250001698732376,
+          0.36550000309944153
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Arch front pin.001",
+        "vertices": 72,
+        "triangles": 140,
+        "bounds_min": [
+          0.10250000655651093,
+          -0.03375000134110451,
+          0.35450002551078796
+        ],
+        "bounds_max": [
+          0.11349999904632568,
+          -0.030250001698732376,
+          0.36550000309944153
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Lower die platform",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          -0.035999998450279236,
+          -0.03400000184774399,
+          0.06499999761581421
+        ],
+        "bounds_max": [
+          0.035999998450279236,
+          0.03400000184774399,
+          0.08900000154972076
+        ],
+        "materials": [
+          "05 / rubbed iron edges"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Removable lower die",
+        "vertices": 112,
+        "triangles": 220,
+        "bounds_min": [
+          -0.0167758297175169,
+          -0.0167758297175169,
+          0.08799999952316284
+        ],
+        "bounds_max": [
+          0.0167758297175169,
+          0.0167758297175169,
+          0.09600000083446503
+        ],
+        "materials": [
+          "06 / oiled ram steel"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Small lower die socket",
+        "vertices": 24,
+        "triangles": 44,
+        "bounds_min": [
+          -0.006000000052154064,
+          -0.006000000052154064,
+          0.09600000083446503
+        ],
+        "bounds_max": [
+          0.006000000052154064,
+          0.006000000052154064,
+          0.09700000286102295
+        ],
+        "materials": [
+          "07 / die recess"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Upper press plate",
+        "vertices": 56,
+        "triangles": 108,
+        "bounds_min": [
+          -0.030500000342726707,
+          -0.02850000001490116,
+          0.15049999952316284
+        ],
+        "bounds_max": [
+          0.030500000342726707,
+          0.02850000001490116,
+          0.16749998927116394
+        ],
+        "materials": [
+          "05 / rubbed iron edges"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Centered vertical ram",
+        "vertices": 120,
+        "triangles": 236,
+        "bounds_min": [
+          -0.013000000268220901,
+          -0.013000000268220901,
+          0.16750001907348633
+        ],
+        "bounds_max": [
+          0.013000000268220901,
+          0.013000000268220901,
+          0.34049999713897705
+        ],
+        "materials": [
+          "06 / oiled ram steel"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Ram guide inside arch",
+        "vertices": 120,
+        "triangles": 236,
+        "bounds_min": [
+          -0.02199999988079071,
+          -0.02199999988079071,
+          0.33100003004074097
+        ],
+        "bounds_max": [
+          0.02199999988079071,
+          0.02199999988079071,
+          0.40299999713897705
+        ],
+        "materials": [
+          "04 / rough blacksmith-forged iron"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Central lever axle",
+        "vertices": 120,
+        "triangles": 236,
+        "bounds_min": [
+          -0.030000001192092896,
+          -0.06499999761581421,
+          0.37300002574920654
+        ],
+        "bounds_max": [
+          0.030000001192092896,
+          -0.017000000923871994,
+          0.42100000381469727
+        ],
+        "materials": [
+          "05 / rubbed iron edges"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Visible lever axle end",
+        "vertices": 96,
+        "triangles": 188,
+        "bounds_min": [
+          -0.03500000014901161,
+          -0.052000001072883606,
+          0.38600000739097595
+        ],
+        "bounds_max": [
+          -0.029000001028180122,
+          -0.030000001192092896,
+          0.40800002217292786
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Visible lever axle end.001",
+        "vertices": 96,
+        "triangles": 188,
+        "bounds_min": [
+          0.029000001028180122,
+          -0.052000001072883606,
+          0.38600000739097595
+        ],
+        "bounds_max": [
+          0.03500000014901161,
+          -0.030000001192092896,
+          0.40800002217292786
+        ],
+        "materials": [
+          "08 / worn through-bolts"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Short centered iron lever",
+        "vertices": 96,
+        "triangles": 188,
+        "bounds_min": [
+          -0.014000000432133675,
+          -0.0844859853386879,
+          0.35699647665023804
+        ],
+        "bounds_max": [
+          0.014000000432133675,
+          -0.03251401335000992,
+          0.40700358152389526
+        ],
+        "materials": [
+          "04 / rough blacksmith-forged iron"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Forged grip ferrule",
+        "vertices": 96,
+        "triangles": 188,
+        "bounds_min": [
+          -0.019999999552965164,
+          -0.09820806980133057,
+          0.34449294209480286
+        ],
+        "bounds_max": [
+          0.019999999552965164,
+          -0.060791924595832825,
+          0.3865070641040802
+        ],
+        "materials": [
+          "05 / rubbed iron edges"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Short centered dark-oak grip",
+        "vertices": 108,
+        "triangles": 212,
+        "bounds_min": [
+          -0.01871134713292122,
+          -0.15111753344535828,
+          0.3036821484565735
+        ],
+        "bounds_max": [
+          0.01871134713292122,
+          -0.07288248091936111,
+          0.3763177990913391
+        ],
+        "materials": [
+          "03 / dark finished oak lever"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      },
+      {
+        "name": "Rounded central grip end",
+        "vertices": 222,
+        "triangles": 440,
+        "bounds_min": [
+          -0.019000008702278137,
+          -0.1600000113248825,
+          0.2980000078678131
+        ],
+        "bounds_max": [
+          0.01900000125169754,
+          -0.12200000137090683,
+          0.335999995470047
+        ],
+        "materials": [
+          "03 / dark finished oak lever"
+        ],
+        "zero_area_triangles": 0,
+        "non_finite_vertices": 0
+      }
+    ]
+  },
+  "vanilla_fbx_inspection": {
+    "38SpecialBullets": {
+      "imported_bounds_min": [
+        -0.06765624135732651,
+        -0.038187433034181595,
+        9.47192675084807e-05
+      ],
+      "imported_bounds_max": [
+        0.06765623390674591,
+        0.038187433034181595,
+        0.0688132643699646
+      ],
+      "meshes": 1,
+      "triangles": 198,
+      "uv_layers": {
+        "38SpecialBullets": 1
+      }
+    },
+    "9mmRounds": {
+      "imported_bounds_min": [
+        -0.0708812028169632,
+        -0.061834122985601425,
+        8.481489931000397e-05
+      ],
+      "imported_bounds_max": [
+        0.0708812028169632,
+        0.061834126710891724,
+        0.07478296756744385
+      ],
+      "meshes": 1,
+      "triangles": 156,
+      "uv_layers": {
+        "9mmRounds": 1
+      }
+    },
+    "BrassScrap": {
+      "imported_bounds_min": [
+        -0.29451486468315125,
+        -0.4383560121059418,
+        0.005136116407811642
+      ],
+      "imported_bounds_max": [
+        0.30140846967697144,
+        0.33960863947868347,
+        0.1370912790298462
+      ],
+      "meshes": 1,
+      "triangles": 281,
+      "uv_layers": {
+        "Fragments_Brass": 1
+      }
+    },
+    "GunPowder": {
+      "imported_bounds_min": [
+        -0.13012684881687164,
+        -0.12715089321136475,
+        -3.414710135984933e-06
+      ],
+      "imported_bounds_max": [
+        0.13012684881687164,
+        0.12715090811252594,
+        0.06424495577812195
+      ],
+      "meshes": 1,
+      "triangles": 43,
+      "uv_layers": {
+        "Object": 1
+      }
+    },
+    "LimestoneCrushed": {
+      "imported_bounds_min": [
+        -0.4318208694458008,
+        -0.31720051169395447,
+        -0.0004341694584582001
+      ],
+      "imported_bounds_max": [
+        0.4318208694458008,
+        0.31720051169395447,
+        0.21545277535915375
+      ],
+      "meshes": 1,
+      "triangles": 110,
+      "uv_layers": {
+        "Limestone_Pile": 1
+      }
+    },
+    "MagazineGround": {
+      "imported_bounds_min": [
+        -0.3595624566078186,
+        -0.2623561918735504,
+        -0.00014181433652993292
+      ],
+      "imported_bounds_max": [
+        0.3595622479915619,
+        0.26235613226890564,
+        0.030834153294563293
+      ],
+      "meshes": 1,
+      "triangles": 76,
+      "uv_layers": {
+        "MagazineOpen001": 1
+      }
+    },
+    "RifleAmmo": {
+      "imported_bounds_min": [
+        -0.05227174982428551,
+        -0.06855922192335129,
+        -2.763340445355311e-09
+      ],
+      "imported_bounds_max": [
+        0.05227174237370491,
+        0.06855922192335129,
+        0.08751749247312546
+      ],
+      "meshes": 1,
+      "triangles": 242,
+      "uv_layers": {
+        "RifleAmmo": 1
+      }
+    },
+    "ShotGunShells": {
+      "imported_bounds_min": [
+        -0.01649653911590576,
+        -0.04113004356622696,
+        4.773509317601565e-06
+      ],
+      "imported_bounds_max": [
+        0.01649653911590576,
+        0.04113004356622696,
+        0.03299785032868385
+      ],
+      "meshes": 1,
+      "triangles": 28,
+      "uv_layers": {
+        "ShotGunShells": 1
+      }
+    }
+  },
+  "press_fresh_render_matches": {
+    "south": true,
+    "east": true,
+    "north": true,
+    "west": true
+  },
+  "source_unchanged_at_finish": true
+}

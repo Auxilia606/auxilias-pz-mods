@@ -224,8 +224,46 @@ foreach ($pair in $bodyRecipes) {
         throw "Body pressing must not require a ceramic mold, furnace tongs, or fuel: $($pair[0])"
     }
 }
-if ($itemsText -notmatch '(?ms)item\s+ShotgunBody\s*\{[^}]*WorldStaticModel\s*=\s*Base\.ShotGunShells,') {
-    throw 'Shotgun body must use the verified vanilla shotgun-shell ground model.'
+$parts = @('SmallPistolBody','HeavyPistolBody','RifleBody','ShotgunBody','MineralSalts','CarbonPowder','NitrogenousMix','SurvivalPropellant')
+$modelsPath = Join-Path $scriptRoot 'auxilias_ammunition_models.txt'
+$modelsText = Get-Content -LiteralPath $modelsPath -Raw
+$manifestPath = Join-Path $repoRoot 'source-assets\blender\parts-manifest.json'
+$manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+$partsSource = Join-Path $repoRoot 'source-assets\blender\AuxiliasAmmunitionParts.blend'
+$atlasSource = Join-Path $repoRoot 'source-assets\blender\textures\AuxAmmoPartsAtlas.png'
+$atlasRuntime = Join-Path $versionRoot 'media\textures\WorldItems\AuxAmmoPartsAtlas.png'
+if ((Get-FileHash -LiteralPath $partsSource -Algorithm SHA256).Hash -ne $manifest.source_sha256 -or
+    (Get-FileHash -LiteralPath $atlasSource -Algorithm SHA256).Hash -ne $manifest.atlas_sha256 -or
+    (Get-FileHash -LiteralPath $atlasRuntime -Algorithm SHA256).Hash -ne $manifest.atlas_sha256) {
+    throw 'Authored parts or atlas changed after export. Re-export and audit the current Blender source.'
+}
+if ($manifest.target.releaseLine -ne $releaseLine -or $manifest.source_unchanged -ne $true) {
+    throw 'Parts manifest target or source-preservation contract is invalid.'
+}
+if (([regex]::Matches($modelsText, '(?m)^\s*model\s+AuxAmmo\w+')).Count -ne 8) {
+    throw 'Expected exactly eight dedicated parts models.'
+}
+foreach ($part in $parts) {
+    $item = [regex]::Match($itemsText, "(?ms)^    item\s+$part\s*\{(?<body>.*?)^    \}")
+    if ($item.Groups['body'].Value -notmatch "WorldStaticModel\s*=\s*AuxiliasAmmunition\.AuxAmmo$part,") {
+        throw "Part must use its dedicated world model: $part"
+    }
+    $model = [regex]::Match($modelsText, "(?ms)^    model\s+AuxAmmo$part\s*\{(?<body>.*?)^    \}")
+    if (-not $model.Success -or
+        $model.Groups['body'].Value -notmatch "mesh\s*=\s*WorldItems/AuxAmmo$part," -or
+        $model.Groups['body'].Value -notmatch 'texture\s*=\s*WorldItems/AuxAmmoPartsAtlas,' -or
+        $model.Groups['body'].Value -notmatch 'scale\s*=\s*0\.01,' -or
+        $model.Groups['body'].Value -notmatch 'rotate\s*=\s*0\.0 -90\.0 -90\.0,' -or
+        $model.Groups['body'].Value -notmatch 'offset\s*=\s*0\.0 0\.0 -0\.0004,') {
+        throw "Invalid authored parts model binding: $part"
+    }
+    $fbx = Join-Path $versionRoot "media\models_X\WorldItems\AuxAmmo$part.fbx"
+    $audit = $manifest.assets.$part
+    if ((Get-FileHash -LiteralPath $fbx -Algorithm SHA256).Hash -ne $audit.fbx_sha256 -or
+        $audit.fbx_geometry_uv_winding_match -ne $true -or $audit.materials -ne 1 -or $audit.uv_layers -ne 1 -or
+        $audit.degenerate_triangles -ne 0 -or $audit.collapsed_uv_triangles -ne 0) {
+        throw "Missing, modified, or unaudited FBX: $part"
+    }
 }
 
 $allowedTags = @('AuxAmmoPress','AnySurfaceCraft','CanBeDoneFromFloor')
@@ -345,8 +383,10 @@ $customIconAssignments = [ordered]@{
     ShotgunBody = 'AuxAmmoShotgunBody'
     CarbonPowder = 'AuxAmmoCarbonPowder'
     NitrogenousMix = 'AuxAmmoNitrogenousMix'
+    MineralSalts = 'AuxAmmoMineralSalts'
+    SurvivalPropellant = 'AuxAmmoSurvivalPropellant'
 }
-$vanillaIcons = @('Limestone','GunpowderJar','Magazine_Armory1','Magazine_Armory2','Magazine_Metalworking2')
+$vanillaIcons = @('Magazine_Armory1','Magazine_Armory2','Magazine_Metalworking2')
 foreach ($icon in @([regex]::Matches($itemsText, '(?m)^\s*Icon\s*=\s*([^,]+),') | ForEach-Object { $_.Groups[1].Value.Trim() })) {
     if ($icon -in $vanillaIcons) { continue }
     $iconPath = Join-Path $versionRoot "media\textures\Item_$icon.png"
@@ -380,6 +420,27 @@ foreach ($assignment in $customIconAssignments.GetEnumerator()) {
     }
     $sourceIconHashes += (Get-FileHash -LiteralPath $sourceIconPath -Algorithm SHA256).Hash
     $runtimeIconHashes += (Get-FileHash -LiteralPath $runtimeIconPath -Algorithm SHA256).Hash
+    $masterBitmap = [System.Drawing.Bitmap]::new($sourceIconPath)
+    $runtimeBitmap = [System.Drawing.Bitmap]::new($runtimeIconPath)
+    try {
+        for ($y = 0; $y -lt 32; $y++) {
+            for ($x = 0; $x -lt 32; $x++) {
+                $pixel = $runtimeBitmap.GetPixel($x, $y)
+                if ($pixel.A -notin @(0,255)) { throw "Non-binary inventory alpha: $runtimeIconPath" }
+                if (($x -eq 0 -or $y -eq 0 -or $x -eq 31 -or $y -eq 31) -and $pixel.A -ne 0) {
+                    throw "Inventory icon needs a transparent border: $runtimeIconPath"
+                }
+                for ($dy = 0; $dy -lt 4; $dy++) {
+                    for ($dx = 0; $dx -lt 4; $dx++) {
+                        if ($masterBitmap.GetPixel(4*$x+$dx,4*$y+$dy).ToArgb() -ne $pixel.ToArgb()) {
+                            throw "Pixel master and runtime icon differ: $runtimeIconPath"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    finally { $masterBitmap.Dispose(); $runtimeBitmap.Dispose() }
 }
 if (@($sourceIconHashes | Select-Object -Unique).Count -ne $customIconAssignments.Count) {
     throw 'Dedicated 128x128 icon masters must all be visually distinct files.'
