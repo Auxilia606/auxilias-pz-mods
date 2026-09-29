@@ -55,6 +55,10 @@ $requiredFiles = @(
 $requiredFiles += @(
     (Join-Path $versionRoot 'media\lua\client\AQoLVehicleDismantleMenu.lua'),
     (Join-Path $versionRoot 'media\lua\shared\AQoLVehicleDismantle.lua'),
+    (Join-Path $versionRoot 'media\lua\shared\Auxilia\SkillUtils.lua'),
+    (Join-Path $versionRoot 'media\lua\shared\AQoLVehicleRepairConfig.lua'),
+    (Join-Path $versionRoot 'media\lua\shared\AQoLVehicleRepair.lua'),
+    (Join-Path $versionRoot 'media\scripts\AQoLVehicleRepairs.txt'),
     (Join-Path $versionRoot 'media\lua\shared\Vehicles\TimedActions\ISAQoLDismantleVehicle.lua'),
     (Join-Path $versionRoot 'media\scripts\AQoLPhysicalSkillBooks.txt'),
     (Join-Path $versionRoot 'media\scripts\AQoLAdditionalSkillBooks.txt'),
@@ -114,8 +118,10 @@ $skillNames = @{
     Spear = @('Spear', '창')
 }
 $expectedKeys = @{
+    'Recipes' = @('AQoLRepairBrake', 'AQoLRepairSuspension', 'AQoLRepairMuffler', 'AQoLRepairTire')
     'ContextMenu' = @('ContextMenu_AQoL_DismantleVehicle')
     'Tooltip' = @(
+        'Tooltip_AQoL_VehicleRepair',
         'Tooltip_AQoL_DismantleVehicle', 'Tooltip_AQoL_VehicleUnavailable',
         'Tooltip_AQoL_StopVehicle', 'Tooltip_AQoL_DetachVehicle',
         'Tooltip_AQoL_EmptySeats', 'Tooltip_AQoL_RemoveAnimals',
@@ -195,4 +201,23 @@ foreach ($book in $bookDefinitions) {
     }
 }
 
-Write-Host "AuxiliasQoL validation passed for Project Zomboid $releaseLine (mod $version); 55 skill books, EN/KO names."
+$repairScript = Get-Content (Join-Path $versionRoot 'media/scripts/AQoLVehicleRepairs.txt') -Raw
+foreach ($family in @('Brake', 'Suspension', 'Muffler', 'Tire')) {
+    if ([regex]::Matches($repairScript, "\bcraftRecipe\s+AQoLRepair$family\b").Count -ne 1) {
+        throw "Missing or duplicate repair recipe: $family"
+    }
+}
+foreach ($field in @('OnTest = AQoLVehicleRepair.OnTest,', 'OnCreate = AQoLVehicleRepair.OnCreate,',
+    'AllowBatchCraft = false,', 'mode:keep flags[Prop2;IsDamaged;AllowDestroyedItem]',
+    'item 2 [Base.DuctTape],', 'item 1 tags[base:wrench] mode:keep flags[Prop1],')) {
+    if ([regex]::Matches($repairScript, [regex]::Escape($field)).Count -ne 4) {
+        throw "Repair recipe field must occur once per family: $field"
+    }
+}
+foreach ($metadataPath in $modMetadataPaths) {
+    if ((Get-Content $metadataPath -Raw) -match '(?im)^require=.*Beyond') {
+        throw 'Beyond Ten must remain an optional compatibility.'
+    }
+}
+
+Write-Host "AuxiliasQoL validation passed for Project Zomboid $releaseLine (mod $version); 55 skill books, 4 vehicle repair recipes, EN/KO names."

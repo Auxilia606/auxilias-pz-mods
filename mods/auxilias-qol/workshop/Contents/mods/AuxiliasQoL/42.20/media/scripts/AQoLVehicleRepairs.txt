@@ -1,0 +1,91 @@
+module AuxiliasQoL
+{
+    craftRecipe AQoLRepairBrake
+    {
+        time = 180,
+        AllowBatchCraft = false,
+        Tags = AnySurfaceCraft,
+        category = Repair,
+        timedAction = CraftWeapon1H,
+        OnTest = AQoLVehicleRepair.OnTest,
+        OnCreate = AQoLVehicleRepair.OnCreate,
+        Tooltip = Tooltip_AQoL_VehicleRepair,
+        inputs
+        {
+            item 1 [Base.OldBrake1;Base.OldBrake2;Base.OldBrake3;Base.NormalBrake1;Base.NormalBrake2;Base.NormalBrake3;Base.ModernBrake1;Base.ModernBrake2;Base.ModernBrake3] mode:keep flags[Prop2;IsDamaged;AllowDestroyedItem],
+            item 1 tags[base:wrench] mode:keep flags[Prop1],
+            item 2 [Base.ScrapMetal],
+            item 2 [Base.DuctTape],
+        }
+        outputs
+        {
+        }
+    }
+
+    craftRecipe AQoLRepairSuspension
+    {
+        time = 180,
+        AllowBatchCraft = false,
+        Tags = AnySurfaceCraft,
+        category = Repair,
+        timedAction = CraftWeapon1H,
+        OnTest = AQoLVehicleRepair.OnTest,
+        OnCreate = AQoLVehicleRepair.OnCreate,
+        Tooltip = Tooltip_AQoL_VehicleRepair,
+        inputs
+        {
+            item 1 [Base.NormalSuspension1;Base.NormalSuspension2;Base.NormalSuspension3;Base.ModernSuspension1;Base.ModernSuspension2;Base.ModernSuspension3] mode:keep flags[Prop2;IsDamaged;AllowDestroyedItem],
+            item 1 tags[base:wrench] mode:keep flags[Prop1],
+            item 2 [Base.ScrapMetal],
+            item 2 [Base.DuctTape],
+        }
+        outputs
+        {
+        }
+    }
+
+    craftRecipe AQoLRepairMuffler
+    {
+        time = 180,
+        AllowBatchCraft = false,
+        Tags = AnySurfaceCraft,
+        category = Repair,
+        timedAction = CraftWeapon1H,
+        OnTest = AQoLVehicleRepair.OnTest,
+        OnCreate = AQoLVehicleRepair.OnCreate,
+        Tooltip = Tooltip_AQoL_VehicleRepair,
+        inputs
+        {
+            item 1 [Base.OldCarMuffler1;Base.OldCarMuffler2;Base.OldCarMuffler3;Base.NormalCarMuffler1;Base.NormalCarMuffler2;Base.NormalCarMuffler3;Base.ModernCarMuffler1;Base.ModernCarMuffler2;Base.ModernCarMuffler3] mode:keep flags[Prop2;IsDamaged;AllowDestroyedItem],
+            item 1 tags[base:wrench] mode:keep flags[Prop1],
+            item 2 [Base.ScrapMetal],
+            item 2 [Base.DuctTape],
+        }
+        outputs
+        {
+        }
+    }
+
+    craftRecipe AQoLRepairTire
+    {
+        time = 180,
+        AllowBatchCraft = false,
+        Tags = AnySurfaceCraft,
+        category = Repair,
+        timedAction = CraftWeapon1H,
+        OnTest = AQoLVehicleRepair.OnTest,
+        OnCreate = AQoLVehicleRepair.OnCreate,
+        Tooltip = Tooltip_AQoL_VehicleRepair,
+        inputs
+        {
+            item 1 [Base.OldTire1;Base.OldTire2;Base.OldTire3;Base.NormalTire1;Base.NormalTire2;Base.NormalTire3;Base.ModernTire1;Base.ModernTire2;Base.ModernTire3] mode:keep flags[Prop2;IsDamaged;AllowDestroyedItem],
+            item 1 tags[base:wrench] mode:keep flags[Prop1],
+            item 1 [Base.TirePiece],
+            item 2 [Base.DuctTape],
+        }
+        outputs
+        {
+        }
+    }
+
+}

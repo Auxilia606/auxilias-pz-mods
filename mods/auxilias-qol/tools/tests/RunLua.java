@@ -30,9 +30,12 @@ public final class RunLua {
                 System.out.println(result[1]);
             }
         }
-        if (threadClass.getField("errorCount").getInt(null) != errorsBefore) {
-            throw new AssertionError("Kahlua reported additional errors");
+        int reportedErrors = threadClass.getField("errorCount").getInt(null) - errorsBefore;
+        int expectedErrors = Integer.getInteger("auxilia.expectedKahluaErrors", 0);
+        if (reportedErrors != expectedErrors) {
+            throw new AssertionError("Kahlua reported " + reportedErrors
+                + " errors; expected " + expectedErrors);
         }
-        System.out.println("Skill book Lua integration checks passed.");
+        System.out.println("Lua integration checks passed.");
     }
 }

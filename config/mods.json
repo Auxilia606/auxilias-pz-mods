@@ -29,7 +29,12 @@
       "packageName": "AuxiliasQoL",
       "releaseTagPrefix": "auxilias-qol/v",
       "coverSource": "source-assets/workshop/AuxiliasQoL-cover-source.png",
-      "sharedLua": []
+      "sharedLua": [
+        {
+          "source": "Auxilia/SkillUtils.lua",
+          "destination": "media/lua/shared/Auxilia/SkillUtils.lua"
+        }
+      ]
     }
   ]
 }
