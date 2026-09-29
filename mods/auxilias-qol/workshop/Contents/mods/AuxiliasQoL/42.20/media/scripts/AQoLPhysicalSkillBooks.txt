@@ -1,0 +1,183 @@
+module AuxiliasQoL
+{
+    item BookFitness1
+    {
+        DisplayCategory = SkillBook,
+        ItemType = base:literature,
+        Weight = 1.0,
+        Icon = Book_Generic,
+        IconColorMask = Book_Generic_Mask,
+        LvlSkillTrained = 1,
+        NumLevelsTrained = 2,
+        NumberOfPages = 220,
+        SkillTrained = Fitness,
+        StaticModel = BookOpenTINT,
+        WorldStaticModel = BookClosedTINT,
+        ColorRed = 44,
+        ColorGreen = 139,
+        ColorBlue = 154,
+    }
+
+    item BookFitness2
+    {
+        DisplayCategory = SkillBook,
+        ItemType = base:literature,
+        Weight = 1.0,
+        Icon = Book_Generic,
+        IconColorMask = Book_Generic_Mask,
+        LvlSkillTrained = 3,
+        NumLevelsTrained = 2,
+        NumberOfPages = 260,
+        SkillTrained = Fitness,
+        StaticModel = BookOpenTINT,
+        WorldStaticModel = BookClosedTINT,
+        ColorRed = 44,
+        ColorGreen = 139,
+        ColorBlue = 154,
+    }
+
+    item BookFitness3
+    {
+        DisplayCategory = SkillBook,
+        ItemType = base:literature,
+        Weight = 1.0,
+        Icon = Book_Generic,
+        IconColorMask = Book_Generic_Mask,
+        LvlSkillTrained = 5,
+        NumLevelsTrained = 2,
+        NumberOfPages = 300,
+        SkillTrained = Fitness,
+        StaticModel = BookOpenTINT,
+        WorldStaticModel = BookClosedTINT,
+        ColorRed = 44,
+        ColorGreen = 139,
+        ColorBlue = 154,
+    }
+
+    item BookFitness4
+    {
+        DisplayCategory = SkillBook,
+        ItemType = base:literature,
+        Weight = 1.0,
+        Icon = Book_Generic,
+        IconColorMask = Book_Generic_Mask,
+        LvlSkillTrained = 7,
+        NumLevelsTrained = 2,
+        NumberOfPages = 340,
+        SkillTrained = Fitness,
+        StaticModel = BookOpenTINT,
+        WorldStaticModel = BookClosedTINT,
+        ColorRed = 44,
+        ColorGreen = 139,
+        ColorBlue = 154,
+    }
+
+    item BookFitness5
+    {
+        DisplayCategory = SkillBook,
+        ItemType = base:literature,
+        Weight = 1.0,
+        Icon = Book_Generic,
+        IconColorMask = Book_Generic_Mask,
+        LvlSkillTrained = 9,
+        NumLevelsTrained = 2,
+        NumberOfPages = 380,
+        SkillTrained = Fitness,
+        StaticModel = BookOpenTINT,
+        WorldStaticModel = BookClosedTINT,
+        ColorRed = 44,
+        ColorGreen = 139,
+        ColorBlue = 154,
+    }
+
+    item BookStrength1
+    {
+        DisplayCategory = SkillBook,
+        ItemType = base:literature,
+        Weight = 1.0,
+        Icon = Book_Generic,
+        IconColorMask = Book_Generic_Mask,
+        LvlSkillTrained = 1,
+        NumLevelsTrained = 2,
+        NumberOfPages = 220,
+        SkillTrained = Strength,
+        StaticModel = BookOpenTINT,
+        WorldStaticModel = BookClosedTINT,
+        ColorRed = 183,
+        ColorGreen = 76,
+        ColorBlue = 49,
+    }
+
+    item BookStrength2
+    {
+        DisplayCategory = SkillBook,
+        ItemType = base:literature,
+        Weight = 1.0,
+        Icon = Book_Generic,
+        IconColorMask = Book_Generic_Mask,
+        LvlSkillTrained = 3,
+        NumLevelsTrained = 2,
+        NumberOfPages = 260,
+        SkillTrained = Strength,
+        StaticModel = BookOpenTINT,
+        WorldStaticModel = BookClosedTINT,
+        ColorRed = 183,
+        ColorGreen = 76,
+        ColorBlue = 49,
+    }
+
+    item BookStrength3
+    {
+        DisplayCategory = SkillBook,
+        ItemType = base:literature,
+        Weight = 1.0,
+        Icon = Book_Generic,
+        IconColorMask = Book_Generic_Mask,
+        LvlSkillTrained = 5,
+        NumLevelsTrained = 2,
+        NumberOfPages = 300,
+        SkillTrained = Strength,
+        StaticModel = BookOpenTINT,
+        WorldStaticModel = BookClosedTINT,
+        ColorRed = 183,
+        ColorGreen = 76,
+        ColorBlue = 49,
+    }
+
+    item BookStrength4
+    {
+        DisplayCategory = SkillBook,
+        ItemType = base:literature,
+        Weight = 1.0,
+        Icon = Book_Generic,
+        IconColorMask = Book_Generic_Mask,
+        LvlSkillTrained = 7,
+        NumLevelsTrained = 2,
+        NumberOfPages = 340,
+        SkillTrained = Strength,
+        StaticModel = BookOpenTINT,
+        WorldStaticModel = BookClosedTINT,
+        ColorRed = 183,
+        ColorGreen = 76,
+        ColorBlue = 49,
+    }
+
+    item BookStrength5
+    {
+        DisplayCategory = SkillBook,
+        ItemType = base:literature,
+        Weight = 1.0,
+        Icon = Book_Generic,
+        IconColorMask = Book_Generic_Mask,
+        LvlSkillTrained = 9,
+        NumLevelsTrained = 2,
+        NumberOfPages = 380,
+        SkillTrained = Strength,
+        StaticModel = BookOpenTINT,
+        WorldStaticModel = BookClosedTINT,
+        ColorRed = 183,
+        ColorGreen = 76,
+        ColorBlue = 49,
+    }
+
+}

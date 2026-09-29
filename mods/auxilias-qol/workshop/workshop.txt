@@ -1,5 +1,5 @@
 version=1
 title=Auxilia's Quality of Life
-description=Version 0.2.1. Dismantle ordinary vehicles with welding tools; stored items drop on the ground.
+description=Version 0.4.1. Dismantle ordinary vehicles with welding tools; stored items drop on the ground. Adds 55 skill books with vanilla XP multiplier groups. Fitness, Strength and movement books favor gyms and schools. Melee books follow Long Blade loot, with axe books in logging supplies and knife/spear books in hunting supplies.
 tags=Build 42;Utilities
 visibility=private

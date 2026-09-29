@@ -55,7 +55,13 @@ $requiredFiles = @(
 $requiredFiles += @(
     (Join-Path $versionRoot 'media\lua\client\AQoLVehicleDismantleMenu.lua'),
     (Join-Path $versionRoot 'media\lua\shared\AQoLVehicleDismantle.lua'),
-    (Join-Path $versionRoot 'media\lua\shared\Vehicles\TimedActions\ISAQoLDismantleVehicle.lua')
+    (Join-Path $versionRoot 'media\lua\shared\Vehicles\TimedActions\ISAQoLDismantleVehicle.lua'),
+    (Join-Path $versionRoot 'media\scripts\AQoLPhysicalSkillBooks.txt'),
+    (Join-Path $versionRoot 'media\scripts\AQoLAdditionalSkillBooks.txt'),
+    (Join-Path $versionRoot 'media\lua\shared\AQoLSkillBooks.lua'),
+    (Join-Path $versionRoot 'media\lua\server\AQoLPhysicalSkillBooks.lua'),
+    (Join-Path $versionRoot 'media\lua\shared\AQoLPhysicalSkillBooksForaging.lua'),
+    (Join-Path $versionRoot 'media\lua\server\AQoLPhysicalSkillBooksLoot.lua')
 )
 foreach ($path in $requiredFiles) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
@@ -95,6 +101,18 @@ foreach ($metadataPath in $modMetadataPaths) {
 }
 
 $translationRoot = Join-Path $versionRoot 'media\lua\shared\Translate'
+$skillNames = @{
+    Fitness = @('Fitness', '체력'); Strength = @('Strength', '근력')
+    Sprinting = @('Running', '능숙한 달리기')
+    Lightfoot = @('Lightfooted', '조용한 발걸음')
+    Nimble = @('Nimble', '조준시 발걸음')
+    Sneak = @('Sneaking', '은밀한 움직임')
+    Axe = @('Axe', '도끼')
+    Blunt = @('Long Blunt', '긴 둔기')
+    SmallBlunt = @('Short Blunt', '짧은 둔기')
+    SmallBlade = @('Short Blade', '단검')
+    Spear = @('Spear', '창')
+}
 $expectedKeys = @{
     'ContextMenu' = @('ContextMenu_AQoL_DismantleVehicle')
     'Tooltip' = @(
@@ -105,6 +123,9 @@ $expectedKeys = @{
         'Tooltip_AQoL_NeedTorch'
     )
     'IG_UI' = @('IGUI_AQoL_ConfirmDismantleVehicle')
+    'ItemName' = @(foreach ($skill in $skillNames.Keys) {
+        foreach ($tier in 1..5) { "AuxiliasQoL.Book$skill$tier" }
+    })
 }
 foreach ($category in $expectedKeys.Keys) {
     foreach ($language in @('EN', 'KO')) {
@@ -126,4 +147,52 @@ foreach ($category in $expectedKeys.Keys) {
     }
 }
 
-Write-Host "AuxiliasQoL validation passed for Project Zomboid $releaseLine (mod $version)."
+$bookScript = (@(foreach ($name in @('AQoLPhysicalSkillBooks.txt', 'AQoLAdditionalSkillBooks.txt')) {
+    $script = Get-Content -LiteralPath (Join-Path $versionRoot "media\scripts\$name") -Raw -Encoding UTF8
+    if ($script -notmatch 'module\s+AuxiliasQoL\s*\{') { throw "Books must use the AuxiliasQoL module: $name" }
+    $script
+}) -join "`n")
+$bookDefinitions = [regex]::Matches($bookScript, '(?s)\bitem\s+(\w+)\s*\{([^{}]*)\}')
+if ($bookDefinitions.Count -ne 55) { throw 'Expected exactly 55 skill books.' }
+$seen = @{}
+foreach ($book in $bookDefinitions) {
+    $id = $book.Groups[1].Value
+    if ($id -notmatch '^Book([A-Za-z]+)([1-5])$' -or $seen.ContainsKey($id)) {
+        throw "Unexpected or duplicate skill book: $id"
+    }
+    $skill, $tier = $Matches[1], [int]$Matches[2]
+    if (-not $skillNames.ContainsKey($skill)) { throw "Unexpected book skill: $skill" }
+    $seen[$id] = $true
+    $fields = @{}
+    foreach ($field in [regex]::Matches($book.Groups[2].Value, '(?m)^\s*(\w+)\s*=\s*([^,\r\n]+),')) {
+        $fieldName = $field.Groups[1].Value
+        if ($fields.ContainsKey($fieldName)) { throw "Duplicate $fieldName in $id" }
+        $fields[$fieldName] = $field.Groups[2].Value.Trim()
+    }
+    $expected = @{
+        DisplayCategory = 'SkillBook'; ItemType = 'base:literature'; Weight = '1.0'
+        SkillTrained = $skill; LvlSkillTrained = [string](2 * $tier - 1)
+        NumLevelsTrained = '2'; NumberOfPages = [string](180 + 40 * $tier)
+        Icon = 'Book_Generic'; IconColorMask = 'Book_Generic_Mask'
+        StaticModel = 'BookOpenTINT'; WorldStaticModel = 'BookClosedTINT'
+    }
+    foreach ($field in $expected.Keys) {
+        if ($fields[$field] -cne $expected[$field]) { throw "Invalid $field in $id : $($fields[$field])" }
+    }
+    foreach ($channel in @('ColorRed', 'ColorGreen', 'ColorBlue')) {
+        if ($fields[$channel] -notmatch '^\d+$' -or [int]$fields[$channel] -gt 255) {
+            throw "Invalid $channel in $id"
+        }
+    }
+    foreach ($language in @('EN', 'KO')) {
+        $names = Get-Content (Join-Path $translationRoot "$language\ItemName.json") -Raw -Encoding UTF8 | ConvertFrom-Json
+        $title = [string]$names."AuxiliasQoL.$id"
+        $prefix = if ($language -eq 'EN') { "$($skillNames[$skill][0]) $(@('I','II','III','IV','V')[$tier-1]): " }
+                  else { "$($skillNames[$skill][1]) ${tier}권: " }
+        if (-not $title.StartsWith($prefix) -or $title -notmatch ': "[^"\r\n]+"$') {
+            throw "Skill book title does not follow vanilla naming: $language $id"
+        }
+    }
+}
+
+Write-Host "AuxiliasQoL validation passed for Project Zomboid $releaseLine (mod $version); 55 skill books, EN/KO names."
